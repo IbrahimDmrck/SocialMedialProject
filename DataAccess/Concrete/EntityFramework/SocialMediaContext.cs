@@ -13,7 +13,9 @@ namespace DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("server=DESKTOP-4VOSQ2D;initial catalog=SocialMedia;integrated security=true");
+            //optionsBuilder.UseSqlServer("server=DESKTOP-4VOSQ2D;database=SocialMedia;integrated security=true;");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=SocialMedia;integrated security=true;");
+           
         }
 
         public DbSet<User> Users { get; set; }
