@@ -1,10 +1,13 @@
 ﻿using Business.Abstract;
+using Core.Entities.Concrete;
 using Entities.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -41,16 +44,16 @@ namespace API.Controllers
         }
 
         //[Authorize(Roles = "admin,user.all,user.add")]
-        //[HttpPost("add")]
-        //public IActionResult Add(User user)
-        //{
-        //    var result = _userService.Add(user);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result);
-        //}
+        [HttpPost("add")]
+        public IActionResult Add(User user)
+        {
+            var result = _userService.Add(user);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
         //[Authorize(Roles = "admin,user.all,user.delete")]
         [HttpPost("delete")]

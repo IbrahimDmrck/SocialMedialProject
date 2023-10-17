@@ -25,6 +25,9 @@ namespace Business.ValidationRules.FluentValidation
             RuleFor(x => x.Email).NotEmpty();
             RuleFor(x => x.Email).NotNull();
             RuleFor(x => x.Email).EmailAddress();
+
+            RuleFor(x => x.Gender).NotNull();
+            RuleFor(x => x.PhoneNumber).NotNull();
         }
     }
 }

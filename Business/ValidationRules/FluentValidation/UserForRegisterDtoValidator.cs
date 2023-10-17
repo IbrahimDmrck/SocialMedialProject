@@ -26,6 +26,9 @@ namespace Business.ValidationRules.FluentValidation
             RuleFor(u => u.Password).MinimumLength(6);
             RuleFor(u => u.Password).MaximumLength(25);
 
+            RuleFor(u => u.Gender).NotNull();
+            RuleFor(u => u.PhoneNumber).NotNull();
+
         }
     }
 }

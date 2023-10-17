@@ -40,6 +40,8 @@ namespace Business.Concrete
                 LastName = userForRegisterDto.LastName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                Gender=userForRegisterDto.Gender,
+                PhoneNumber=userForRegisterDto.PhoneNumber,
                 Status = true
             };
             _userService.Add(user);
