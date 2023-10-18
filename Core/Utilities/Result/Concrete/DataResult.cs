@@ -1,4 +1,10 @@
-﻿using Core.Utilities.Result.Abstract;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Core.Utilities.Result.Abstract;
 
 namespace Core.Utilities.Result.Concrete
 {
@@ -6,14 +12,16 @@ namespace Core.Utilities.Result.Concrete
     {
         public DataResult(T data,bool success,string message):base(success,message)
         {
-            Data=data;
+            Data = data;
         }
 
         public DataResult(T data,bool success):base(success)
         {
-            data = data;
+            Data = data;
         }
 
         public T Data { get; }
+
+       
     }
 }

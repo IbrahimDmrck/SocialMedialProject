@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.EntityFramework;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
+using DataAccess.Concrete.Context;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Concrete.EntityFramework
+namespace DataAccess.Concrete.Entityframework
 {
     public class EfUserDal : EfEntityRepositoryBase<User, SocialMediaContext>, IUserDal
     {

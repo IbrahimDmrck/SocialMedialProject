@@ -1,13 +1,11 @@
 ﻿using Business.Abstract;
 using Entities.DTOs;
 using Entities.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace WebAPI.Controllers
 {
-    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -20,15 +18,16 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login(UserForLoginDto userForLoginDto)
+        public async Task<ActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            var userToLogin = _authService.Login(userForLoginDto);
+
+            var userToLogin = await _authService.Login(userForLoginDto);
             if (!userToLogin.Success)
             {
                 return BadRequest(userToLogin);
             }
 
-            var result = _authService.CreateAccessToken(userToLogin.Data);
+            var result = await _authService.CreateAccessToken(userToLogin.Data);
             if (result.Success)
             {
                 return Ok(result);
@@ -38,16 +37,16 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult Register(UserForRegisterDto userForRegisterDto)
+        public async Task<ActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            var userExists = _authService.UserExists(userForRegisterDto.Email);
+            var userExists = await _authService.UserExists(userForRegisterDto.Email);
             if (!userExists.Success)
             {
                 return BadRequest(userExists);
             }
 
             var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
-            var result = _authService.CreateAccessToken(registerResult.Data);
+            var result = await _authService.CreateAccessToken(registerResult.Data);
             if (result.Success)
             {
                 return Ok(result);
@@ -57,9 +56,9 @@ namespace API.Controllers
         }
 
         [HttpPost("changepassword")]
-        public ActionResult ChangePassword(ChangePasswordModel updatedUser)
+        public async Task<ActionResult> ChangePassword(ChangePasswordModel updatedUser)
         {
-            var result = _authService.ChangePassword(updatedUser);
+            var result = await _authService.ChangePassword(updatedUser);
             if (result.Success)
             {
                 return Ok(result);

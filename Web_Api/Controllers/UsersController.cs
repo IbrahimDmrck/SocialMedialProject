@@ -1,13 +1,11 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
 using Entities.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace WebAPI.Controllers
 {
-    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -19,11 +17,10 @@ namespace API.Controllers
             _userService = userService;
         }
 
-        //[Authorize(Roles = "admin,user.all,user.list")]
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            var result = _userService.GetAllDto();
+            var result = _userService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -31,7 +28,6 @@ namespace API.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "admin,user.all,user.list")]
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {
@@ -43,9 +39,8 @@ namespace API.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "admin,user.all,user.add")]
         [HttpPost("add")]
-        public IActionResult Add(User user)
+        public async Task<IActionResult> Add(User user)
         {
             var result = _userService.Add(user);
             if (result.Success)
@@ -55,7 +50,6 @@ namespace API.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "admin,user.all,user.delete")]
         [HttpPost("delete")]
         public IActionResult Delete([FromForm] int id)
         {
@@ -67,7 +61,6 @@ namespace API.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "admin,user.all,user.update")]
         [HttpPost("update")]
         public IActionResult Update(UserDto user)
         {
@@ -78,5 +71,6 @@ namespace API.Controllers
             }
             return BadRequest(result);
         }
+
     }
 }

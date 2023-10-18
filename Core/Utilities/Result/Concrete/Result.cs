@@ -1,9 +1,9 @@
-﻿using Core.Utilities.Result.Abstract;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Utilities.Result.Abstract;
 
 namespace Core.Utilities.Result.Concrete
 {
@@ -13,10 +13,12 @@ namespace Core.Utilities.Result.Concrete
         {
             Message = message;
         }
+
         public Result(bool success)
         {
             Success = success;
         }
+
         public bool Success { get; }
 
         public string Message { get; }

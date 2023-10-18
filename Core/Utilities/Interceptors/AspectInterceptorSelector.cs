@@ -19,7 +19,7 @@ namespace Core.Utilities.Interceptors
             classAttributes.AddRange(methodAttributes);
             classAttributes.Add(new PerformanceAspect(0));
 
-            return (IInterceptor[])classAttributes.OrderBy(x => x.Priority).ToArray();
+            return classAttributes.OrderBy(x => x.Priority).ToArray();
         }
     }
 }

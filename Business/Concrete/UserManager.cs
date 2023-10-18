@@ -1,6 +1,5 @@
 ﻿using Business.Abstract;
 using Business.Constants;
-using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
@@ -8,6 +7,7 @@ using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
 using Entities.DTOs;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,31 +24,6 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
-        [ValidationAspect(typeof(UserValidator))]
-        public IResult Add(User entity)
-        {
-            var rulesResult = BusinessRules.Run(CheckIfEmailExist(entity.Email));
-            if (rulesResult != null)
-            {
-                return rulesResult;
-            }
-
-            _userDal.Add(entity);
-            return new SuccessResult(Messages.UserAdded);
-        }
-
-        public IResult Delete(int entityId)
-        {
-            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(entityId));
-            if (rulesResult != null)
-            {
-                return rulesResult;
-            }
-
-            var deletedUser = _userDal.Get(u => u.Id == entityId);
-            _userDal.Delete(deletedUser);
-            return new SuccessResult(Messages.UserDeleted);
-        }
 
         public IDataResult<List<User>> GetAll()
         {
@@ -60,21 +35,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<UserDto>>(_userDal.GetUsersDtos(), Messages.UsersListed);
         }
 
-        [ValidationAspect(typeof(UserValidator))]
-        public IDataResult<List<OperationClaim>> GetClaims(User user)
+        public IDataResult<User> GetUserById(int userId)
         {
-            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(user.Id));
-            if (rulesResult != null)
-            {
-                return new ErrorDataResult<List<OperationClaim>>(rulesResult.Message);
-            }
-
-            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
-        }
-
-        public IDataResult<User> GetEntityById(int entityId)
-        {
-            var user = _userDal.Get(u => u.Id == entityId);
+            var user = _userDal.Get(u => u.Id == userId);
             if (user != null)
             {
                 return new SuccessDataResult<User>(user, Messages.UserListed);
@@ -83,41 +46,43 @@ namespace Business.Concrete
             return new ErrorDataResult<User>(Messages.UserNotExist);
         }
 
-        public IDataResult<User> GetUserByMail(string email)
-        {
-            return new SuccessDataResult<User>(_userDal.Get(u => u.Email == email));
-
-        }
-
         public IDataResult<UserDto> GetUserDtoById(int userId)
         {
             return new SuccessDataResult<UserDto>(_userDal.GetUsersDtos(u => u.Id == userId).SingleOrDefault(), Messages.UserListed);
         }
 
-        public IDataResult<UserDto> GetUserDtoByMail(string email)
+       // [ValidationAspect(typeof(UserValidator))]
+        public IResult Add(User user)
         {
-            return new SuccessDataResult<UserDto>(_userDal.GetUsersDtos(u => u.Email == email).SingleOrDefault(), Messages.UserListed);
-        }
-
-        [ValidationAspect(typeof(UserValidator))]
-        public IResult Update(User entity)
-        {
-            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(entity.Id)
-               , CheckIfEmailAvailable(entity.Email));
+            var rulesResult = BusinessRules.Run(CheckIfEmailExist(user.Email));
             if (rulesResult != null)
             {
                 return rulesResult;
             }
 
-            _userDal.Update(entity);
+            _userDal.Add(user);
+            return new SuccessResult(Messages.UserAdded);
+        }
+
+     //   [ValidationAspect(typeof(UserValidator))]
+        public IResult Update(User user)
+        {
+            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(user.Id)
+                , CheckIfEmailAvailable(user.Email));
+            if (rulesResult != null)
+            {
+                return rulesResult;
+            }
+
+            _userDal.Update(user);
             return new SuccessResult(Messages.UserUpdated);
         }
 
-        [ValidationAspect(typeof(UserDtoValidator))]
+      //  [ValidationAspect(typeof(UserDtoValidator))]
         public IResult UpdateByDto(UserDto userDto)
         {
             var rulesResult = BusinessRules.Run(CheckIfUserIdExist(userDto.Id)
-               , CheckIfEmailAvailable(userDto.Email));
+                , CheckIfEmailAvailable(userDto.Email));
             if (rulesResult != null)
             {
                 return rulesResult;
@@ -134,6 +99,42 @@ namespace Business.Concrete
             _userDal.Update(updatedUser);
             return new SuccessResult(Messages.UserUpdated);
         }
+
+      //  [ValidationAspect(typeof(UserValidator))]
+        public IDataResult<List<OperationClaim>> GetClaims(User user)
+        {
+            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(user.Id));
+            if (rulesResult != null)
+            {
+                return new ErrorDataResult<List<OperationClaim>>(rulesResult.Message);
+            }
+
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
+        }
+
+        public async Task <IDataResult<User>> GetUserByMail(string email)
+        {
+            return new SuccessDataResult<User>(_userDal.Get(u => u.Email == email));
+        }
+
+        public IDataResult<UserDto> GetUserDtoByMail(string email)
+        {
+            return new SuccessDataResult<UserDto>(_userDal.GetUsersDtos(u => u.Email == email).SingleOrDefault(), Messages.UserListed);
+        }
+
+        public IResult Delete(int userId)
+        {
+            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(userId));
+            if (rulesResult != null)
+            {
+                return rulesResult;
+            }
+
+            var deletedUser = _userDal.Get(u => u.Id == userId);
+            _userDal.Delete(deletedUser);
+            return new SuccessResult(Messages.UserDeleted);
+        }
+
         //Business Rules
 
         private IResult CheckIfUserIdExist(int userId)

@@ -1,6 +1,5 @@
 ﻿using Business.Abstract;
 using Business.Constants;
-using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.Result.Abstract;
@@ -28,7 +27,7 @@ namespace Business.Concrete
             _tokenHelper = tokenHelper;
         }
 
-        [ValidationAspect(typeof(UserForRegisterDtoValidator))]
+       // [ValidationAspect(typeof(UserForRegisterDtoValidator))]
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;
@@ -48,10 +47,10 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
 
-        [ValidationAspect(typeof(UserForLoginDtoValidator))]
-        public IDataResult<User> Login(UserForLoginDto userForLoginDto)
+      //  [ValidationAspect(typeof(UserForLoginDtoValidator))]
+        public async Task<IDataResult<User>> Login(UserForLoginDto userForLoginDto)
         {
-            var userToCheck = _userService.GetUserByMail(userForLoginDto.Email);
+            var userToCheck = await _userService.GetUserByMail(userForLoginDto.Email);
             if (userToCheck.Data == null)
             {
                 return new ErrorDataResult<User>(Messages.UserNotFound);
@@ -64,32 +63,33 @@ namespace Business.Concrete
 
             return new SuccessDataResult<User>(userToCheck.Data, Messages.SuccessfulLogin);
         }
-
-        public IResult UserExists(string email)
+        //
+        public async Task <IResult> UserExists(string email)
         {
-            if (_userService.GetUserByMail(email).Data != null)
+            var check = await _userService.GetUserByMail(email);
+            if (check.Data != null)
             {
                 return new ErrorResult(Messages.UserAlreadyExists);
             }
             return new SuccessResult();
         }
 
-        public IDataResult<AccessToken> CreateAccessToken(User user)
+        public async Task< IDataResult<AccessToken>> CreateAccessToken(User user)
         {
             var claims = _userService.GetClaims(user);
-            var accessToken = _tokenHelper.CreateToken(user, claims.Data);
-            return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
+            var accessToken =  _tokenHelper.CreateToken(user, claims.Data);
+            return  new SuccessDataResult<AccessToken>(accessToken, user.FirstName);
         }
 
-        [ValidationAspect(typeof(ChangePasswordValidator))]
-        public IResult ChangePassword(ChangePasswordModel updatedUser)
+      //  [ValidationAspect(typeof(ChangePasswordValidator))]
+        public async Task< IResult> ChangePassword(ChangePasswordModel updatedUser)
         {
             UserForLoginDto checkedUser = new UserForLoginDto
             {
                 Email = updatedUser.Email,
                 Password = updatedUser.OldPassword
             };
-            var loginResult = Login(checkedUser);
+            var loginResult =await Login(checkedUser);
             if (loginResult.Success)
             {
                 var user = loginResult.Data;
