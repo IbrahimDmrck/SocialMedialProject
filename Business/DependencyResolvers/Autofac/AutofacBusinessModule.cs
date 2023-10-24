@@ -21,7 +21,16 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
-            
+
+            builder.RegisterType<ArticleManager>().As<IArticleService>().SingleInstance();
+            builder.RegisterType<EfArticleDal>().As<IArticleDal>().SingleInstance();
+
+            builder.RegisterType<CommentManager>().As<ICommentService>().SingleInstance();
+            builder.RegisterType<EfCommentleDal>().As<ICommentDal>().SingleInstance();
+
+            builder.RegisterType<TopicManager>().As<ITopicService>().SingleInstance();
+            builder.RegisterType<EfTopicDal>().As<ITopicDal>().SingleInstance();
+
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
 

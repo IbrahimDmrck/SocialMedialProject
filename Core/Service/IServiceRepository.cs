@@ -12,8 +12,8 @@ namespace Core.Service
 {
     public interface IServiceRepository<T>
     {
-        IDataResult<List<T>> GetAll(Expression<Func<T, bool>> filter = null);
-        IDataResult<T> Get(Expression<Func<T, bool>> filter);
+        IDataResult<List<T>> GetAll();
+        //IDataResult<T> Get(Expression<Func<T, bool>> filter);
         IDataResult<T> GetEntityById(int id);
         IResult Add(T entity);
         IResult Update(T entity);
