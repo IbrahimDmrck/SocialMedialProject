@@ -17,7 +17,7 @@ namespace Business.Constants
         public static string UserAlreadyExists="Böyle bir kullanıcı zaten kayıtlı";
         public static string AccessTokenCreated="Token Oluşturuldu";
         public static string PasswordChanged="Şifre başarılı bir şekilde değiştirildi";
-        public static string AuthorizationDenied;
+        public static string AuthorizationDenied="Yetkisiz Kullanıcı";
         public static string UsersListed="Kullanıcılar listelendi";
         public static string UserListed="Kullanıcı listelendi";
         public static string UserNotExist="Kullanıcı bulunamadı";

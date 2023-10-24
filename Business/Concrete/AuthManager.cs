@@ -74,14 +74,14 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public async Task< IDataResult<AccessToken>> CreateAccessToken(User user)
+        public IDataResult<AccessToken> CreateAccessToken(User user)
         {
             var claims = _userService.GetClaims(user);
-            var accessToken =  _tokenHelper.CreateToken(user, claims.Data);
-            return  new SuccessDataResult<AccessToken>(accessToken, user.FirstName);
+            var accessToken = _tokenHelper.CreateToken(user, claims.Data);
+            return new SuccessDataResult<AccessToken>(accessToken, user.FirstName);
         }
 
-      //  [ValidationAspect(typeof(ChangePasswordValidator))]
+        //  [ValidationAspect(typeof(ChangePasswordValidator))]
         public async Task< IResult> ChangePassword(ChangePasswordModel updatedUser)
         {
             UserForLoginDto checkedUser = new UserForLoginDto

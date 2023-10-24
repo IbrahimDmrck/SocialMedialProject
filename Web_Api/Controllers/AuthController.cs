@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
                 return BadRequest(userToLogin);
             }
 
-            var result = await _authService.CreateAccessToken(userToLogin.Data);
+            var result =  _authService.CreateAccessToken(userToLogin.Data);
             if (result.Success)
             {
                 return Ok(result);
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
             }
 
             var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
-            var result = await _authService.CreateAccessToken(registerResult.Data);
+            var result =  _authService.CreateAccessToken(registerResult.Data);
             if (result.Success)
             {
                 return Ok(result);
