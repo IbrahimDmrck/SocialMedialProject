@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
@@ -27,7 +29,8 @@ namespace Business.Concrete
             _tokenHelper = tokenHelper;
         }
 
-       // [ValidationAspect(typeof(UserForRegisterDtoValidator))]
+        // [ValidationAspect(typeof(UserForRegisterDtoValidator))]
+        [LogAspect(typeof(FileLogger))]
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;
@@ -47,7 +50,8 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
 
-      //  [ValidationAspect(typeof(UserForLoginDtoValidator))]
+        //  [ValidationAspect(typeof(UserForLoginDtoValidator))]
+        [LogAspect(typeof(FileLogger))]
         public async Task<IDataResult<User>> Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = await _userService.GetUserByMail(userForLoginDto.Email);
