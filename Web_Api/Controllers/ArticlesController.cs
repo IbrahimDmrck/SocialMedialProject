@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Utilities.Result.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IResult = Core.Utilities.Result.Abstract.IResult;
@@ -14,6 +15,13 @@ namespace Web_Api.Controllers
         IArticleService _articleService;
 
         public ArticlesController(IArticleService articleService) => _articleService = articleService ?? throw new ArgumentNullException(nameof(articleService));
+
+        [HttpGet("getarticlewithdetails")]
+        public ActionResult GetDetails()
+        {
+            IDataResult<List<ArticleDetailDto>> articles = _articleService.GetArticleDetails();
+            return articles.Success ? Ok(articles) : BadRequest(articles);
+        }
 
         [HttpGet("getall")]
         public ActionResult GetAll()

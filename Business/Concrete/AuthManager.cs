@@ -30,7 +30,7 @@ namespace Business.Concrete
         }
 
         // [ValidationAspect(typeof(UserForRegisterDtoValidator))]
-        [LogAspect(typeof(FileLogger))]
+        //[LogAspect(typeof(FileLogger))]
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;

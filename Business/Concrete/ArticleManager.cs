@@ -8,6 +8,7 @@ using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace Business.Concrete
         public IDataResult<List<Article>> GetAll()
         {
             return new SuccessDataResult<List<Article>>(_articleDal.GetAll(),Messages.ArticlesListed);
+        }
+        [CacheAspect(10)]
+        public IDataResult<List<ArticleDetailDto>> GetArticleDetails()
+        {
+            return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
         }
 
         [CacheAspect(10)]

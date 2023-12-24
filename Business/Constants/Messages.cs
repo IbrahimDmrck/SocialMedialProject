@@ -44,5 +44,6 @@ namespace Business.Constants
         public static string Topic_Update = "Konu güncellendi";
         public static string Topic_Listed = "Konu listelendi";
         public static string Topics_Listed = "Konular listelendi";
+        public static string ArticleWithDetailListed="Paylaşımlar ve yorumları listelendi";
     }
 }
