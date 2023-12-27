@@ -25,7 +25,7 @@ namespace DataAccess.Concrete.Entityframework
                              select new ArticleDetailDto
                              {
                                  Id = A.Id,
-                                 TopicId = A.Id,
+                                 TopicId = A.TopicId,
                                  TopicTitle = T.TopicTitle,
                                  UserId = A.UserId,
                                  UserName = U.FirstName + " " + U.LastName,

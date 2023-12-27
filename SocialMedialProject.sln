@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{9D98DAE1-D695-4728-A0D2-20D795F5257C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{9D98DAE1-D695-4728-A0D2-20D795F5257C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{9A0DC827-E419-4906-860D-3B4B668A1C7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{9A0DC827-E419-4906-860D-3B4B668A1C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{09A61235-B9F1-4668-8780-8BE4D9DA5ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{09A61235-B9F1-4668-8780-8BE4D9DA5ED1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{79700A74-82DD-4D5B-9FBE-953DCB841AB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business.csproj", "{79700A74-82DD-4D5B-9FBE-953DCB841AB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web_Api", "Web_Api\Web_Api.csproj", "{166134DB-8B4D-490B-9EEB-862E6F79AF19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web_Api", "Web_Api\Web_Api.csproj", "{166134DB-8B4D-490B-9EEB-862E6F79AF19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMedia_Web", "SocialMedia_Web\SocialMedia_Web.csproj", "{3D567AE5-A7AE-4D29-9AE8-26B0E8B3767D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{166134DB-8B4D-490B-9EEB-862E6F79AF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{166134DB-8B4D-490B-9EEB-862E6F79AF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{166134DB-8B4D-490B-9EEB-862E6F79AF19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D567AE5-A7AE-4D29-9AE8-26B0E8B3767D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D567AE5-A7AE-4D29-9AE8-26B0E8B3767D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D567AE5-A7AE-4D29-9AE8-26B0E8B3767D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D567AE5-A7AE-4D29-9AE8-26B0E8B3767D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

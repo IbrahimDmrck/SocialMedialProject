@@ -1,0 +1,101 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    background-color: rgb(255, 255, 255);
+    /* background: rgb(233,78,38);
+    background: linear-gradient(0deg, rgba(233,78,38,1) 0%, rgba(253,187,45,1) 100%); */
+    
+    
+}
+.sticky-top{
+    background-color: rgb(255, 255, 255); 
+}
+.userContent{
+    border-left: 1px solid rgba(0, 0, 0, 0.165);
+    border-top: 1px solid rgba(0, 0, 0, 0.165);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.165);
+}
+#mainContent{
+    width: 65%;
+}
+.bi-house-fill,
+.bi-person-circle,
+.bi-sliders2-vertical,
+.bi-box-arrow-in-right{
+    font-size: 17px;
+}
+
+.dropdown-item:active{
+    background-color: unset !important;
+}
+.note-icon-caret{
+    display: none;
+}
+
+.comment{
+    z-index: 99999;
+}
+
+#commentForm{
+    background-color: rgba(240, 240, 234, 0.648);
+}
+
+.accordion-body{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.accordion-profile{
+    padding-left: 0px;
+    padding-right: 0px;
+    min-height: 600px;
+    max-height: 600px;
+    overflow-y: scroll;
+}
+
+.note-editable{
+    background-color: white;
+}
+
+@keyframes border-animation {
+    0% {
+        border-width: 0;
+    }
+    100% {
+        border-width: 1px;
+    }
+}
+
+.menu>li {
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    position: relative;
+}
+
+.menu>li::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #0d6efd;
+    animation: border-animation 0.3s ease forwards;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.menu>li:hover::before {
+    opacity: 1;
+}
+
+#headMenu{
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 30px;
+    background-color: rgba(243, 243, 241, 0.575);
+}
