@@ -43,7 +43,7 @@ builder.Services.AddDependencyResolvers(new ICoreModule[]
 // Add services to the container.
 //builder.Services.AddScoped(sp => new HttpClient { });
 builder.Services.AddControllers();
-//builder.Services.AddCors();
+builder.Services.AddCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
@@ -89,7 +89,7 @@ if (app.Environment.IsDevelopment())
 
 app.ConfigureCustomExceptionMiddleware();
 
-//app.UseCors(builder => builder.WithOrigins("http://127.0.0.1:7188").AllowAnyHeader());
+app.UseCors(builder => builder.WithOrigins("https://localhost:7110").AllowAnyHeader());
 
 app.UseHttpsRedirection();
 

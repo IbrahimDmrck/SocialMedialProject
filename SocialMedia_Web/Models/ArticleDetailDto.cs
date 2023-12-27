@@ -1,14 +1,6 @@
-﻿using Core.Entities;
-using Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Entities.DTOs
+﻿namespace SocialMedia_Web.Models
 {
-    public class ArticleDetailDto:IDto
+    public class ArticleDetailDto
     {
         public int Id { get; set; }
         public int TopicId { get; set; }
@@ -19,4 +11,6 @@ namespace Entities.DTOs
         public string SharingDate { get; set; }
         public List<CommentDetail> CommentDetails { get; set; }
     }
+
+
 }

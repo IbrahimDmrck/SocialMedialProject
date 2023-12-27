@@ -28,7 +28,9 @@ namespace DataAccess.Concrete.Entityframework
                                  TopicId = A.TopicId,
                                  TopicTitle = T.TopicTitle,
                                  UserId = A.UserId,
+                                 Content=A.Content,
                                  UserName = U.FirstName + " " + U.LastName,
+                                 SharingDate = A.SharingDate.ToShortDateString(),
                                  CommentDetails = ((from C in context.Comments
                                                     join User in context.Users on C.UserId equals User.Id
                                                     where (A.Id == C.ArticleId)
