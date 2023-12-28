@@ -1,8 +1,8 @@
 ﻿namespace SocialMedia_Web.Models
 {
-    public class ApiDataResponse<T>
+    public class ApiAuthDataResponse<T>
     {
-        public List<T> Data { get; set; }
+        public T Data { get; set; }
         public bool Success { get; set; }
         public string Message { get; set; }
     }

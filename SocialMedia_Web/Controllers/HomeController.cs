@@ -14,20 +14,10 @@ namespace SocialMedia_Web.Controllers
             var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getarticlewithdetails");
             if (responseMessage.IsSuccessStatusCode)
             {
-                //var jsonEmployee = await responseMessage.Content.ReadAsStringAsync();
-                //var values = JsonConvert.DeserializeObject<ArticleDetailDto>(jsonEmployee);
-                //return View(values);
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse>(jsonResponse);
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
 
-                if (apiDataResponse.Success)
-                {
-                    return View(apiDataResponse.Data);
-                }
-                else
-                {
-                    return View("Veri gelmiyor");
-                }
+                return apiDataResponse.Success ? View(apiDataResponse.Data) : (IActionResult)View("Veri gelmiyor");
             }
             return View("Veri gelmiyor");
         }
