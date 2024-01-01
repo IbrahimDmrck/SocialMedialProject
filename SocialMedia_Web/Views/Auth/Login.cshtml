@@ -20,7 +20,7 @@
     </video>
     <div class="container-sm">
         <div id="login" class="w-50 mx-auto position-absolute top-50 start-50 translate-middle">
-            <form action="/Auth/LoginPost" method="post" class="px-5 pt-5 pb-4">
+            <form action="/LoginPost" method="post" class="px-5 pt-5 pb-4">
                 <h1 class="text-center text-white fw-lighter">Sosyal Medya Sitesi  | Login</h1>
 
 
@@ -34,9 +34,6 @@
                     <input type="password" class="form-control" name="Password" id="exampleInputPassowrd">
                 </div>
 
-
-
-
                 <div class="text-center">
                     <button class="btn btn-primary">Giriş Yap</button>
                 </div>
@@ -46,9 +43,34 @@
             </div>
         </div>
     </div>
+    <!-- First Toast -->
+    <div class="toast-container position-top  end-0 top-0 p-3">
+        <!-- Second Toast -->
+        <div id="viewToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg bg-danger">
+                <strong class="me-auto text-white">Bilgilerinizi Kontrol Edin</strong>
+                <button type="button" class="btn-close color-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-bg-danger">
+                 @TempData["LoginFail"].
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    @if (TempData["LoginFail"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                $('.toast').toast({
+                    animation: false,
+                    delay: 50000
+                });
+                $('.toast').toast('show');
+            });
+        </script>
+    }
 </body>
 </html>
 
