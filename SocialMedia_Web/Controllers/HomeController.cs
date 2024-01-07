@@ -8,7 +8,7 @@ namespace SocialMedia_Web.Controllers
 {
     public class HomeController : Controller
     {
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpGet]
         public async Task<IActionResult> Index(string? message, bool? success)
         {
