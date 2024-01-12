@@ -3,6 +3,7 @@
     ViewData["Title"] = "_HomeLayout";
 }
 
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,7 +31,7 @@
                     </a>
                 </li>
                 <li class="nav-link px-2 text-black me-3">
-                    <a href="profile.html" class="text-decoration-none">
+                    <a href="/profilim" class="text-decoration-none">
                         <i class="bi bi-person-circle me-2"></i>Profilim
                     </a>
                 </li>
@@ -39,13 +40,12 @@
                         <i class="bi bi-sliders2-vertical me-2"></i>Ayarlar
                     </a>
                 </li>
-                <a class="btn btn-outline-danger px-2"><i class="bi bi-box-arrow-in-right me-2"></i>Çıkış Yap</a>
-
             </ul>
 
             <div class="col-md-3 text-end">
-                <a type="button" href="login.html" class="btn btn-outline-primary me-2">Giriş Yap</a>
-                <a type="button" href="register.html" class="btn btn-primary">Kayıt Ol</a>
+                @*  <a type="button" href="login.html" class="btn btn-outline-primary me-2">Giriş Yap</a>
+                <a type="button" href="register.html" class="btn btn-primary">Kayıt Ol</a> *@
+                <a class="btn btn-outline-danger px-2"><i class="bi bi-box-arrow-in-right me-2"></i>Çıkış Yap</a>
             </div>
         </header>
         <main class="d-flex justify-content-center justify-content-md-between">
@@ -67,7 +67,7 @@
                         </a>
                     </li>
                     <li class="nav-link text-black my-2">
-                        <a href="profile.html" class="text-decoration-none">
+                        <a href="/profilim" class="text-decoration-none">
                             <i class="bi bi-person-circle me-2"></i>Profilim
                         </a>
                     </li>
@@ -105,15 +105,15 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     @if (ViewData["Success"] != null && ViewData["Success"] is bool success && success)
     {
-    <script>
-        $(document).ready(function () {
+        <script>
+            $(document).ready(function () {
                 $('.toast').toast({
-                    animation: false,
+                    animation: true,
                     delay: 3000
                 });
                 $('.toast').toast('show');
-        });
-    </script>
+            });
+        </script>
     }
     <script>
         $('#summernote').summernote({

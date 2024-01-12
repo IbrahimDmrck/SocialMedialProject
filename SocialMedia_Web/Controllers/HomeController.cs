@@ -8,7 +8,7 @@ namespace SocialMedia_Web.Controllers
 {
     public class HomeController : Controller
     {
-        [Authorize(Roles = "admin,user")]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> Index(string? message, bool? success)
         {
@@ -20,6 +20,7 @@ namespace SocialMedia_Web.Controllers
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
                 ViewData["Message"] = TempData["Message"];
                 ViewData["Success"] = TempData["Success"];
+                ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : (IActionResult)View("Veri gelmiyor");
             }
             return View("Veri gelmiyor");
