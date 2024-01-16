@@ -146,7 +146,7 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ContentId")
+                    b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")

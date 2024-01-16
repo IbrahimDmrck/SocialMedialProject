@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
@@ -50,7 +51,7 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
 
-        //  [ValidationAspect(typeof(UserForLoginDtoValidator))]
+        [ValidationAspect(typeof(UserForLoginDtoValidator))]
         [LogAspect(typeof(FileLogger))]
         public async Task<IDataResult<User>> Login(UserForLoginDto userForLoginDto)
         {
