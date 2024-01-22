@@ -83,6 +83,29 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Core.Entities.Concrete.UserImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserImages");
+                });
+
             modelBuilder.Entity("Core.Entities.Concrete.UserOperationClaim", b =>
                 {
                     b.Property<int>("Id")
@@ -139,15 +162,15 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CommentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CommentText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ArticleId")
-                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

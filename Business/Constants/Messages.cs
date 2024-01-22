@@ -45,5 +45,19 @@ namespace Business.Constants
         public static string Topic_Listed = "Konu listelendi";
         public static string Topics_Listed = "Konular listelendi";
         public static string ArticleWithDetailListed="Paylaşımlar ve yorumları listelendi";
+
+        public static string UserImagesListed = "Kullanıcının resimleri listelendi";
+        public static string UsersImagesListed = "Tum Kullanıcı resimleri listelendi";
+        public static string UserImageListed = "Kullanıcı resmi listelendi";
+        public static string UserImageAdded = "Kullanıcı resmi eklendi";
+        public static string UserImageDeleted = "Kullanıcı resmi silindi";
+        public static string UserImageUpdated = "Kullanıcı resmi guncellendi";
+        public static string ErrorUpdatingImage = "Resim guncellenirken hata olustu";
+        public static string ErrorDeletingImage = "Resim silinirken hata olustu";
+        public static string UserImageLimitExceeded = "Bu kullanıcıya daha fazla resim eklenemez";
+        public static string UserImageIdNotExist = "Kullanıcı resmi mevcut degil";
+
+        public static string GetDefaultImage = "Kullanıcının bir resmi olmadigi icin varsayilan resim getirildi";
+        public static string NoPictureOfTheUser = "Kullanıcının hic resmi yok";
     }
 }

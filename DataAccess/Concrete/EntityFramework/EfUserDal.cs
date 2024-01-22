@@ -31,13 +31,17 @@ namespace DataAccess.Concrete.Entityframework
         {
             using (var context = new SocialMediaContext())
             {
-                var result = from user in context.Users
+                var result = from user in context.Users join
+                             Image in context.UserImages on user.Id equals Image.UserId
                              select new UserDto
                              {
                                  Id = user.Id,
                                  Email = user.Email,
                                  FirstName = user.FirstName,
-                                 LastName = user.LastName
+                                 LastName = user.LastName,
+                                 Gender = user.Gender,
+                                 PhoneNumber = user.PhoneNumber,
+                                 ImagePath=Image.ImagePath
                              };
                 return filter == null
                     ? result.ToList()

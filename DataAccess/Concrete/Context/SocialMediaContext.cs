@@ -19,6 +19,7 @@ namespace DataAccess.Concrete.Context
        
         public virtual DbSet<OperationClaim> OperationClaims { get; set; }
         public virtual DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+        public virtual DbSet<UserImage> UserImages { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         public virtual DbSet<Article> Articles { get; set; }

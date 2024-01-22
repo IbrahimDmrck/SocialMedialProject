@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SocialMediaContext))]
-    [Migration("20231029104732_db_create_test")]
-    partial class db_create_test
+    [Migration("20240122184002_db_create")]
+    partial class db_create
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,6 +86,29 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Core.Entities.Concrete.UserImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserImages");
+                });
+
             modelBuilder.Entity("Core.Entities.Concrete.UserOperationClaim", b =>
                 {
                     b.Property<int>("Id")
@@ -142,15 +165,15 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CommentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CommentText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ContentId")
-                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

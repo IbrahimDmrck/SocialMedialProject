@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class db_create_test : Migration
+    public partial class db_create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,6 +71,21 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserImages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserOperationClaims",
                 columns: table => new
                 {
@@ -119,6 +134,9 @@ namespace DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Topics");
+
+            migrationBuilder.DropTable(
+                name: "UserImages");
 
             migrationBuilder.DropTable(
                 name: "UserOperationClaims");
