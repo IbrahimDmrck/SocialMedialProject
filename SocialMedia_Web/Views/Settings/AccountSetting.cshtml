@@ -2,35 +2,23 @@
 @{
     ViewData["Title"] = "AccountSetting";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
-    // string selectedMan, selectWoman, selectNeuter;
-    // if (Model.Gender=="E")
-    // {
-    //      selectedMan = "selected";
-    // }
-    // else if(Model.Gender == "K"){
-    //      selectWoman = "selected";
-    // }
-    // else
-    // {
-    //      selectNeuter = "selected";
-    // }
 }
 
 <div id="mainContent" class="col-10 d-flex flex-wrap col-12 col-md-auto mb-2 align-items-start p-1">
 
     <div class="row">
         <h4 class="text-center mb-4"> - Kullanıcı Bilgilerim - </h4>
-        <form asp-controller="SettingsController" asp-action="UpdateAccountSetting" method="post">
-            <input type="hidden" name="UserId" value="@Model.Id" />
+        <form action="/bilgileri-guncelle" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="Id" value="@Model.Id" />
             <div class="input-group">
                 <span class="input-group-text">Ad - Soyad</span>
-                <input type="text" name="FirstName" aria-label="First name" placeholder="@Model.FirstName" class="form-control">
-                <input type="text" name="LastName" aria-label="Last name" placeholder="@Model.LastName" class="form-control">
+                <input type="text" name="FirstName" aria-label="First name" value="@Model.FirstName" class="form-control">
+                <input type="text" name="LastName" aria-label="Last name" value="@Model.LastName" class="form-control">
             </div>
 
             <div class="input-group mt-3 mb-3">
                 <span for="exampleInputEmail1" class="input-group-text">E-posta Adresiniz</span>
-                <input type="email" class="form-control" name="mail" placeholder="@Model.Email" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="email" class="form-control" name="Email" value="@Model.Email" id="exampleInputEmail1" aria-describedby="emailHelp">
             </div>
 
             <div class="input-group mt-3 mb-3">
@@ -45,7 +33,7 @@
 
             <div class="input-group mt-3 mb-3">
                 <label class="input-group-text" for="inputGroupSelect01">Cinsiyet</label>
-                <select class="form-select" name="cinsiyet" id="inputGroupSelect01">
+                <select class="form-select" name="Gender" id="inputGroupSelect01">
                     <option value="" disabled> Cinsiyetinizi seçin </option>
                     @{
                         var genderOptions = new[]
@@ -71,15 +59,15 @@
 
             <div class="input-group mt-3 mb-3">
                 <span for="exampleInputEmail1" class="input-group-text">Cep telefonu </span>
-                <input type="tel" id="tel" class="form-control" name="phone" value="@Model.PhoneNumber" aria-describedby="emailHelp">
+                <input type="tel" id="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" aria-describedby="emailHelp">
             </div>
 
             <div class="input-group d-flex justify-content-center mt-1 mb-1">
-                <img src="http://localhost:65525/images/@Model.ImagePath" width="150" height="150"/>
+                <img src="http://localhost:65525/images/@Model.ImagePath" width="150" height="150" />
             </div>
 
             <div class="input-group mt-3 mb-3">
-                <input type="file" name="UserPhoto" class="form-control" id="inputGroupFile02">
+                <input type="file" name="Image" class="form-control" id="inputGroupFile02">
                 <label class="input-group-text" for="inputGroupFile02">Profil Fotoğrafı</label>
             </div>
             <div class="text-center">

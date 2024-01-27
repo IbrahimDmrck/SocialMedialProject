@@ -9,7 +9,7 @@ namespace SocialMedia_Web.Controllers
     public class SettingsController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-
+      
         public SettingsController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -32,37 +32,66 @@ namespace SocialMedia_Web.Controllers
             return View("Veri gelmiyor");
         }
 
-        //http://localhost:65525/api/UserImages/add
-        [HttpPost]
+        [HttpPost("bilgileri-guncelle")]
         public async Task<IActionResult> UpdateAccountSetting(UserDto userDto)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            if (userDto.ImagePath != null)
+            var jsonUserDto = JsonConvert.SerializeObject(userDto);
+            var content = new StringContent(jsonUserDto, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/Users/update", content);
+            if (responseMessage.IsSuccessStatusCode)
+                {
+                var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
+                TempData["Message"] = successUpdatedUser.Message;
+                TempData["Success"] = successUpdatedUser.Success;
+                return RedirectToAction("AccountSetting", "Settings");
+            }
+            else
             {
-                var extension = Path.GetExtension(userDto.ImagePath.FileName);
+                var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
+                TempData["Message"] = successUpdatedUser.Message;
+                TempData["Success"] = successUpdatedUser.Success;
+                return View();
+            }
+            
+        }
+
+        public async Task<IActionResult> UpdateUserImage(UserImage userImage)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            if (userImage.Image != null)
+            {
+
+                var extension = Path.GetExtension(userImage.Image.FileName);
                 var newImageName = Guid.NewGuid().ToString() + extension;
                 var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", newImageName);
 
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
-                    await userDto.ImagePath.CopyToAsync(stream);
+                    await userImage.Image.CopyToAsync(stream);
                 }
 
                 // Profil güncelleme işlemi için API'ye isteği gönder
-                var apiResponse = await UpdateProfileImageInApi(userDto.Id, newImageName);
+                var apiResponse = await UpdateProfileImageInApi(userImage.Id, newImageName);
 
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    TempData["Message"] = "Profil güncelleme başarılı.";
+                    TempData["Message"] = "Profil fotoğrafı güncelleme başarılı.";
                 }
                 else
                 {
-                    TempData["Message"] = "Profil güncelleme başarısız.";
+                    TempData["Message"] = "Profil fotoğrafı güncelleme başarısız.";
                 }
 
             }
 
             return RedirectToAction("AccountSetting", "Settings"); // Profil sayfasına geri dön
+        }
+
+        private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)
+        {
+            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(responseContent);
         }
 
         private async Task<HttpResponseMessage> UpdateProfileImageInApi(int userId, string imageName)

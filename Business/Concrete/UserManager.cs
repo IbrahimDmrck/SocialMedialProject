@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
 using Core.Utilities.Result.Abstract;
@@ -64,11 +66,11 @@ namespace Business.Concrete
             return new SuccessResult(Messages.UserAdded);
         }
 
-     //   [ValidationAspect(typeof(UserValidator))]
+        //   [ValidationAspect(typeof(UserValidator))]
+        [LogAspect(typeof(FileLogger))]
         public IResult Update(User user)
         {
-            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(user.Id)
-                , CheckIfEmailAvailable(user.Email));
+            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(user.Id), CheckIfEmailAvailable(user.Email));
             if (rulesResult != null)
             {
                 return rulesResult;
@@ -78,11 +80,11 @@ namespace Business.Concrete
             return new SuccessResult(Messages.UserUpdated);
         }
 
-      //  [ValidationAspect(typeof(UserDtoValidator))]
+        //  [ValidationAspect(typeof(UserDtoValidator))]
+        [LogAspect(typeof(FileLogger))]
         public IResult UpdateByDto(UserDto userDto)
         {
-            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(userDto.Id)
-                , CheckIfEmailAvailable(userDto.Email));
+            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(userDto.Id), CheckIfEmailAvailable(userDto.Email));
             if (rulesResult != null)
             {
                 return rulesResult;
@@ -96,6 +98,10 @@ namespace Business.Concrete
 
             updatedUser.FirstName = userDto.FirstName;
             updatedUser.LastName = userDto.LastName;
+            updatedUser.Gender= userDto.Gender;
+            updatedUser.Email = userDto.Email;
+            updatedUser.PhoneNumber = userDto.PhoneNumber;
+            
             _userDal.Update(updatedUser);
             return new SuccessResult(Messages.UserUpdated);
         }
