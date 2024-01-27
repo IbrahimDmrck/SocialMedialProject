@@ -1,10 +1,13 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
 using Core.Utilities.Helpers.FileHelper;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
+using DataAccess.Abstract;
 using DataAccess.Concrete.Entityframework;
 using Microsoft.AspNetCore.Http;
 
@@ -14,9 +17,9 @@ namespace Business.Concrete
 {
     public class UserImageManager : IUserImageService
     {
-        private readonly EfUserImageDal _userImageDal;
+        private readonly IUserImageDal _userImageDal;
 
-        public UserImageManager(EfUserImageDal userImageDal)
+        public UserImageManager(IUserImageDal userImageDal)
         {
             _userImageDal = userImageDal;
         }
@@ -80,7 +83,7 @@ namespace Business.Concrete
 
         public IDataResult<List<UserImage>> GetAll()
         {
-            return new SuccessDataResult<List<UserImage>>(_userImageDal.GetAll(), Messages.UserImagesListed);
+           return new SuccessDataResult<List<UserImage>>(_userImageDal.GetAll(), Messages.UserImagesListed);
         }
 
         public IDataResult<UserImage> GetById(int imageId)
@@ -96,7 +99,7 @@ namespace Business.Concrete
                 : _userImageDal.GetAll(c => c.UserId == userId);
             return new SuccessDataResult<List<UserImage>>(images, checkIfUserImage.Message);
         }
-
+        [LogAspect(typeof(FileLogger))]
         public IResult Update(UserImage userImage, IFormFile file)
         {
             IResult rulesResult = BusinessRules.Run(CheckIfUserImageIdExist(userImage.Id),
@@ -112,6 +115,7 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.ErrorUpdatingImage);
             }
+            userImage.UserId = userImage.UserId;
             userImage.ImagePath = result.Message;
             userImage.Date = DateTime.Now;
             _userImageDal.Update(userImage);

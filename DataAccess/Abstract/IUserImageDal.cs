@@ -3,7 +3,7 @@ using Core.Entities.Concrete;
 
 namespace DataAccess.Abstract
 {
-    public interface IUserImage : IEntityRepository<UserImage>
+    public interface IUserImageDal : IEntityRepository<UserImage>
     {
     }
 }

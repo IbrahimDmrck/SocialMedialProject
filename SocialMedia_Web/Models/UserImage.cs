@@ -3,6 +3,8 @@
     public class UserImage
     {
         public int Id { get; set; }
-        public IFormFile Image { get; set; }
+        public int UserId { get; set; }
+        public IFormFile ImagePath { get; set; }
+        public DateTime Date { get; set; }
     }
 }

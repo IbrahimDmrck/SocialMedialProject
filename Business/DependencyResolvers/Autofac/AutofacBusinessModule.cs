@@ -31,6 +31,9 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<TopicManager>().As<ITopicService>().SingleInstance();
             builder.RegisterType<EfTopicDal>().As<ITopicDal>().SingleInstance();
 
+            builder.RegisterType<UserImageManager>().As<IUserImageService>().SingleInstance();
+            builder.RegisterType<EfUserImageDal>().As<IUserImageDal>().SingleInstance();
+
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
 
@@ -44,6 +47,8 @@ namespace Business.DependencyResolvers.Autofac
                 {
                     Selector = new AspectInterceptorSelector()
                 }).SingleInstance();
+
+            //builder.RegisterBuildCallback(cr => Console.WriteLine("Container built!"));
         }
     }
 }

@@ -2,6 +2,7 @@
 using Core.Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Web_Api.Controllers
 {
@@ -22,9 +23,9 @@ namespace Web_Api.Controllers
             var result = _userImageService.GetAll();
             if (result.Success)
             {
-                return Ok(result);
+                return BadRequest(result);
             }
-            return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpGet("getallbyuserid")]
@@ -49,9 +50,10 @@ namespace Web_Api.Controllers
             return BadRequest(result);
         }
 
-        [HttpPut("update")]
+        [HttpPost("update")]
         public IActionResult Update([FromForm] UserImage userImage, [FromForm] IFormFile imageFile)
         {
+
             var result = _userImageService.Update(userImage, imageFile);
             if (result.Success)
             {
@@ -59,6 +61,8 @@ namespace Web_Api.Controllers
             }
             return BadRequest(result);
         }
+
+
 
         [HttpDelete("delete")]
         public IActionResult Delete(UserImage userImage)

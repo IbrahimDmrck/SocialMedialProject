@@ -31,8 +31,9 @@ namespace DataAccess.Concrete.Entityframework
         {
             using (var context = new SocialMediaContext())
             {
-                var result = from user in context.Users join
-                             Image in context.UserImages on user.Id equals Image.UserId
+                var result = from user in context.Users
+                             join userImage in context.UserImages on user.Id equals userImage.UserId into userImagesGroup
+                             from userImage in userImagesGroup.DefaultIfEmpty()
                              select new UserDto
                              {
                                  Id = user.Id,
@@ -41,12 +42,15 @@ namespace DataAccess.Concrete.Entityframework
                                  LastName = user.LastName,
                                  Gender = user.Gender,
                                  PhoneNumber = user.PhoneNumber,
-                                 ImagePath=Image.ImagePath
+                                 ImageId=userImage.Id,
+                                 ImagePath = userImage != null ? userImage.ImagePath : string.Empty
                              };
+
                 return filter == null
                     ? result.ToList()
                     : result.Where(filter).ToList();
             }
         }
+
     }
 }

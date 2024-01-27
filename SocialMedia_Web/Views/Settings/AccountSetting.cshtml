@@ -8,7 +8,27 @@
 
     <div class="row">
         <h4 class="text-center mb-4"> - Kullanıcı Bilgilerim - </h4>
-        <form action="/bilgileri-guncelle" method="post" enctype="multipart/form-data">
+        <form action="/bilgileri-guncelle" method="post">
+            <div class="input-group text-center mt-1 mb-4">
+                <div class="d-flex justify-content-center w-100">
+                    @if (Model.ImagePath == "" && Model.Gender=="E")
+                    {
+                        <img src="http://localhost:65525/images/default.jpg" width="150" height="150" />
+                    }
+                    else if (Model.ImagePath == "" && Model.Gender == "K")
+                    {
+                        <img src="http://localhost:65525/images/defaultwoman.png" width="150" height="150" />
+                    }
+                    else if (Model.ImagePath == "" && Model.Gender == "B")
+                    {
+                        <img src="http://localhost:65525/images/defaultneuter.png" width="150" height="150" />
+                    }else
+                    {
+                        <img src="http://localhost:65525/@Model.ImagePath" width="150" height="150" />
+                    }
+                </div>
+                <button type="button" class="btn btn-warning fw-bold rounded-1 mx-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">Fotoğrafı Güncelle</button>
+            </div>
             <input type="hidden" name="Id" value="@Model.Id" />
             <div class="input-group">
                 <span class="input-group-text">Ad - Soyad</span>
@@ -61,15 +81,7 @@
                 <span for="exampleInputEmail1" class="input-group-text">Cep telefonu </span>
                 <input type="tel" id="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" aria-describedby="emailHelp">
             </div>
-
-            <div class="input-group d-flex justify-content-center mt-1 mb-1">
-                <img src="http://localhost:65525/images/@Model.ImagePath" width="150" height="150" />
-            </div>
-
-            <div class="input-group mt-3 mb-3">
-                <input type="file" name="Image" class="form-control" id="inputGroupFile02">
-                <label class="input-group-text" for="inputGroupFile02">Profil Fotoğrafı</label>
-            </div>
+            
             <div class="text-center">
                 <button class="btn btn-primary">Bilgilerimi Güncelle</button>
             </div>
@@ -78,3 +90,29 @@
 
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Profil Fotoğrafı Güncelle</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/photo-update" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="Id" value="@Model.ImageId" />
+                    <input type="hidden" name="UserId" value="@Model.Id" />
+                    <div class="input-group mt-3 mb-3">
+                        <input type="file" name="ImagePath" class="form-control" id="inputGroupFile02">
+                        <label class="input-group-text" for="inputGroupFile02">Profil Fotoğrafı</label>
+                    </div>
+
+                    <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-success">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

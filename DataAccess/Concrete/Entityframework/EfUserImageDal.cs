@@ -5,7 +5,7 @@ using DataAccess.Concrete.Context;
 
 namespace DataAccess.Concrete.Entityframework
 {
-    public class EfUserImageDal : EfEntityRepositoryBase<UserImage, SocialMediaContext>, IUserImage
+    public class EfUserImageDal : EfEntityRepositoryBase<UserImage, SocialMediaContext>, IUserImageDal
     {
 
     }

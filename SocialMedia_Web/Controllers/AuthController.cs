@@ -55,10 +55,10 @@ namespace SocialMedia_Web.Controllers
             }
         }
 
-        private async Task<ApiAuthDataResponse<UserForLoginDto>> GetUserForLogin(HttpResponseMessage responseMessage)
+        private async Task<ApiDataResponse<UserForLoginDto>> GetUserForLogin(HttpResponseMessage responseMessage)
         {
             var responseContent = await responseMessage.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ApiAuthDataResponse<UserForLoginDto>>(responseContent);
+            return JsonConvert.DeserializeObject<ApiDataResponse<UserForLoginDto>>(responseContent);
         }
 
         private async Task<IActionResult> SignInUserByRole(List<string> roleClaims)
