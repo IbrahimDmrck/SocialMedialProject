@@ -1,0 +1,16 @@
+﻿@model List<Topics>
+<select class="js-example-basic-single form-control" name="TopicId">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <option value="@item.Id">@item.TopicTitle</option>
+
+        }
+
+    }
+    else
+    {
+        <p>Başlık bulunamadı</p>
+    }
+</select>

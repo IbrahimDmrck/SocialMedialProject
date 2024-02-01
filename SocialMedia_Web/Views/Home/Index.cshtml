@@ -7,8 +7,16 @@
 <div id="mainContent" class="col-8 d-flex flex-wrap col-12 col-md-auto mb-2 align-items-start justify-content-center  p-1">
 
     <div class="row py-3 border rounded-3 shadow ">
-        <form action="deneme.php" method="get">
-            <input id="summernote" type="text" class=" w-100" placeholder="Yorumunuz">
+        
+        <form action="/share-content" method="post">
+            <input type="hidden" value="@ViewData["UserId"]" name="UserId" />
+            <input type="hidden" value="@DateTime.Now" name="SharingDate" />
+            <div class="form-group w-100 mb-3" >
+                <label for="topic" class="d-block fw-bold">Bir Konu Seçiniz:</label>
+                @await Component.InvokeAsync("_SharingContentForm")
+            </div>
+            
+            <textarea id="summernote"  class=" w-100" name="Content"></textarea>
             <button class="btn btn-outline-success float-end mt-2" type="submit">Paylaş</button>
         </form>
     </div>
@@ -27,7 +35,7 @@
                 </div>
             </div>
             <div class="contents col-10 border ps-3 py-3 ms-0 shadow">
-                    @articleDetail.Content
+                    @Html.Raw(articleDetail.Content)
 
                 <div class="pt-3 ps-2 pe-2">
                     <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

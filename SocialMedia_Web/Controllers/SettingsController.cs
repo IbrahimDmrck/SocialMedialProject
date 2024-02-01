@@ -54,7 +54,7 @@ namespace SocialMedia_Web.Controllers
                 TempData["Success"] = successUpdatedUser.Success;
                 return View();
             }
-            
+
         }
         [HttpPost("photo-update")]
         public async Task<IActionResult> UpdateUserImage(UserImage userImage)
@@ -69,10 +69,10 @@ namespace SocialMedia_Web.Controllers
                     formContent.Add(new StreamContent(userImage.ImagePath.OpenReadStream())
                     {
                         Headers =
-                {
-                    ContentLength = userImage.ImagePath.Length,
-                    ContentType = new MediaTypeHeaderValue(userImage.ImagePath.ContentType)
-                }
+                        {
+                            ContentLength = userImage.ImagePath.Length,
+                            ContentType = new MediaTypeHeaderValue(userImage.ImagePath.ContentType)
+                        }
                     }, "ImageFile", userImage.ImagePath.FileName);
 
                     var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/UserImages/update", formContent);

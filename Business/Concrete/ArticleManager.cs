@@ -27,7 +27,7 @@ namespace Business.Concrete
             _articleDal = articleDal;
         }
 
-        [SecuredOperation("admin,user")]
+        //[SecuredOperation("admin,user")]
         [ValidationAspect(typeof(ArticleValidator))]
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Add(Article entity)
