@@ -16,7 +16,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 options.LoginPath = "/giris-yap";
                 options.AccessDeniedPath = "/giris-yap";
             });
-//builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession();
 var app = builder.Build();
 

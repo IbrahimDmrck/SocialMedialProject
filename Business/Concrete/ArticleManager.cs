@@ -3,7 +3,9 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
@@ -27,7 +29,8 @@ namespace Business.Concrete
             _articleDal = articleDal;
         }
 
-        //[SecuredOperation("admin,user")]
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
         [ValidationAspect(typeof(ArticleValidator))]
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Add(Article entity)
@@ -45,12 +48,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ArticleDeleted);
         }
 
-        [CacheAspect(10)]
+        [CacheAspect(1)]
         public IDataResult<List<Article>> GetAll()
         {
             return new SuccessDataResult<List<Article>>(_articleDal.GetAll(),Messages.ArticlesListed);
         }
-        [CacheAspect(10)]
+
+        //[CacheAspect(1)]
         public IDataResult<List<ArticleDetailDto>> GetArticleDetails()
         {
             return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);

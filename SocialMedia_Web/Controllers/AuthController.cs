@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NuGet.Common;
 using SocialMedia_Web.Models;
 using SocialMedia_Web.Utilities.Helpers;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 namespace SocialMedia_Web.Controllers
@@ -39,10 +42,12 @@ namespace SocialMedia_Web.Controllers
                 TempData["Success"] = userForLogin.Success;
 
                 var jwtToken = userForLogin.Data.Token;
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
                 var roleClaims = ExtractRoleClaimsFromJwtToken.GetRoleClaims(jwtToken);
                 var userId = ExtractUserIdentityFromJwtToken.GetUserIdentityFromJwtToken(jwtToken);
 
                 HttpContext.Session.SetInt32("UserId", userId);
+                HttpContext.Session.SetString("Token", jwtToken);
 
                 return await SignInUserByRole(roleClaims);
             }

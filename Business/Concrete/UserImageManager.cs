@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Core.Aspects.Autofac.Logging;
 using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
@@ -99,7 +100,9 @@ namespace Business.Concrete
                 : _userImageDal.GetAll(c => c.UserId == userId);
             return new SuccessDataResult<List<UserImage>>(images, checkIfUserImage.Message);
         }
+
         [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
         public IResult Update(UserImage userImage, IFormFile file)
         {
             IResult rulesResult = BusinessRules.Run(CheckIfUserImageIdExist(userImage.Id),
