@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
@@ -18,6 +22,9 @@ namespace Business.Concrete
 
         public CommentManager(ICommentDal commentDal) => _commentDal = commentDal;
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("ICommentService.Get")]
         public IResult Add(Comment entity)
         {
             _commentDal.Add(entity);

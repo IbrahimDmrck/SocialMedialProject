@@ -39,8 +39,10 @@ namespace SocialMedia_Web.Controllers
         public async Task<IActionResult> UpdateAccountSetting(UserDto userDto)
         {
             var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
             var jsonUserDto = JsonConvert.SerializeObject(userDto);
             var content = new StringContent(jsonUserDto, Encoding.UTF8, "application/json");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/Users/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -78,8 +80,10 @@ namespace SocialMedia_Web.Controllers
                             ContentType = new MediaTypeHeaderValue(userImage.ImagePath.ContentType)
                         }
                     }, "ImageFile", userImage.ImagePath.FileName);
-
-                    var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/UserImages/update", formContent);
+                    var token = HttpContext.Session.GetString("Token");
+                    var httpClient = _httpClientFactory.CreateClient();
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/UserImages/update", formContent);
 
                     var successUpdatedUserImage = await GetUpdateUserImageResponseMessage(responseMessage);
                     TempData["Message"] = successUpdatedUserImage.Message;
