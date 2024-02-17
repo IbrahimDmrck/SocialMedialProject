@@ -27,9 +27,10 @@ namespace Business.Concrete
             return new SuccessResult(Messages.Topic_Add);
         }
 
-        public IResult Delete(Topic entity)
+        public IResult Delete(int id)
         {
-            _topicDal.Delete(entity);
+            var deletedTopic = _topicDal.Get(x => x.Id == id);
+            _topicDal.Delete(deletedTopic);
             return new SuccessResult(Messages.Topic_Delete);
         }
 

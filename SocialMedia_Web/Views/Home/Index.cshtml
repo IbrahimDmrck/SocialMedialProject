@@ -1,6 +1,7 @@
 ﻿@model List<ArticleDetailDto>
 @{
     ViewData["Title"] = "Index";
+    int UserId = Convert.ToInt32(ViewData["UserId"]);
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
 }
 
@@ -35,6 +36,14 @@
                     </div>
                 </div>
                 <div class="contents col-10 border ps-3 py-3 ms-0 shadow">
+                    <div class="mb-1">
+                        <span class=""><b><i>#@articleDetail.TopicTitle</i></b></span>
+                        @if (UserId == articleDetail.UserId)
+                        {
+                            <button type="button" class="btn btn-close float-end delete-article" data-article="@articleDetail.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
+
+                        }
+                    </div>
                     @Html.Raw(articleDetail.Content)
 
                     <div class="pt-3 ps-2 pe-2">
@@ -66,7 +75,7 @@
                             <!-- Yorum Alanı bitiş -->
 
                             <div class="dropdown-item w-100 mb-3">
-                                <form action="#" method="post"  >
+                                <form action="#" method="post">
                                     <label for="commentText">Yorumunuz : </label>
                                     <input type="text" name="CommentText" class="form-control" placeholder="Yorumunuzu buraya yazın">
                                     <button type="button" class="btn btn-success float-end mt-2 mb-2 comment-form" data-id="@articleDetail.Id">Yorum Yap</button>
@@ -88,6 +97,31 @@
     <!-- paylaşılan içerik bitiş -->
 </div>
 @await Component.InvokeAsync("_RightSide")
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3" id="exampleModalLabel">UYARI !!</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/delete-article" method="post">
+                    <div class="input-group mt-3 mb-3">
+                        <input type="hidden" name="id" class="form-control" id="articleId">
+                        <span>Bu paylaşımı silmek istediğinizden emin misiniz ?</span>
+                        <span>Bu işlemi geri alamazsınız !</span>
+                    </div>
+
+                    <div class="modal-footer text-center">
+                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
+                        <button class="btn btn-success">Sil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts{
     <script>
         $(document).ready(function () {
@@ -100,18 +134,18 @@
                 var CommentText = form.find('input[name=CommentText]').val();
 
                 // Tarih ve saat bilgisini al
-                var now = new Date();
-
+                //var now = new Date();
+                var CommentDate = new Date().toLocaleString();
                 // Tarihi belirtilen formatta biçimlendir
-                var CommentDate = (now.getDate() < 10 ? '0' : '') + now.getDate() + '.' +
-                    ((now.getMonth() + 1) < 10 ? '0' : '') + (now.getMonth() + 1) + '.' +
-                    now.getFullYear() + ' ' +
-                    (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' +
-                    (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' +
-                    (now.getSeconds() < 10 ? '0' : '') + now.getSeconds();
+                // var CommentDate = (now.getDate() < 10 ? '0' : '') + now.getDate() + '.' +
+                //     ((now.getMonth() + 1) < 10 ? '0' : '') + (now.getMonth() + 1) + '.' +
+                //     now.getFullYear() + ' ' +
+                //     (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' +
+                //     (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' +
+                //     (now.getSeconds() < 10 ? '0' : '') + now.getSeconds();
 
                 console.log(ArticleId + " , " + UserId + " , " + CommentText + " , " + CommentDate);
-                
+
                 $.ajax({
                     type: "POST",
                     url: "/post-comment",
@@ -129,7 +163,14 @@
                     },
                 });
             })
-    });
+
+            $(".delete-article").on("click", function (e) {
+                e.preventDefault();
+                var ArticleId = $(this).data("article");
+                console.log(ArticleId);
+                $("#articleId").val(ArticleId);
+            })
+        });
     </script>
 
 }

@@ -91,11 +91,11 @@
         <!-- Second Toast -->
         <div id="viewToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg bg-success">
-                <strong class="me-auto text-white">Giriş Yapıldı</strong>
+                <strong class="me-auto text-white">@TempData["Baslik"]</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body text-bg-success">
-                Merhaba @TempData["Message"], hoş geldin.
+                @TempData["Message"]
             </div>
         </div>
     </div>

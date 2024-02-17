@@ -17,6 +17,6 @@ namespace Core.Service
         IDataResult<T> GetEntityById(int id);
         IResult Add(T entity);
         IResult Update(T entity);
-        IResult Delete(T entity);
+        IResult Delete(int id);
     }
 }

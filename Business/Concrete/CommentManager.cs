@@ -7,6 +7,7 @@ using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
+using DataAccess.Concrete.Entityframework;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -31,9 +32,10 @@ namespace Business.Concrete
             return new SuccessResult(Messages.Comment_Add);
         }
 
-        public IResult Delete(Comment entity)
+        public IResult Delete(int id)
         {
-            _commentDal.Delete(entity);
+            var deletedComment = _commentDal.Get(x => x.Id == id);
+            _commentDal.Delete(deletedComment);
             return new SuccessResult(Messages.Comment_Delete);
         }
 

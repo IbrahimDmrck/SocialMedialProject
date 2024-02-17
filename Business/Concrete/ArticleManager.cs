@@ -40,11 +40,12 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin,user")]
-        [ValidationAspect(typeof(ArticleValidator))]
+        //[ValidationAspect(typeof(ArticleValidator))]
         [CacheRemoveAspect("IArticleService.Get")]
-        public IResult Delete(Article entity)
+        public IResult Delete(int id)
         {
-            var deletedArticle = _articleDal.Get(x=>x.Id==entity.Id);
+            var deletedArticle = _articleDal.Get(x=>x.Id==id);
+            _articleDal.Delete(deletedArticle);
             return new SuccessResult(Messages.ArticleDeleted);
         }
 

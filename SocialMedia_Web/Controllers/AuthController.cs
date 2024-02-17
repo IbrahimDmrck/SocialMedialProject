@@ -37,8 +37,8 @@ namespace SocialMedia_Web.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var userForLogin = await GetUserForLogin(responseMessage);
-
-                TempData["Message"] = userForLogin.Message;
+                TempData["Baslik"] = "Giriş Başarılı";
+                TempData["Message"] = " Merhaba "+userForLogin.Message+", hoş geldin.";
                 TempData["Success"] = userForLogin.Success;
 
                 var jwtToken = userForLogin.Data.Token;
