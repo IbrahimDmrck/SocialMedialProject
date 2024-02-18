@@ -67,6 +67,15 @@
                                             </div>
                                         </div>
                                         <div class="col-10 border ps-3 py-3 ms-0 shadow">
+                                            <div class="mb-1">
+                                                
+                                                @if (UserId == comment.UserId)
+                                                {
+                                                    
+                                                    <button type="button" class="btn btn-close float-end delete-comment me-2" data-comment="@comment.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal1"></button>
+
+                                                }
+                                            </div>
                                             @comment.CommentText
                                         </div>
                                     </div>
@@ -110,6 +119,32 @@
                     <div class="input-group mt-3 mb-3">
                         <input type="hidden" name="id" class="form-control" id="articleId">
                         <span>Bu paylaşımı silmek istediğinizden emin misiniz ?</span>
+                        <span>Bu işlemi geri alamazsınız !</span>
+                    </div>
+
+                    <div class="modal-footer text-center">
+                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
+                        <button class="btn btn-success">Sil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal1 -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3" id="exampleModalLabel1">UYARI !!</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/delete-comment" method="post">
+                    <div class="input-group mt-3 mb-3">
+                        <input type="hidden" name="id" class="form-control" id="commentId">
+                        <span>Bu yorumu silmek istediğinizden emin misiniz ?</span>
                         <span>Bu işlemi geri alamazsınız !</span>
                     </div>
 
@@ -169,6 +204,13 @@
                 var ArticleId = $(this).data("article");
                 console.log(ArticleId);
                 $("#articleId").val(ArticleId);
+            })
+
+            $(".delete-comment").on("click", function (e) {
+                e.preventDefault();
+                var CommentId = $(this).data("comment");
+                console.log(CommentId);
+                $("#commentId").val(CommentId);
             })
         });
     </script>

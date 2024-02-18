@@ -18,9 +18,12 @@ namespace SocialMedia_Web.Controllers
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
-                //ViewData["Message"] = TempData["Message"];
-                //ViewData["Success"] = TempData["Success"];
                 ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
+
+                int myArticleCount = apiDataResponse.Data.Count(x => x.UserId == (int)ViewData["UserId"]);
+                HttpContext.Session.SetInt32("MyArticle", apiDataResponse.Data.Count(x => x.UserId == (int)ViewData["UserId"]));
+                ViewData["MyArticle"] = myArticleCount;
+                
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : (IActionResult)View("Veri gelmiyor");
             }
             return View("Veri gelmiyor");

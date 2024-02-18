@@ -42,6 +42,23 @@ namespace SocialMedia_Web.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
+        [HttpPost("delete-comment")]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/Comments/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                TempData["Message"] = "Yorum Silindi";
+                TempData["Success"] = true;
+                return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
         private async Task<ApiDataResponse<CommentDetail>> GetCommentResponseMessage(HttpResponseMessage responseMessage)
         {
             var responseContent = await responseMessage.Content.ReadAsStringAsync();

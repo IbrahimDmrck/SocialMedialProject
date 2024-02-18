@@ -61,6 +61,11 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
         }
 
+        public IDataResult<List<ArticleDetailDto>> GetArticleDetailsByUserId(int id)
+        {
+            return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(x=>x.UserId==id), Messages.ArticleWithDetailListed);
+        }
+
         [CacheAspect(10)]
         public IDataResult<Article> GetEntityById(int id)
         {

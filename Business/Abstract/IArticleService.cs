@@ -7,5 +7,6 @@ namespace Business.Abstract
     public interface IArticleService: IServiceRepository<Article>
     {
         IDataResult<List<ArticleDetailDto>> GetArticleDetails();
+        IDataResult<List<ArticleDetailDto>> GetArticleDetailsByUserId(int id);
     }
 }

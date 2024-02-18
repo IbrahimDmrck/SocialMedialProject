@@ -23,7 +23,7 @@ namespace SocialMedia_Web.Controllers
         {
 
             var userId = HttpContext.Session.GetInt32("UserId");
-
+            ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             var httpClient = _httpClientFactory.CreateClient();
             var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Users/getbyid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
