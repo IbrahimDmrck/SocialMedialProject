@@ -61,6 +61,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
         }
 
+        //[CacheAspect(1)]
         public IDataResult<List<ArticleDetailDto>> GetArticleDetailsByUserId(int id)
         {
             return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(x=>x.UserId==id), Messages.ArticleWithDetailListed);

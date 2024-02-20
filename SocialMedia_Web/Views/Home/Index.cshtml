@@ -40,7 +40,8 @@
                         <span class=""><b><i>#@articleDetail.TopicTitle</i></b></span>
                         @if (UserId == articleDetail.UserId)
                         {
-                            <button type="button" class="btn btn-close float-end delete-article" data-article="@articleDetail.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
+                            <button type="button" class="btn btn-close float-end pt-3 delete-article" data-article="@articleDetail.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
+                            <button class="btn btn-outline-warning  border-0 float-end" data-bs-toggle="modal" data-bs-target="#articleUpdateModal"><i class="bi bi-pencil-square"></i></button>
 
                         }
                     </div>
@@ -157,9 +158,39 @@
         </div>
     </div>
 </div>
+
+<!-- articleUpdateModal -->
+<div class="modal modal-lg fade" id="articleUpdateModal" tabindex="-1" aria-labelledby="articleUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3" id="articleUpdateModalLabel">UYARI !!</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/delete-comment" method="post">
+                    <div class="form-group w-100 mb-3">
+                        <label for="topic" class="d-block fw-bold">Bir Konu Seçiniz:</label>
+                        @await Component.InvokeAsync("_SharingContentForm")
+                    </div>
+                    <div class="input-group mt-3 mb-3">
+                        <textarea id="summernote1" class=" w-100" name="Content"></textarea>
+                    </div>
+                    
+                    <div class="modal-footer text-center">
+                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
+                        <button class="btn btn-success">Sil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts{
     <script>
+        
         $(document).ready(function () {
+
             $(".contents > p > img").addClass("img-fluid");
             $(".comment-form").on("click", function (e) {
                 e.preventDefault();

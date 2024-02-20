@@ -1,4 +1,4 @@
-﻿@model List<Topics>
+﻿@model List<Tuple<Topics, int>>
 <div id="topRight" class="sticky-top col-2 h-50 text-start ms-1">
     <div class="accordion mt-3 " id="accordionPanelsStayOpenExample">
         <div class="accordion-item">
@@ -14,10 +14,9 @@
                 {
                     <div class="accordion-body p-1">
                         @* <i class="bi bi-share"><strong class="ps-1"><small>15</small></strong> @item.TopicTitle</i> *@
-                        <u><strong class="ps-1"><small>#</small></strong> @item.TopicTitle</u> <small><i class="bi bi-share ms-1">15</i></small>
+                        <u><strong class="ps-1"><small>#</small></strong> @item.Item1.TopicTitle</u> <small><i class="bi bi-share ms-1"> @item.Item2</i></small>
                     </div>
                 }
-                
             </div>
         </div>
     </div>
