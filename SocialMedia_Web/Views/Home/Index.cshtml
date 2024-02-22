@@ -6,7 +6,6 @@
 }
 
 <div id="mainContent" class="col-8 d-flex flex-wrap col-12 col-md-auto mb-2 align-items-start justify-content-center  p-1">
-
     <div class="row py-3 border rounded-3 shadow ">
 
         <form action="/share-content" method="post">
@@ -16,7 +15,6 @@
                 <label for="topic" class="d-block fw-bold">Bir Konu Seçiniz:</label>
                 @await Component.InvokeAsync("_SharingContentForm")
             </div>
-
             <textarea id="summernote" class=" w-100" name="Content"></textarea>
             <button class="btn btn-outline-success float-end mt-2" type="submit">Paylaş</button>
         </form>
@@ -41,8 +39,7 @@
                         @if (UserId == articleDetail.UserId)
                         {
                             <button type="button" class="btn btn-close float-end pt-3 delete-article" data-article="@articleDetail.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
-                            <button class="btn btn-outline-warning  border-0 float-end" data-bs-toggle="modal" data-bs-target="#articleUpdateModal"><i class="bi bi-pencil-square"></i></button>
-
+                            <button class="btn btn-outline-warning  border-0 float-end get-article" data-article="@articleDetail.Id" data-bs-toggle="modal" data-bs-target="#articleUpdateModal"><i class="bi bi-pencil-square"></i></button>
                         }
                     </div>
                     @Html.Raw(articleDetail.Content)
@@ -69,12 +66,9 @@
                                         </div>
                                         <div class="col-10 border ps-3 py-3 ms-0 shadow">
                                             <div class="mb-1">
-                                                
                                                 @if (UserId == comment.UserId)
                                                 {
-                                                    
                                                     <button type="button" class="btn btn-close float-end delete-comment me-2" data-comment="@comment.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal1"></button>
-
                                                 }
                                             </div>
                                             @comment.CommentText
@@ -83,7 +77,6 @@
                                 }
                             }
                             <!-- Yorum Alanı bitiş -->
-
                             <div class="dropdown-item w-100 mb-3">
                                 <form action="#" method="post">
                                     <label for="commentText">Yorumunuz : </label>
@@ -95,7 +88,6 @@
                         <button class="btn btn-outline-secondary float-end">@articleDetail.SharingDate</button>
                     </div>
                 </div>
-
             </div>
         }
     }
@@ -103,7 +95,6 @@
     {
         <p>No data available.</p>
     }
-
     <!-- paylaşılan içerik bitiş -->
 </div>
 @await Component.InvokeAsync("_RightSide")
@@ -164,14 +155,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3" id="articleUpdateModalLabel">UYARI !!</h1>
+                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3 " id="articleUpdateModalLabel">Güncelleme İşlemi</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/delete-comment" method="post">
+                <form action="/update-content" method="post">
                     <div class="form-group w-100 mb-3">
+                        <input type="hidden" name="Id" id="Id"/>
+                        <input type="hidden" value="@ViewData["UserId"]" name="UserId" />
+                        <input type="hidden" value="@DateTime.Now" name="SharingDate" />
                         <label for="topic" class="d-block fw-bold">Bir Konu Seçiniz:</label>
-                        @await Component.InvokeAsync("_SharingContentForm")
+                        <select class="form-select select-topic" name="TopicId" aria-label="Konular">
+                            <option>-Lütfen Bir Konu Başlığı Seçiniz-</option>
+                        </select>
                     </div>
                     <div class="input-group mt-3 mb-3">
                         <textarea id="summernote1" class=" w-100" name="Content"></textarea>
@@ -179,7 +175,7 @@
                     
                     <div class="modal-footer text-center">
                         <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
-                        <button class="btn btn-success">Sil</button>
+                        <button class="btn btn-success">Güncelle</button>
                     </div>
                 </form>
             </div>
@@ -188,27 +184,16 @@
 </div>
 @section scripts{
     <script>
-        
         $(document).ready(function () {
 
-            $(".contents > p > img").addClass("img-fluid");
+            $(".contents > * > img").addClass("img-fluid");
             $(".comment-form").on("click", function (e) {
                 e.preventDefault();
                 var form = $(this).closest('form');
                 var ArticleId = $(this).data("id");
                 var UserId = @ViewData["UserId"];
                 var CommentText = form.find('input[name=CommentText]').val();
-
-                // Tarih ve saat bilgisini al
-                //var now = new Date();
                 var CommentDate = new Date().toLocaleString();
-                // Tarihi belirtilen formatta biçimlendir
-                // var CommentDate = (now.getDate() < 10 ? '0' : '') + now.getDate() + '.' +
-                //     ((now.getMonth() + 1) < 10 ? '0' : '') + (now.getMonth() + 1) + '.' +
-                //     now.getFullYear() + ' ' +
-                //     (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' +
-                //     (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' +
-                //     (now.getSeconds() < 10 ? '0' : '') + now.getSeconds();
 
                 console.log(ArticleId + " , " + UserId + " , " + CommentText + " , " + CommentDate);
 
@@ -223,6 +208,36 @@
                     },
                     success: function (response) {
                         window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            })
+
+            $(".get-article").on("click", function (e) {
+                e.preventDefault();
+                var ArticleId = $(this).data("article");
+                console.log(ArticleId);
+                
+                $.ajax({
+                    type: "GET",
+                    url: "/getarticlebyid",
+                    data: {
+                        id: ArticleId
+                    },
+                    success: function (response) {
+                        console.log(response.article);
+                        console.log(response.topics);
+                        $("#Id").val(ArticleId);
+                        $("#summernote1").summernote('code', response.article.content);
+                        var tag = $(".select-topic");
+                        tag.empty();
+                        $.each(response.topics, function (index, item) {
+                            console.log(item.content);
+                            var option = `<option value="${item.id}" ${item.id == response.article.topicId ? 'selected' : ''}>${item.topicTitle}</option>`;
+                            tag.append(option);
+                        });
                     },
                     error: function (xhr, status, error) {
                         console.error("Ajax Error:", error);
