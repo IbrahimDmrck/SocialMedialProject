@@ -23,6 +23,20 @@ namespace Web_Api.Controllers
             return comments.Success ? Ok(comments) : BadRequest(comments);
         }
 
+        [HttpGet("gettruecomment")]
+        public ActionResult GetTrueComment()
+        {
+            IDataResult<List<Comment>> comments = _commentService.TrueComment();
+            return comments.Success ? Ok(comments) : BadRequest(comments);
+        }
+
+        [HttpGet("getfalsecomment")]
+        public ActionResult GetFalseComment()
+        {
+            IDataResult<List<Comment>> comments = _commentService.FalseComment();
+            return comments.Success ? Ok(comments) : BadRequest(comments);
+        }
+
         [HttpGet("getbyid")]
         public ActionResult GetById(int id)
         {

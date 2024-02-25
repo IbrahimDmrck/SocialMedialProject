@@ -59,5 +59,7 @@ namespace Business.Constants
 
         public static string GetDefaultImage = "Kullanıcının bir resmi olmadigi icin varsayilan resim getirildi";
         public static string NoPictureOfTheUser = "Kullanıcının hic resmi yok";
+        public static string TrueComment="Geçmiş bildirimler";
+        public static string FalseComment = "Yeni bildirimler";
     }
 }

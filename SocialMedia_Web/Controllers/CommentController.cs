@@ -59,6 +59,25 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Roles = "admin")]
+        [HttpGet("notifications")]
+        public async Task<IActionResult> Notifications()
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+
+            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponseMyArticle = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
+
+                return apiDataResponseMyArticle.Success ? View(apiDataResponseMyArticle.Data) : RedirectToAction("Index", "Home");
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
         private async Task<ApiDataResponse<CommentDetail>> GetCommentResponseMessage(HttpResponseMessage responseMessage)
         {
             var responseContent = await responseMessage.Content.ReadAsStringAsync();

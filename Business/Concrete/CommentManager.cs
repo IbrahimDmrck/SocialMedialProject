@@ -39,6 +39,11 @@ namespace Business.Concrete
             return new SuccessResult(Messages.Comment_Delete);
         }
 
+        public IDataResult<List<Comment>> FalseComment()
+        {
+            return new SuccessDataResult<List<Comment>>(_commentDal.GetAll(x=>x.Status==false), Messages.FalseComment);
+        }
+
         public IDataResult<List<Comment>> GetAll()
         {
             return new SuccessDataResult<List<Comment>>(_commentDal.GetAll(),Messages.Comments_Listed);
@@ -47,6 +52,17 @@ namespace Business.Concrete
         public IDataResult<Comment> GetEntityById(int id)
         {
             return new SuccessDataResult<Comment>(_commentDal.Get(x=>x.Id == id),Messages.Comment_Listed);
+        }
+
+        public IDataResult<List<Comment>> NotSeen(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataResult<List<Comment>> TrueComment()
+        {
+
+            return new SuccessDataResult<List<Comment>>(_commentDal.GetAll(x => x.Status == true), Messages.FalseComment);
         }
 
         public IResult Update(Comment entity)
