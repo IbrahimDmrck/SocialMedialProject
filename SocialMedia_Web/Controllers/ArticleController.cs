@@ -36,7 +36,19 @@ namespace SocialMedia_Web.Controllers
                 TempData["Success"] = sharedResponse.Success;
                 return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            else
+            {
+                var errorResponse = await ValidateResponse(responseMessage);
+                TempData["Message"] = string.Join(", ", errorResponse.ValidationErrors.Select(x => x.ErrorMessage));
+                TempData["Success"] = true;
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        private async Task<ApiErrorResponse> ValidateResponse(HttpResponseMessage responseMessage)
+        {
+            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ApiErrorResponse>(responseContent);
         }
 
         [Authorize(Roles = "admin")]
