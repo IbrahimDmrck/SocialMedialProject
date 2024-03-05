@@ -31,8 +31,8 @@ namespace SocialMedia_Web.ViewComponents.NotSeenCommentComponent
                 var apiDataResponseMyArticle = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
 
                 int notSeenComment = apiDataResponseMyArticle.Data
-                                     .SelectMany(article => article.CommentDetails) // Tüm makalelerin yorumlarını birleştir
-                                     .Count(comment => comment.Status == false); // Sadece false olan yorumların sayısını al
+                                     .SelectMany(article => article.CommentDetails)
+                                     .Count(comment => comment.Status == false && comment.UserId !=userId && comment.Id != -1); 
 
 
                 return View(notSeenComment);

@@ -37,23 +37,5 @@ namespace SocialMedia_Web.Controllers
             return View("Veri gelmiyor");
         }
 
-        
-
-        [Authorize(Roles = "admin")]
-        [HttpGet]
-        public async Task<IActionResult> PartialRightSide()
-        {
-
-            var httpClient = new HttpClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getarticlewithdetails");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
-
-                return PartialView();
-            }
-            return PartialView();
-        }
     }
 }

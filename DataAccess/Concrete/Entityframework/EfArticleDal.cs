@@ -15,21 +15,24 @@ namespace DataAccess.Concrete.Entityframework
 {
     public class EfArticleDal : EfEntityRepositoryBase<Article, SocialMediaContext>, IArticleDal
     {
-        public List<ArticleDetailDto> GetArticleDetails(Expression<Func<ArticleDetailDto, bool>> filter = null)
+        public List<ArticleDetailDto> GetArticleDetails(Expression<Func<ArticleDetailDto, bool>> filter=null)
         {
             using (var context = new SocialMediaContext())
             {
                 var result = from A in context.Articles
                              join T in context.Topics on A.TopicId equals T.Id
                              join U in context.Users on A.UserId equals U.Id
+                             join I in context.UserImages on A.UserId equals I.UserId
                              select new ArticleDetailDto
                              {
                                  Id = A.Id,
                                  TopicId = A.TopicId,
                                  TopicTitle = T.TopicTitle,
+                                 ImageId=I.Id,
                                  UserId = A.UserId,
                                  Content=A.Content,
                                  UserName = U.FirstName + " " + U.LastName,
+                                 ImagePath=I.ImagePath,
                                  SharingDate = A.SharingDate.ToShortDateString(),
                                  CommentDetails = ((from C in context.Comments
                                                     join User in context.Users on C.UserId equals User.Id
@@ -58,8 +61,11 @@ namespace DataAccess.Concrete.Entityframework
                                                    Status = C.Status
                                                }).ToList()
                              };
+
                 return filter == null ? result.ToList() : result.Where(filter).ToList();
             }
         }
+
+
     }
 }

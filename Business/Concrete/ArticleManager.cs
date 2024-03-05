@@ -30,8 +30,8 @@ namespace Business.Concrete
         }
 
         [LogAspect(typeof(FileLogger))]
-        [SecuredOperation("admin,user")]
         [ValidationAspect(typeof(ArticleValidator))]
+        [SecuredOperation("admin,user")]
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Add(Article entity)
         {
@@ -55,13 +55,12 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Article>>(_articleDal.GetAll(),Messages.ArticlesListed);
         }
 
-        //[CacheAspect(1)]
+       // [CacheAspect(10)]
         public IDataResult<List<ArticleDetailDto>> GetArticleDetails()
         {
-            return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
+            return new SuccessDataResult<List<ArticleDetailDto>>( _articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
         }
 
-        //[CacheAspect(1)]
         public IDataResult<List<ArticleDetailDto>> GetArticleDetailsByUserId(int id)
         {
             return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(x=>x.UserId==id), Messages.ArticleWithDetailListed);
