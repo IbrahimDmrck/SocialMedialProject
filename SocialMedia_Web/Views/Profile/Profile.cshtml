@@ -18,13 +18,12 @@
     {
         foreach (var articleDetail in Model)
         {
-            if (articleDetail.UserId == UserId)
-            {
+            
                  <div class="row mt-3 w-100">
                 <div class="contentUserImage col-2 justify-content-start h-50 py-1 px-1 text-center">
                     <div class="userImageArea border py-3 mb-4 mt-3  h-auto">
                         <a class="d-inline-flex align-items-center text-decoration-none" href="">
-                            <img src="http://localhost:65525/@articleDetail.ImagePath" class="img-fluid img-thumbnail rounded-circle" width="50" height="50" alt="">
+                            <img src="http://localhost:65525/@articleDetail.UserImage" class="img-fluid img-thumbnail rounded-circle" width="50" height="50" alt="">
                         </a>
                         <h6>@articleDetail.UserName</h6>
                     </div>
@@ -85,7 +84,7 @@
                     </div>
                 </div>
             </div>
-            }
+            
            
         }
     }

@@ -22,18 +22,18 @@ namespace DataAccess.Concrete.Entityframework
                 var result = from A in context.Articles
                              join T in context.Topics on A.TopicId equals T.Id
                              join U in context.Users on A.UserId equals U.Id
-                             join I in context.UserImages on A.UserId equals I.UserId
                              select new ArticleDetailDto
                              {
                                  Id = A.Id,
                                  TopicId = A.TopicId,
                                  TopicTitle = T.TopicTitle,
-                                 ImageId=I.Id,
                                  UserId = A.UserId,
                                  Content=A.Content,
                                  UserName = U.FirstName + " " + U.LastName,
-                                 ImagePath=I.ImagePath,
                                  SharingDate = A.SharingDate.ToShortDateString(),
+                                 UserImage = ((from I in context.UserImages join user in context.Users on I.UserId equals user.Id
+                                               where(A.UserId == I.UserId)
+                                               select I.ImagePath)).First(),
                                  CommentDetails = ((from C in context.Comments
                                                     join User in context.Users on C.UserId equals User.Id
                                                     where (A.Id == C.ArticleId)
