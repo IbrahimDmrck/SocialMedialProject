@@ -36,6 +36,7 @@ namespace DataAccess.Concrete.Entityframework
                                                select I.ImagePath)).First(),
                                  CommentDetails = ((from C in context.Comments
                                                     join User in context.Users on C.UserId equals User.Id
+                                                    join uimg in context.UserImages on C.UserId equals uimg.UserId
                                                     where (A.Id == C.ArticleId)
                                                     select new CommentDetail
                                                     {
@@ -44,17 +45,20 @@ namespace DataAccess.Concrete.Entityframework
                                                         CommentText = C.CommentText,
                                                         UserId = C.UserId,
                                                         UserName = User.FirstName + " " + User.LastName,
+                                                        Image= uimg.ImagePath,
                                                         CommentDate = C.CommentDate,
                                                         Status = C.Status
-                                                    }).ToList()).Count == 0 ? new List<CommentDetail> { new CommentDetail { Id = -1, ArticleId = -1, CommentText = "Henüz yorum yapılmadı", CommentDate = DateTime.Now, UserId = -1, UserName = "" } }
+                                                    }).ToList()).Count == 0 ? new List<CommentDetail> { new CommentDetail { Id = -1, ArticleId = -1, CommentText = "Henüz yorum yapılmadı", CommentDate = DateTime.Now, UserId = -1, UserName = "", Image= "images/default.jpg" } }
                                             : (from C in context.Comments
                                                join User in context.Users on C.UserId equals User.Id
+                                               join uimg in context.UserImages on C.UserId equals uimg.UserId
                                                where (A.Id == C.ArticleId)
                                                select new CommentDetail
                                                {
                                                    Id = C.Id,
                                                    ArticleId = C.ArticleId,
                                                    UserName = User.FirstName + " " + User.LastName,
+                                                   Image = uimg.ImagePath,
                                                    CommentText = C.CommentText,
                                                    UserId = C.UserId,
                                                    CommentDate = C.CommentDate,
