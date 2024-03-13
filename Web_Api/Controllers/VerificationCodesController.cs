@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,9 @@ namespace Web_Api.Controllers
         }
 
         [HttpPost("sendcode")]
-        public IActionResult SendVerificationCode(int userId, string Email)
+        public IActionResult SendVerificationCode(VerificationCodeDto verificationCode)
         {
-            var result = _verificationCodeService.SendVerificationCode(userId, Email);
+            var result = _verificationCodeService.SendVerificationCode(verificationCode);
 
             return result.Success ? Ok(result) : BadRequest(result);
         }
@@ -28,6 +29,14 @@ namespace Web_Api.Controllers
         public IActionResult DeleteVerifyCode(int userId)
         {
             var result = _verificationCodeService.DeleteVerifyCode(userId);
+
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("checkverifycode")]
+        public IActionResult CheckVerfiyCode(int userId, string code)
+        {
+            var result = _verificationCodeService.CheckVerifyCode(userId, code);
 
             return result.Success ? Ok(result) : BadRequest(result);
         }

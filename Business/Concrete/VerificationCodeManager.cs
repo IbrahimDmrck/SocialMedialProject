@@ -15,6 +15,7 @@ using DataAccess.Concrete.Entityframework;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
 using System.Diagnostics;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -29,11 +30,11 @@ namespace Business.Concrete
             _userDal = userDal;
         }
 
-        public IResult SendVerificationCode(int userId, string Email)
+        public IResult SendVerificationCode(VerificationCodeDto verificationCode)
         {
             string randomCode = GenerateRandomCode(12);
 
-            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(userId), CheckIfEmailAvailable(Email), SendEmail(Email, randomCode));
+            var rulesResult = BusinessRules.Run(CheckIfUserIdExist(verificationCode.UserId), CheckIfEmailAvailable(verificationCode.Email), SendEmail(verificationCode.Email, randomCode));
             if (rulesResult != null)
             {
                 return rulesResult;
@@ -41,7 +42,7 @@ namespace Business.Concrete
 
             var verifyCode = new VerificationCode
             {
-                UserId = userId,
+                UserId = verificationCode.UserId,
                 Code = randomCode,
                 CreationTime = DateTime.Now
             };
@@ -49,6 +50,18 @@ namespace Business.Concrete
             _verificationCodeDal.Add(verifyCode);
             Task.Run(() => DeleteExpiredCodes());
             return new SuccessResult(Messages.UserAdded);
+        }
+
+
+        public IResult CheckVerifyCode(int userId,string code)
+        {
+            var checkCode = _verificationCodeDal.Get(x=>x.UserId== userId && x.Code== code);
+
+            if (checkCode == null)
+            {
+                return new ErrorResult(Messages.CodeNotFound);
+            }
+            return new SuccessResult(Messages.VerificationSuccessfull);
         }
 
         public IResult DeleteVerifyCode(int userId)
@@ -151,7 +164,7 @@ namespace Business.Concrete
 
         public static string GenerateRandomCode(int length)
         {
-            const string validChars = @"[A-Za-z0-9!@#$%^&*()_+{}|[\]:;<>,.?/]";
+            const string validChars = @"[A-Za-z0-9!@#$%^&*()_+{}|[\]:;=,.?/]";
             var chars = new char[length];
             var rand = new Random();
 

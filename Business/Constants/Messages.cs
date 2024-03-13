@@ -63,5 +63,8 @@ namespace Business.Constants
         public static string FalseComment = "Yeni bildirimler";
         public static string SendVerifyCode="E-postanıza şifre güncelleme işlemi için doğrulama kodu gönderilmiştir";
         public static string VerifyCodeDeleted="Doğrulama Kodu Silindi";
+        public static string CodeNotFound="Herhangi bir kod bulunamadı, lütfen tekrar deneyin";
+        public static string VerificationSuccessfull= "Doğrulama başarılı, yönlendiriyorsunuz";
     }
 }
+    

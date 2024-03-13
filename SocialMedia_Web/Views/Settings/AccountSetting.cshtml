@@ -84,7 +84,7 @@
             
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Bilgilerimi Güncelle</button>
-                <a href="#" class="btn btn-secondary ms-3">Şifremi değiştir</a>
+                <a href="#" id="code" class="btn btn-secondary ms-3">Şifremi değiştir</a>
             </div>
         </form>
     </div>
@@ -117,3 +117,37 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $("#code").on("click", function (e) {
+                e.preventDefault();
+
+                var UserId = @Model.Id;
+                var Email = "@Model.Email";
+
+                console.log(UserId + " , " + Email);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/kod",
+                    data: { UserId: UserId, Email: Email },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.url;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            })
+
+        });
+    </script>
+
+}
+
+

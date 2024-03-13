@@ -6,6 +6,8 @@ using SocialMedia_Web.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using static SocialMedia_Web.Controllers.ArticleController;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SocialMedia_Web.Controllers
 {
@@ -96,6 +98,48 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("AccountSetting", "Settings");
         }
 
+        [HttpGet("kod-doğrulama")]
+        public IActionResult GetVerifyCode()
+        {
+            return View();
+        }
+
+        [HttpPost("kod")]
+        public async Task<IActionResult> GetVerifyCode(VerificationCode verificationCode)
+        {
+           // var token = HttpContext.Session.GetString("Token");
+         //   httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            var jsonInfo = JsonConvert.SerializeObject(verificationCode);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/VerificationCodes/sendcode", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var response = new 
+                {
+                    Success= true,
+                    Url= "kod-doğrulama"
+                };
+                return Json(response);
+            }
+            return RedirectToAction("AccountSetting", "Settings");
+        }
+
+
+        [HttpPost("verify-code")]
+        public async Task<IActionResult> VerifyCode(string code)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            var userId = HttpContext.Session.GetInt32("UserId");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.GetAsync($"http://localhost:65525/api/VerificationCodes/checkverifycode?userId={userId}&code={code}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+
+            }
+            return View();
+        }
 
         private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)
         {
