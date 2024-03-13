@@ -41,14 +41,14 @@
                 <input type="email" class="form-control" name="Email" value="@Model.Email" id="exampleInputEmail1" aria-describedby="emailHelp">
             </div>
 
-            <div class="input-group mt-3 mb-3">
+            <div class="input-group mt-3 mb-3" hidden>
                 <span for="exampleInputEmail1" class="input-group-text">Şifreniz</span>
-                <input type="password" class="form-control" name="password" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="hidden" class="form-control" name="password" id="exampleInputEmail1" aria-describedby="emailHelp">
             </div>
 
-            <div class="input-group mt-3 mb-3">
+            <div class="input-group mt-3 mb-3" hidden>
                 <span for="exampleInputEmail1" class="input-group-text">Şifre Tekrar</span>
-                <input type="password" class="form-control" name="password" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="hidden" class="form-control" name="password" id="exampleInputEmail1" aria-describedby="emailHelp">
             </div>
 
             <div class="input-group mt-3 mb-3">
@@ -83,7 +83,8 @@
             </div>
             
             <div class="text-center">
-                <button class="btn btn-primary">Bilgilerimi Güncelle</button>
+                <button type="submit" class="btn btn-primary">Bilgilerimi Güncelle</button>
+                <a href="#" class="btn btn-secondary ms-3">Şifremi değiştir</a>
             </div>
         </form>
     </div>

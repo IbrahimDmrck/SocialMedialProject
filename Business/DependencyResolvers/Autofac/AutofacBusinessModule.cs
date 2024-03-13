@@ -22,6 +22,9 @@ namespace Business.DependencyResolvers.Autofac
         protected override void Load(ContainerBuilder builder)
         {
 
+            builder.RegisterType<VerificationCodeManager>().As<IVerificationCodeService>().SingleInstance();
+            builder.RegisterType<EfVerificationCodeDal>().As<IVerificationCodeDal>().SingleInstance();
+
             builder.RegisterType<ArticleManager>().As<IArticleService>().SingleInstance();
             builder.RegisterType<EfArticleDal>().As<IArticleDal>().SingleInstance();
 

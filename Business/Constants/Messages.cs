@@ -61,5 +61,7 @@ namespace Business.Constants
         public static string NoPictureOfTheUser = "Kullanıcının hic resmi yok";
         public static string TrueComment="Geçmiş bildirimler";
         public static string FalseComment = "Yeni bildirimler";
+        public static string SendVerifyCode="E-postanıza şifre güncelleme işlemi için doğrulama kodu gönderilmiştir";
+        public static string VerifyCodeDeleted="Doğrulama Kodu Silindi";
     }
 }
