@@ -16,8 +16,9 @@
         display: contents;
     }
     .userImageArea,
-    .contents{
-        width: 100%;
+    .contents,
+    #codeInput{
+        width: 100% !important;
     }
 
     .userImageArea{

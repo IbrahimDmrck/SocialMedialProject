@@ -101,7 +101,9 @@
                             
                             setTimeout(function () {
                                 $("#verifyModal").modal("hide"); 
+                            window.location.href = response.url;
                             }, 3000);
+
                         } else {
                             $("#verifyModal").modal("show");
                             $(".modal-body").text("⚠️ " + response.message);

@@ -146,7 +146,7 @@ namespace SocialMedia_Web.Controllers
                 {
                     Success = apiDataResponse.Success,
                     Message = apiDataResponse.Message,
-                    Url = "kod-doğrulama"
+                    Url = "sifre-guncelle"
                 };
                 return Json(response);
 
@@ -160,6 +160,46 @@ namespace SocialMedia_Web.Controllers
                 return Json(response);
             }
            
+        }
+
+        [HttpGet("sifre-guncelle")]
+        public async Task<IActionResult> ChangePassword()
+        {
+            ViewData["Email"] = HttpContext.Session.GetString("Email");
+            return View();
+        }
+
+        [HttpPost("sifre-guncelle")]
+        public async Task<IActionResult> ChangePassword(ChangePassword changePassword)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(changePassword);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync($"http://localhost:65525/api/Auth/changepassword", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ChangePassword>>(jsonResponse);
+                var message = apiDataResponse.Message;
+                var success = apiDataResponse.Success;
+
+                var response = new
+                {
+                    Success = apiDataResponse.Success,
+                    Message = apiDataResponse.Message,
+                    
+                };
+                return Json(response);
+
+            }
+            else
+            {
+                var response = new
+                {
+                    Message = "Şifre güncellenemedi, lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
         }
 
         private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)
