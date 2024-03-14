@@ -16,61 +16,133 @@
     </div>
 
     <div id="codeInput" class=" col-9 border-1 rounded-2 shadow">
-        <form class="">
+        <form id="verifyForm">
             <div class="form-group d-flex justify-content-center p-5">
             <label class="d-flex">Kodu Giriniz :
-                    <input type="text" class="form-control w-50 ms-3" />
+                    <input type="text" name="code" class="form-control w-50 ms-3" />
                 </label>
             </div>
             <div class="form-group d-flex justify-content-center">
             <button type="submit" class="btn btn-primary w-25 mb-2">Gönder</button>
             </div>
         </form>
+        <a href="#" id="code" class="btn btn-outline-primary" hidden>Kodu Tekrar Gönder</a>
     </div>
 
 
 
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-center" id="verifyModalLabel"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5 fw-bolder">
+               
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts{
     <script>
-        // Geri sayım süresi (3 dakika)
-        var countdownTime = 3 * 60 * 1000; // 3 dakika * 60 saniye * 1000 milisaniye
+        $(document).ready(function () {
+            // Başlangıç zamanını belirle (3 dakika)
+            var startTime = new Date();
+            startTime.setMinutes(startTime.getMinutes() + 3);
 
-        // Geri sayımın başlama zamanı
-        var startTime = Date.now();
+            // Geri sayımı başlat
+            var countdown = setInterval(function () {
+                var now = new Date().getTime();
+                var distance = startTime - now;
+                // Geri sayım tamamlandıysa, yazıyı güncelle ve geri sayımı durdur
+                if (distance < 0) {
+                    clearInterval(countdown);
+                    $('#countdown').text("Süre doldu!");
+                    $("#verifyForm").attr("hidden","true");
+                    $("#codeInput").addClass("p-3 d-flex justify-content-center");
+                    $("#code").removeAttr("hidden");
+                    
+                    return;
+                }
 
-        // Geri sayımı güncelleme fonksiyonu
-        function updateCountdown() {
-            // Şu anki zamanı al
-            var currentTime = Date.now();
+                // Zamanı hesapla
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Kalan zamanı hesapla
-            var remainingTime = countdownTime - (currentTime - startTime);
+                // Sonucu ekrana yazdır
+                $('#countdown').text("Kalan süre: " + minutes + " dakika " + seconds + " saniye");
+            }, 1000); // 1 saniyede bir güncelle
+        });
+    </script>
 
-            // Zamanı dakika ve saniyeye dönüştür
-            var minutes = Math.floor(remainingTime / (1000 * 60));
-            var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+    <script>
+        $(document).ready(function () {
+            $("#verifyForm").on("submit", function (e) {
+                e.preventDefault();
 
-            // Geri sayaç elementini güncelle
-            document.getElementById("countdown").innerHTML = minutes + " dakika " + seconds + " saniye";
+                var Code = $("input[name=code]").val();
+                var UserId = @ViewData["UserId"];
 
-            // Geri sayım tamamlandıysa
-            if (remainingTime <= 0) {
-                clearInterval(countdownInterval); // Geri sayımı durdur
-                document.getElementById("countdown").innerHTML = "Süre doldu!";
-                document.getElementById("codeInput").style.display = "flex";
-                document.getElementById("codeInput").style.justifyContent = "center";
-                document.getElementById("codeInput").style.padding = "10px";
-                document.getElementById("codeInput").innerHTML="<a href='#' class='btn btn-outline-primary'>Kodu Tekrar Gönder</>"
-            }
-        }
+                console.log(code);
 
-        // İlk güncelleme
-        updateCountdown();
+                $.ajax({
+                    type: "POST",
+                    url: "/verify-code",
+                    data: { Code: Code,UserId:UserId },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#verifyModal").modal("show");
+                            $(".modal-body").text(" ✔️ " + response.message);
+                            
+                            setTimeout(function () {
+                                $("#verifyModal").modal("hide"); 
+                            }, 3000);
+                        } else {
+                            $("#verifyModal").modal("show");
+                            $(".modal-body").text("⚠️ " + response.message);
+                            setTimeout(function () {
+                                $("#verifyModal").modal("hide"); 
+                            }, 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            })
 
-        // Her saniyede bir geri sayımı güncelle
-        var countdownInterval = setInterval(updateCountdown, 1000);
+
+            $("#code").on("click", function (e) {
+                e.preventDefault();
+
+                var UserId = @ViewData["UserId"];
+                var Email = "@ViewData["Email"]";
+
+                console.log(UserId + " , " + Email);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/kod",
+                    data: { UserId: UserId, Email: Email },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.url;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            })
+
+        });
     </script>
 
 }
+
 

@@ -47,6 +47,7 @@ namespace SocialMedia_Web.Controllers
                 var userId = ExtractUserIdentityFromJwtToken.GetUserIdentityFromJwtToken(jwtToken);
 
                 HttpContext.Session.SetInt32("UserId", userId);
+                HttpContext.Session.SetString("Email", loginDto.Email);
                 HttpContext.Session.SetString("Token", jwtToken);
 
                 return await SignInUserByRole(roleClaims);

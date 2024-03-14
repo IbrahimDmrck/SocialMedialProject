@@ -33,10 +33,10 @@ namespace Web_Api.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        [HttpGet("checkverifycode")]
-        public IActionResult CheckVerfiyCode(int userId, string code)
+        [HttpPost("checkverifycode")]
+        public IActionResult CheckVerfiyCode(VerificationCodeDto verificationCode)
         {
-            var result = _verificationCodeService.CheckVerifyCode(userId, code);
+            var result = _verificationCodeService.CheckVerifyCode(verificationCode);
 
             return result.Success ? Ok(result) : BadRequest(result);
         }

@@ -101,6 +101,8 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("kod-doğrulama")]
         public IActionResult GetVerifyCode()
         {
+            ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
+            ViewData["Email"] = HttpContext.Session.GetString("Email");
             return View();
         }
 
@@ -127,18 +129,37 @@ namespace SocialMedia_Web.Controllers
 
 
         [HttpPost("verify-code")]
-        public async Task<IActionResult> VerifyCode(string code)
+        public async Task<IActionResult> VerifyCode(VerificationCode verificationCode)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var token = HttpContext.Session.GetString("Token");
-            var userId = HttpContext.Session.GetInt32("UserId");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.GetAsync($"http://localhost:65525/api/VerificationCodes/checkverifycode?userId={userId}&code={code}");
+            var jsonInfo = JsonConvert.SerializeObject(verificationCode);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync($"http://localhost:65525/api/VerificationCodes/checkverifycode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<VerificationCode>>(jsonResponse);
+                var message = apiDataResponse.Message;
+                var success = apiDataResponse.Success;
+
+                var response = new
+                {
+                    Success = apiDataResponse.Success,
+                    Message = apiDataResponse.Message,
+                    Url = "kod-doğrulama"
+                };
+                return Json(response);
 
             }
-            return View();
+            else
+            {
+                var response = new
+                {
+                    Message = "Kod doğrulanamadı ! . Lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
+           
         }
 
         private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)

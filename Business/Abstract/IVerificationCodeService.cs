@@ -8,7 +8,7 @@ namespace Business.Abstract
     public interface IVerificationCodeService 
     {
         IResult SendVerificationCode(VerificationCodeDto verificationCode);
-        IResult CheckVerifyCode(int userId, string code);
+        IResult CheckVerifyCode(VerificationCodeDto verificationCode);
         IResult DeleteVerifyCode(int userId);
     }
 }

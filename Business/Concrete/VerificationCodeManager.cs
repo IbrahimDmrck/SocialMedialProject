@@ -53,9 +53,9 @@ namespace Business.Concrete
         }
 
 
-        public IResult CheckVerifyCode(int userId,string code)
+        public IResult CheckVerifyCode(VerificationCodeDto verificationCode)
         {
-            var checkCode = _verificationCodeDal.Get(x=>x.UserId== userId && x.Code== code);
+            var checkCode = _verificationCodeDal.Get(x=>x.UserId== verificationCode.UserId && x.Code== verificationCode.Code);
 
             if (checkCode == null)
             {

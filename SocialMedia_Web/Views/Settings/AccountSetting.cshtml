@@ -11,7 +11,7 @@
         <form action="/bilgileri-guncelle" method="post">
             <div class="input-group text-center mt-1 mb-4">
                 <div class="d-flex justify-content-center w-100">
-                    @if (Model.ImagePath == "" && Model.Gender=="E")
+                    @if (Model.ImagePath == "" && Model.Gender == "E")
                     {
                         <img src="http://localhost:65525/images/default.jpg" width="150" height="150" />
                     }
@@ -22,7 +22,8 @@
                     else if (Model.ImagePath == "" && Model.Gender == "B")
                     {
                         <img src="http://localhost:65525/images/defaultneuter.png" width="150" height="150" />
-                    }else
+                    }
+                    else
                     {
                         <img src="http://localhost:65525/@Model.ImagePath" width="150" height="150" />
                     }
@@ -58,10 +59,10 @@
                     @{
                         var genderOptions = new[]
                         {
-                            new { Value = "E", Text = "Erkek" },
-                            new { Value = "K", Text = "Kadın" },
-                            new { Value = "B", Text = "Belirtmek istemiyorum" }
-                        };
+                    new { Value = "E", Text = "Erkek" },
+                    new { Value = "K", Text = "Kadın" },
+                    new { Value = "B", Text = "Belirtmek istemiyorum" }
+                                };
                     }
                     @foreach (var option in genderOptions)
                     {
@@ -81,7 +82,7 @@
                 <span for="exampleInputEmail1" class="input-group-text">Cep telefonu </span>
                 <input type="tel" id="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" aria-describedby="emailHelp">
             </div>
-            
+
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Bilgilerimi Güncelle</button>
                 <a href="#" id="code" class="btn btn-secondary ms-3">Şifremi değiştir</a>
@@ -118,6 +119,7 @@
     </div>
 </div>
 
+
 @section scripts{
     <script>
         $(document).ready(function () {
@@ -143,6 +145,7 @@
                         console.error("Ajax Error:", error);
                     },
                 });
+
             })
 
         });
