@@ -1,8 +1,56 @@
-﻿
+﻿@model List<ArticleDetailDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">
+            Paylaşımlar
+        </h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="table1">
+            <thead>
+                <tr>
+                    <th>Kullanıcı Adı</th>
+                    <th>Yorum Sayısı</th>
+                    <th>Paylaşım Tarihi</th>
+                    <th>Detay</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.UserName</td>
+                        <td>@item.CommentDetails.Count()</td>
+                        <td>@item.SharingDate</td>
+                        <td>
+                            <a class="btn btn-outline-success" href="#">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle me-1" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item text-danger fw-bolder" href="#">Sil</a>
+                                    <a class="dropdown-item text-warning fw-bolder" href="#">Düzenle</a>
+
+                                </div>
+                            </div>
+                            @* <span class="badge bg-success">Active</span> *@
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
 
