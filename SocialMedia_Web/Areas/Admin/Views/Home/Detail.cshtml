@@ -1,0 +1,77 @@
+﻿@model ArticleDetailDto
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">@Model.TopicTitle</h5>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Paylaşım</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Yorumlar</a>
+                </li>
+                
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade active show pt-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    
+                    
+                        <p class="mt-2">
+                            @Html.Raw(Model.Content)
+                        </p>
+                    
+                </div>
+                <div class="tab-pane fade pt-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    @foreach (var item in Model.CommentDetails)
+                    {
+                        <div class="row border border-light border-2 rounded-3  p-2 mb-2">
+                            <div class="col-1 text-center" style="border-right: 2px solid #ced4da">
+                                @if (item.Image == "")
+                                {
+                                    <img class="img-fluid mb-2" src="http://localhost:65525/images/default.jpg" alt="@item.UserName" title="@item.UserName" />
+                                }
+                                else
+                                {
+                                    <img class="img-fluid mb-2" src="http://localhost:65525/@item.Image" alt="@item.UserName" title="@item.UserName" >
+                                }
+                                <small style="font-size:0.7em;">@item.CommentDate.ToShortDateString()</small>
+                                <small style="font-size:0.7em;">@item.CommentDate.ToShortTimeString()</small>
+                                
+                            </div>
+                            <div class="col-11">
+                                
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@item.CommentText</span>
+                                        <ul class="list-group">
+                                            <li class="list-group-item">
+                                                <button class="btn btn-sm btn-success ms-2">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <button class="btn btn-sm btn-danger ms-2">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                    }
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+

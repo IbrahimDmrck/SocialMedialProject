@@ -24,6 +24,13 @@ namespace Web_Api.Controllers
             return articles.Success ? Ok(articles) : BadRequest(articles);
         }
 
+        [HttpGet("getarticlewithdetailsbyid")]
+        public ActionResult GetDetailsById(int id)
+        {
+            IDataResult<ArticleDetailDto> result = _articleService.GetArticleDetailsById(id);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
         [HttpGet("getarticlewithdetailsbyuserid")]
         public ActionResult GetDetailsByUserId(int id)
         {

@@ -5,6 +5,5 @@ namespace DataAccess.Abstract
 {
     public interface ITopicDal : IEntityRepository<Topic>
     {
-
     }
 }

@@ -61,10 +61,17 @@ namespace Business.Constants
         public static string NoPictureOfTheUser = "Kullanıcının hic resmi yok";
         public static string TrueComment="Geçmiş bildirimler";
         public static string FalseComment = "Yeni bildirimler";
+
         public static string SendVerifyCode="E-postanıza şifre güncelleme işlemi için doğrulama kodu gönderilmiştir";
         public static string VerifyCodeDeleted="Doğrulama Kodu Silindi";
         public static string CodeNotFound="Herhangi bir kod bulunamadı, lütfen tekrar deneyin";
         public static string VerificationSuccessfull= "Doğrulama başarılı, yönlendiriyorsunuz";
+
+        public static string ClaimAdded="Yetki Oluşturuldu";
+        public static string ClaimDeleted="Yetki Silindi";
+        public static string ClaimsListed="Yetkiler Listelendi";
+        public static string ClaimListed="Yetki Getirildi";
+        public static string ClaimUpdated="Yetki Güncellendi";
     }
 }
     

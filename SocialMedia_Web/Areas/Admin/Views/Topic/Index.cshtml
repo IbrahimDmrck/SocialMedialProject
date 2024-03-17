@@ -1,4 +1,4 @@
-﻿@model List<ArticleDetailDto>
+﻿@model List<Topics>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -8,17 +8,15 @@
     <div class="card">
         <div class="card-header">
             <h5 class="card-title">
-                Paylaşımlar
+                Gündemdeki Başlıklar
             </h5>
         </div>
         <div class="card-body">
-            <table class="table table-striped" id="table1">
+            <table class="table table-striped table-hover" id="table1">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kullanıcı Adı</th>
-                        <th>Yorum Sayısı</th>
-                        <th>Paylaşım Tarihi</th>
+                        <th>Konu Başlığı</th>
                         <th class="text-center">İşlemler</th>
                     </tr>
                 </thead>
@@ -26,18 +24,16 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td class="fw-bolder">@item.Id</td>
-                            <td>@item.UserName</td>
-                            <td>@item.CommentDetails.Count()</td>
-                            <td>@item.SharingDate</td>
+                            <td class="fw-bol">@item.Id</td>
+                            <td>@item.TopicTitle</td>
                             <td class="d-flex justify-content-center">
-                                <a class="btn btn-outline-success " href="/Admin/Home/Detail/@item.Id">
+                                <a class="btn btn-outline-success" href="#">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
                                 <a class="btn btn-outline-warning mx-2" href="#">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a class="btn btn-outline-danger " href="#">
+                                <a class="btn btn-outline-danger" href="#">
                                     <i class="bi bi-trash"></i>
                                 </a>
 
@@ -50,3 +46,4 @@
         </div>
     </div>
 </div>
+

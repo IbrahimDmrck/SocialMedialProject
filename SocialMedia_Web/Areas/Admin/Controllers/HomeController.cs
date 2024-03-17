@@ -28,5 +28,19 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             }
             return View("Veri gelmiyor");
         }
+
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getarticlewithdetailsbyid?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
+
+                return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
+            }
+            return View("Veri gelmiyor");
+        }
     }
 }
