@@ -27,6 +27,14 @@ namespace WebAPI.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        [HttpGet("getalldto")]
+        public IActionResult GetAllDto()
+        {
+
+            IDataResult<List<UserDto>> result = _userService.GetAllDto();
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {

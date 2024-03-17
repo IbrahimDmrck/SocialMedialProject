@@ -1,0 +1,35 @@
+﻿@model List<UserDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@foreach (var item in Model)
+{
+
+    <div class="col-xl-4 col-md-6 col-sm-12">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-body">
+                <h4 class="card-title">@item.FirstName</h4>
+                <p class="card-text">
+                    Gummies bonbon apple pie fruitcake icing biscuit apple pie jelly-o sweet roll. Toffee
+                    sugar plum sugar plum jelly-o jujubes bonbon dessert carrot cake.
+                </p>
+            </div>
+            <div class="d-flex justify-content-center pb-3">
+                    <img class="img-fluid rounded-3 img-fluid" src="http://localhost:65525/@item.ImagePath" alt="@item.FirstName" width="150" height="150">
+            </div>
+                
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <span>
+                    
+            </span>
+                <button class="btn btn-light-primary"><i class="bi bi-arrow-right"></i> Düzenle</button>
+        </div>
+    </div>
+</div>
+
+
+}
