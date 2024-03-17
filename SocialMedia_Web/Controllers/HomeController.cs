@@ -15,7 +15,7 @@ namespace SocialMedia_Web.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {

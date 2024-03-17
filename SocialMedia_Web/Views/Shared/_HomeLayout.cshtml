@@ -6,7 +6,7 @@
 
 
 <!doctype html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +20,11 @@
 </head>
 <body>
     <div class="container">
+        @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+        {
+            await Html.RenderPartialAsync("_AdminPartial");
+        }
+
         <header id="headMenu" class=" d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom mt-2">
             <div class="col-md-3 mb-2 mb-md-0">
                 <a class="d-inline-flex align-items-center link-body-emphasis text-decoration-none" href="">

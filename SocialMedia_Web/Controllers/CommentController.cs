@@ -16,7 +16,7 @@ namespace SocialMedia_Web.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("post-comment")]
         public async Task<IActionResult> Comment(Comment comment)
         {
@@ -42,7 +42,7 @@ namespace SocialMedia_Web.Controllers
             }
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("delete-comment")]
         public async Task<IActionResult> DeleteComment(int id)
         {
@@ -59,7 +59,7 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpGet("notifications")]
         public async Task<IActionResult> Notifications()
         {

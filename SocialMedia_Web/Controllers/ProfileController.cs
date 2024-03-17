@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SocialMedia_Web.Models;
 
@@ -12,7 +13,7 @@ namespace SocialMedia_Web.Controllers
         {
             _httpClientFactory = httpClientFactory;
         }
-
+        [Authorize(Roles = "admin,user")]
         [HttpGet("profilim")]
         public async Task<IActionResult> Profile()
         {

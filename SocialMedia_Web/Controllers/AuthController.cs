@@ -61,6 +61,7 @@ namespace SocialMedia_Web.Controllers
             }
         }
 
+
         private async Task<ApiDataResponse<UserForLoginDto>> GetUserForLogin(HttpResponseMessage responseMessage)
         {
             var responseContent = await responseMessage.Content.ReadAsStringAsync();

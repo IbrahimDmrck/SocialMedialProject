@@ -19,7 +19,7 @@ namespace SocialMedia_Web.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpGet("hesap-bilgilerim")]
         public async Task<IActionResult> AccountSetting()
         {
@@ -36,7 +36,7 @@ namespace SocialMedia_Web.Controllers
             }
             return View("Veri gelmiyor");
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("bilgileri-guncelle")]
         public async Task<IActionResult> UpdateAccountSetting(UserDto userDto)
         {
@@ -63,7 +63,7 @@ namespace SocialMedia_Web.Controllers
 
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("photo-update")]
         public async Task<IActionResult> UpdateUserImage(UserImage userImage)
         {

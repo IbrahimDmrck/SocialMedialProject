@@ -19,7 +19,7 @@ namespace SocialMedia_Web.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("share-content")]
         public async Task<IActionResult> SharingContent(Article article)
         {
@@ -51,7 +51,7 @@ namespace SocialMedia_Web.Controllers
             return JsonConvert.DeserializeObject<ApiErrorResponse>(responseContent);
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("update-content")]
         public async Task<IActionResult> UpdateContent(Article article)
         {
@@ -71,7 +71,7 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpPost("delete-article")]
         public async Task<IActionResult> DeleteArticle(int id)
         {
@@ -88,7 +88,7 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         [HttpGet("getarticlebyid")]
         public async Task<IActionResult> GetUpdateArticle(int id)
         {
