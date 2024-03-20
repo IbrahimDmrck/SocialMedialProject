@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SocialMedia_Web.Models;
+using System.Net.Http.Headers;
 
 namespace SocialMedia_Web.Areas.Admin.Controllers
 {
@@ -27,6 +28,29 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
             }
             return View("Veri gelmiyor");
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/Topics/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<Topics>>(jsonResponse);
+
+                var response = new
+                {
+                    Message = apiDataResponse.Message,
+                    Url = "/Admin/Topic/Index"
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }
