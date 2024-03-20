@@ -4,6 +4,13 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+@section css{
+    <link rel="stylesheet" href="~/admin/assets/extensions/summernote/summernote-lite.css">
+    <link rel="stylesheet" href="~/admin/assets/compiled/css/form-editor-summernote.css">
+    <link rel="stylesheet" href="~/admin/assets/extensions/toastify-js/src/toastify.css">
+    <link rel="stylesheet" href="~/admin/assets/extensions/choices.js/public/assets/styles/choices.css">
+}
+
 <div class="col-12">
     <div class="card">
         <div class="card-header">
@@ -34,12 +41,12 @@
                                 <a class="btn btn-outline-success " href="/Admin/Home/Detail/@item.Id">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
-                                <a class="btn btn-outline-warning mx-2" href="#">
+                                <a class="btn btn-outline-warning mx-2 update-button" href="/Admin/Home/GetUpdateArticle/@item.Id">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a class="btn btn-outline-danger " href="#">
+                                <button class="btn btn-outline-danger delete-button" data-id="@item.Id" >
                                     <i class="bi bi-trash"></i>
-                                </a>
+                                </button>
 
                             </td>
                         </tr>
@@ -50,3 +57,141 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade text-left" id="large" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel17" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel17">Large Modal</h4>
+                <button type="button" style="opacity:1;" class="close text-white" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group w-100 mb-3">
+                        <input type="hidden" name="Id" id="Id" />
+                        <input type="hidden" value="@ViewData["UserId"]" name="UserId" />
+                        <input type="hidden" value="@DateTime.Now" name="SharingDate" />
+                        <label for="topic" class="d-block fw-bold">Bir Konu Seçiniz:</label>
+                        
+                        <select class="choices form-select select-topic" name="TopicId">
+                            <option>-Lütfen Bir Konu Başlığı Seçiniz-</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3 w-100">
+                <textarea id="summernote" class=" w-100" name="Content"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary"
+                        data-bs-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Close</span>
+                </button>
+                <button type="button" id="top-center" class="btn btn-primary ms-1 update-article"
+                        data-bs-dismiss="modal">
+                    <i class="bx bx-check d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block" >Accept</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/admin/assets/extensions/jquery/jquery.min.js"></script>
+    <script src="~/admin/assets/extensions/summernote/summernote-lite.min.js"></script>
+    <script src="~/admin/assets/static/js/pages/summernote.js"></script>
+    <script src="~/admin/assets/extensions/toastify-js/src/toastify.js"></script>
+    <script src="~/admin/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+    <script src="~/admin/assets/static/js/pages/form-element-select.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".update-button").on("click", function () {
+                var id = $(this).data("id");
+                $(".note-editor").addClass("w-100");
+                console.log(id);
+                $.ajax({
+                    type: "GET",
+                    url: "https://localhost:7110/Admin/Home/GetArticle/" + id,
+                    success: function (response) {
+                        console.log(response);
+                        $("#Id").val(id);
+                        $("#summernote").summernote('code', response.article.content);
+                        var tag = $(".select-topic");
+                        tag.empty();
+                        $.each(response.topics, function (index, item) {
+                            console.log(item.topicTitle);
+                            var option = `<option value="${item.id}" ${item.id == response.article.topicId ? 'selected' : ''}>${item.topicTitle}</option>`;
+                            tag.append(option);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+            $(".update-article").on("click", function () {
+                var id = $(this).data("id");
+
+                console.log(id);
+                $.ajax({
+                    type: "GET",
+                    url: "https://localhost:7110/Admin/Home/GetArticle/" + id,
+                    success: function (response) {
+                        $("#summernote").summernote('code', response.article.content);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+            $(".delete-button").on("click", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "https://localhost:7110/Admin/Home/Delete/" + id,
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.href = response.url;
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+        });
+    </script>
+
+}

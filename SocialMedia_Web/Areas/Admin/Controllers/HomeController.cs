@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
 using Newtonsoft.Json;
 using SocialMedia_Web.Models;
+using System.Net.Http.Headers;
+using System.Text;
+using static SocialMedia_Web.Controllers.ArticleController;
 
 namespace SocialMedia_Web.Areas.Admin.Controllers
 {
@@ -16,6 +20,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getarticlewithdetails");
@@ -30,6 +35,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getarticlewithdetailsbyid?id=" + id);
@@ -41,6 +47,80 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
             }
             return View("Veri gelmiyor");
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetUpdateArticle(int id)
+        {
+            
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getbyid?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
+
+                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Topics/getall");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();
+                    var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse1);
+
+                    var response = new ArticleTopicsResponse
+                    {
+                        Article = data.Data,
+                        Topics = apiDataResponse.Data
+                    };
+                    return View(response);
+                }
+
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateContent(Article article)
+        {
+            var jsonArticle = JsonConvert.SerializeObject(article);
+            var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65525/api/Articles/update", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
+                var response = new
+                {
+                    Message = data.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/Articles/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
+
+                var response = new
+                {
+                    Message = apiDataResponse.Message,
+                    Url = "/Admin/Home/Index"
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

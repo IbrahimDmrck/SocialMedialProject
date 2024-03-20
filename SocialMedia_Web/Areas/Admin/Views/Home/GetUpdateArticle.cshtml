@@ -1,0 +1,106 @@
+﻿@model ArticleTopicsResponse
+@{
+    ViewData["Title"] = "GetUpdateArticle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var title = "";
+}
+
+@section css{
+    <link rel="stylesheet" href="~/admin/assets/extensions/summernote/summernote-lite.css">
+    <link rel="stylesheet" href="~/admin/assets/compiled/css/form-editor-summernote.css">
+    <link rel="stylesheet" href="~/admin/assets/extensions/toastify-js/src/toastify.css">
+    <link rel="stylesheet" href="~/admin/assets/extensions/choices.js/public/assets/styles/choices.css">
+}
+
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                Paylaşım Güncelleme Formu
+            </h5>
+        </div>
+        <div class="card-body">
+            <form class="update-article">
+                <input type="hidden" name="Id" value="@Model.Article.Id" />
+                <input type="hidden" name="UserId" value="@Model.Article.UserId" />
+                <input type="hidden" name="CommentId" value="@Model.Article.CommentId" />
+                <input type="hidden" name="SharingDate" value="@DateTime.Now" />
+                <div class="form-group">
+                    <label for="first-name-vertical">Konu Başlığı</label>
+                    <select class="choices form-select select-topic" name="TopicId">
+                        @foreach (var item in Model.Topics)
+                        {
+                            if (item.Id == Model.Article.TopicId)
+                            {
+                                <option value="@item.Id" selected>@item.TopicTitle</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.TopicTitle</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group with-title mb-3">
+                    <textarea class="form-control" id="summernote" name="Content" rows="10">@Html.Raw(Model.Article.Content)</textarea>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-success ">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/admin/assets/extensions/jquery/jquery.min.js"></script>
+    <script src="~/admin/assets/extensions/summernote/summernote-lite.min.js"></script>
+    <script src="~/admin/assets/static/js/pages/summernote.js"></script>
+    <script src="~/admin/assets/extensions/toastify-js/src/toastify.js"></script>
+    <script src="~/admin/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+    <script src="~/admin/assets/static/js/pages/form-element-select.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".update-article").on("submit", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "PUT",
+                    url: "https://localhost:7110/Admin/Home/UpdateContent",
+                    data: {
+                        Id: $("input[name=Id]").val(),
+                        UserId: $("input[name=UserId]").val(),
+                        CommentId: $("input[name=CommentId]").val(),
+                        SharingDate: $("input[name=SharingDate]").val(),
+                        TopicId: $("select[name=TopicId]").val(),
+                        Content:$('textarea[name=Content]').val()
+                    },
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.href = "/Admin/Home/Index";
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+        });
+    </script>
+}

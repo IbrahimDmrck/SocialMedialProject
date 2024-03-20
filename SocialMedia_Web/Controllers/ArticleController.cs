@@ -117,11 +117,7 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public class ArticleTopicsResponse
-        {
-            public Article Article { get; set; }
-            public List<Topics> Topics { get; set; }
-        }
+
 
         private async Task<ApiDataResponse<Article>> GetSharedResponse(HttpResponseMessage responseMessage)
         {
