@@ -1,0 +1,73 @@
+﻿@model Topics
+@{
+    ViewData["Title"] = "GetUpdateTopic";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                Konu Güncelleme Formu
+            </h5>
+        </div>
+        <div class="card-body">
+            <form class="update-topic">
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="form-group">
+                    <label for="first-name-vertical">Konu Başlığı</label>
+                    <input type="text" id="first-name-vertical" name="TopicTitle" class="form-control" value="@Model.TopicTitle" />
+                </div>
+
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-success ">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".update-topic").on("submit", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "PUT",
+                    url: "https://localhost:7110/Admin/Topic/UpdateTopic",
+                    data: {
+                        Id: $("input[name=Id]").val(),
+                        TopicTitle: $("input[name=TopicTitle]").val(),
+                    },
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.href = "/Admin/Topic/Index";
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+        });
+    </script>
+}
+

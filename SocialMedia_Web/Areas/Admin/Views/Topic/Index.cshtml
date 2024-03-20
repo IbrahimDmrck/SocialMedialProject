@@ -10,7 +10,9 @@
             <h5 class="card-title d-inline">
                 Gündemdeki Başlıklar
             </h5>
-            <button class="btn btn-outline-primary float-end" style="font-size:1.25rem;"><i class="bi bi-plus-square-dotted fw-bold"></i> Ekle</button>
+            <button class="btn btn-outline-primary float-end" style="font-size:1.25rem;" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                <i class="bi bi-plus-square-dotted fw-bold"></i> Ekle
+            </button>
         </div>
         <div class="card-body">
             <table class="table table-striped table-hover" id="table1">
@@ -31,7 +33,7 @@
                                 <a class="btn btn-outline-success" href="#">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
-                                <a class="btn btn-outline-warning mx-2" href="#">
+                                <a class="btn btn-outline-warning mx-2" href="/Admin/Topic/GetUpdateTopic/@item.Id">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <button class="btn btn-outline-danger delete-button" data-id="@item.Id">
@@ -48,9 +50,44 @@
     </div>
 </div>
 
+
+<div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Konu Oluştur </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form action="/Admin/Topic/AddTopic" method="post">
+                <div class="modal-body">
+                    <label for="topic">Konu: </label>
+                    <div class="form-group">
+                        <input id="topic" name="TopicTitle" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">İptal</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary ms-1"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Oluştur</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section scripts{
-    <script src="~/admin/assets/extensions/jquery/jquery.min.js"></script>
-    <script src="~/admin/assets/extensions/toastify-js/src/toastify.js"></script>
 
     <script>
         $(document).ready(function () {
