@@ -4,52 +4,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-@* @foreach (var item in Model)
-{ *@
 
-@*     <div class="col-xl-4 col-md-6 col-sm-12">
-        <div class="card">
-            <div class="card-content">
-                <div class="card-body">
-                    <h4 class="card-title">@item.FirstName @item.LastName </h4>
-                    <p class="card-text">
-                        <span class="fw-bolder">Kullanıcı Rolü : </span>
-                        Admin
-                    </p>
-                    <p class="card-text">
-                        <span class="fw-bolder">Telefon Numarası : </span>
-                        @item.PhoneNumber
-                    </p>
-                </div>
-                <div class="d-flex justify-content-center pb-3">
-                    @if (item.ImagePath == "" && item.Gender == "E")
-                    {
-                        <img class="img-fluid rounded-3" src="http://localhost:65525/images/default.jpg" alt="@item.FirstName" title="@item.FirstName" width="200" height="200" />
-                    }
-                    else if (item.ImagePath == "" && item.Gender == "K")
-                    {
-                        <img class="img-fluid rounded-3" src="http://localhost:65525/images/defaultwoman.png" alt="@item.FirstName" title="@item.FirstName" width="200" height="200" />
-                    }
-                    else if (item.ImagePath == "" && item.Gender == "B")
-                    {
-                        <img class="img-fluid rounded-3" src="http://localhost:65525/images/defaultneuter.png" alt="@item.FirstName" title="@item.FirstName" width="200" height="200" />
-                    }
-                    else
-                    {
-                        <img class="img-fluid rounded-3" src="http://localhost:65525/@item.ImagePath" alt="@item.FirstName" title="@item.FirstName" width="250" height="250">
-                    }
-
-                </div>
-
-            </div>
-            <div class="card-footer d-flex justify-content-between">
-                <span>
-
-                </span>
-                <button class="btn btn-light-primary"><i class="bi bi-arrow-right"></i> Düzenle</button>
-            </div>
-        </div>
-    </div> *@
 
 <div class="col-12">
     <div class="card">
@@ -82,7 +37,7 @@
                                 Aktif
                             </td>
                             <td class="d-flex justify-content-center">
-                                <a class="btn btn-outline-success" href="#">
+                                <a class="btn btn-outline-success" href="/Admin/User/Detail/@item.Id">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
                                 <a class="btn btn-outline-warning mx-2" href="#">
@@ -104,4 +59,4 @@
 
 
 
-@* } *@
+

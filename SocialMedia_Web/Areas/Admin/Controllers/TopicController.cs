@@ -52,7 +52,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 };
                 return Json(response);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -69,7 +69,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
 
                 return View(apiDataResponse.Data);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -91,7 +91,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 };
                 return Json(response);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -105,9 +105,9 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/Topics/add",content);
             if (responseMessage.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Topic");
+                return RedirectToAction("Index", "Topic", new { area = "Admin" });
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new {area="Admin"});
         }
     }
 }

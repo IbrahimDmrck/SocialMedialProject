@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NuGet.Common;
 using SocialMedia_Web.Models;
+using System.Net.Http.Headers;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SocialMedia_Web.Areas.Admin.Controllers
 {
@@ -24,9 +28,210 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<UserDto>>(jsonResponse);
 
-                return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
+                return apiDataResponse.Success ? View(apiDataResponse.Data) : RedirectToAction("Index", "Home", new { area = "Admin" });
             }
-            return View("Veri gelmiyor");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Users/getbyid?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
+
+                return  View(apiDataResponse.Data);
+            }
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateAccountSetting(UserDto userDto)
+        {
+            var token = HttpContext.Session.GetString("Token");
+            var jsonUserDto = JsonConvert.SerializeObject(userDto);
+            var content = new StringContent(jsonUserDto, Encoding.UTF8, "application/json");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/Users/update", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
+                var response = new
+                {
+                    Message = successUpdatedUser.Message,
+                };
+                return Json(response);
+            }
+            else
+            {
+                var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
+                var response = new
+                {
+                    Message = successUpdatedUser.Message,
+                };
+                return Json(response);
+            }
+
+        }
+
+        private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)
+        {
+            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(responseContent);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserImage(UserImage userImage)
+        {
+            if (userImage.ImagePath != null)
+            {
+                using (var formContent = new MultipartFormDataContent())
+                {
+                    formContent.Add(new StringContent(userImage.Id.ToString()), "Id");
+                    formContent.Add(new StringContent(userImage.UserId.ToString()), "UserId");
+                    formContent.Add(new StringContent(userImage.ImagePath.FileName), "ImagePath");
+                    formContent.Add(new StreamContent(userImage.ImagePath.OpenReadStream())
+                    {
+                        Headers =
+                        {
+                            ContentLength = userImage.ImagePath.Length,
+                            ContentType = new MediaTypeHeaderValue(userImage.ImagePath.ContentType)
+                        }
+                    }, "ImageFile", userImage.ImagePath.FileName);
+                    var token = HttpContext.Session.GetString("Token");
+                    var httpClient = _httpClientFactory.CreateClient();
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/UserImages/update", formContent);
+
+                    var successUpdatedUserImage = await GetUpdateUserImageResponseMessage(responseMessage);
+                    TempData["Message"] = successUpdatedUserImage.Message;
+                    TempData["Success"] = successUpdatedUserImage.Success;
+
+                    return RedirectToAction("Detail", "User", new { area = "Admin",id=userImage.UserId });
+                }
+            }
+
+            return RedirectToAction("Index", "User", new { area = "Admin" });
+        }
+
+        private async Task<ApiDataResponse<UserImage>> GetUpdateUserImageResponseMessage(HttpResponseMessage responseMessage)
+        {
+            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ApiDataResponse<UserImage>>(responseContent);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> GetVerifyCode(VerificationCode verificationCode)
+        {
+            var jsonInfo = JsonConvert.SerializeObject(verificationCode);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/VerificationCodes/sendcode", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<VerificationCode>>(responseContent);
+                var response = new
+                {
+                    Message = data.Message,
+                    Url = "/kod-doğrulama"
+                };
+                TempData["UserId"] = verificationCode.UserId;
+                TempData["Email"] = verificationCode.Email;
+                return Json(response);
+            }
+            return RedirectToAction("Index", "User", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public IActionResult VerifyCode()
+        {
+            VerificationCode verificationCode = new VerificationCode
+            {
+                UserId = (int)TempData["UserId"],
+                Email = (string)TempData["Email"]
+            };
+            return View(verificationCode);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> VerifyCode(VerificationCode verificationCode)
+        {
+            var jsonInfo = JsonConvert.SerializeObject(verificationCode);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync($"http://localhost:65525/api/VerificationCodes/checkverifycode", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<VerificationCode>>(jsonResponse);
+
+                var response = new
+                {
+                    Success = apiDataResponse.Success,
+                    Message = apiDataResponse.Message,
+                    Url = "/Admin/User/ChangePassword"
+                };
+                TempData["UserId"] = verificationCode.UserId;
+                TempData["Email"] = verificationCode.Email;
+                return Json(response);
+            }
+            else
+            {
+                var response = new
+                {
+                    Message = "Kod doğrulanamadı ! . Lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            VerificationCode verificationCode = new VerificationCode
+            {
+                UserId = (int)TempData["UserId"],
+                Email = (string)TempData["Email"]
+            };
+            return View(verificationCode);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePassword changePassword)
+        {
+            var jsonData = JsonConvert.SerializeObject(changePassword);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync($"http://localhost:65525/api/Auth/changepassword", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ChangePassword>>(jsonResponse);
+
+                var response = new
+                {
+                    Success = apiDataResponse.Success,
+                    Message = apiDataResponse.Message,
+
+                };
+                return Json(response);
+            }
+            else
+            {
+                var response = new
+                {
+                    Message = "Şifre güncellenemedi, lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
         }
     }
 }

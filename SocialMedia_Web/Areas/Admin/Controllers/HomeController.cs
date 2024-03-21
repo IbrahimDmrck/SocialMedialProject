@@ -29,9 +29,9 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
 
-                return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
+                return apiDataResponse.Success ? View(apiDataResponse.Data) : RedirectToAction("Index", "Home", new { area = "Admin" });
             }
-            return View("Veri gelmiyor");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -46,7 +46,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
 
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
             }
-            return View("Veri gelmiyor");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -75,7 +75,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 }
 
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -97,7 +97,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 };
                 return Json(response);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -120,7 +120,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 };
                 return Json(response);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
     }
 }

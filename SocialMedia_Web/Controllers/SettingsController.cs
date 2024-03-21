@@ -36,6 +36,7 @@ namespace SocialMedia_Web.Controllers
             }
             return View("Veri gelmiyor");
         }
+
         [Authorize(Roles = "admin,user")]
         [HttpPost("bilgileri-guncelle")]
         public async Task<IActionResult> UpdateAccountSetting(UserDto userDto)
@@ -120,7 +121,7 @@ namespace SocialMedia_Web.Controllers
                 var response = new 
                 {
                     Success= true,
-                    Url= "kod-doğrulama"
+                    Url= "/kod-doğrulama"
                 };
                 return Json(response);
             }

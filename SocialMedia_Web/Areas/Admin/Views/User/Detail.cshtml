@@ -1,0 +1,226 @@
+﻿@model UserDto
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Kullanıcı Bilgileri</h4>
+        </div>
+        <div class="card-content">
+            <div class="card-body">
+                <form class="form form-vertical">
+                    <div class="form-body">
+                        <input type="hidden" name="Id" value="@Model.Id"/>
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-center">
+                                <div class="text-center">
+                                    @* <img src="http://localhost:65525/@Model.ImagePath" alt="" srcset=""> *@
+
+                                    @if (Model.ImagePath == "" && Model.Gender == "E")
+                                    {
+                                        <img src="http://localhost:65525/images/default.jpg" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
+                                    }
+                                    else if (Model.ImagePath == "" && Model.Gender == "K")
+                                    {
+                                        <img src="http://localhost:65525/images/defaultwoman.png" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
+                                    }
+                                    else if (Model.ImagePath == "" && Model.Gender == "B")
+                                    {
+                                        <img src="http://localhost:65525/images/defaultneuter.png" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
+                                    }
+                                    else
+                                    {
+                                        <img src="http://localhost:65525/@Model.ImagePath" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100">
+                                    }
+
+                                    <button type="button" class="btn btn-warning fw-bold mt-3 d-block" data-bs-toggle="modal" data-bs-target="#exampleModal">Fotoğrafı Güncelle</button>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group has-icon-left">
+                                    <label for="first-name-icon">Adı :</label>
+                                    <div class="position-relative">
+                                        <input type="text" class="form-control" name="FirstName" id="first-name-icon" value="@Model.FirstName">
+                                        <div class="form-control-icon">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group has-icon-left">
+                                    <label for="first-name-icon">Soy Adı :</label>
+                                    <div class="position-relative">
+                                        <input type="text" class="form-control" name="LastName" id="first-name-icon" value="@Model.LastName">
+                                        <div class="form-control-icon">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+
+                                <div class="form-group has-icon-left">
+                                    <label for="email-id-icon">Email :</label>
+                                    <div class="position-relative">
+                                        <input type="text" class="form-control" name="Email" id="email-id-icon" value="@Model.Email">
+                                        <div class="form-control-icon">
+                                            <i class="bi bi-envelope"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group has-icon-left">
+                                    <label for="mobile-id-icon">Telefon Numarası :</label>
+                                    <div class="position-relative">
+                                        <input type="text" class="form-control" name="PhoneNumber" id="mobile-id-icon" value="@Model.PhoneNumber">
+                                        <div class="form-control-icon">
+                                            <i class="bi bi-phone"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group has-icon-left">
+                                    <label for="password-id-icon">Password</label>
+                                    <div class="position-relative">
+                                        <select class="form-control" name="Gender">
+                                            <option value="" disabled> Cinsiyetinizi seçin </option>
+                                            @{
+                                                var genderOptions = new[]
+                                                {
+                                            new { Value = "E", Text = "Erkek" },
+                                            new { Value = "K", Text = "Kadın" },
+                                            new { Value = "B", Text = "Belirtmek istemiyorum" }
+                                                                                };
+                                            }
+                                            @foreach (var option in genderOptions)
+                                            {
+                                                if (Model.Gender == option.Value)
+                                                {
+                                                    <option value="@option.Value" selected>@option.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@option.Value">@option.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                        <div class="form-control-icon">
+                                            <i class="bi bi-gender-ambiguous"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 ">
+                                <a id="code" class="btn btn-light-secondary me-1 mb-1 float-start" href="">
+                                    Şifre Güncelle
+                                </a>
+                                <button type="submit" class="btn btn-primary me-1 mb-1 float-end">Bilgileri Güncelle</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Profil Fotoğrafı Güncelle</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="update-img-form" action="/Admin/User/UpdateUserImage" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="Id" value="@Model.ImageId" />
+                    <input type="hidden" name="UserId" value="@Model.Id" />
+                    <div class="input-group mt-3 mb-3">
+                        <input type="file" name="ImagePath" class="form-control" id="inputGroupFile02">
+                        <label class="input-group-text" for="inputGroupFile02">Profil Fotoğrafı</label>
+                    </div>
+
+                    <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-success">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+
+
+            $(".form-vertical").on("submit", function (e) {
+                e.preventDefault();
+
+                var UserId = @Model.Id;
+                var Email = "@Model.Email";
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/User/UpdateAccountSetting",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            })
+
+            $("#code").on("click", function (e) {
+                e.preventDefault();
+
+                var UserId = @Model.Id;
+                var Email = "@Model.Email";
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/User/GetVerifyCode",
+                    data: { UserId: UserId, Email: Email },
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.href = "/Admin/User/VerifyCode";
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            })
+
+        });
+    </script>
+
+}

@@ -49,7 +49,7 @@ namespace Business.Concrete
 
             _verificationCodeDal.Add(verifyCode);
             Task.Run(() => DeleteExpiredCodes());
-            return new SuccessResult(Messages.UserAdded);
+            return new SuccessResult(Messages.SendVerifyCode);
         }
 
 
@@ -153,7 +153,7 @@ namespace Business.Concrete
             using ( var client = new SmtpClient())
             {
                 client.Connect("smtp.gmail.com", 587, false);
-                client.Authenticate("ibrahimdemircik1@gmail.com", "izeanupantmqopdf");
+                client.Authenticate("ibrahimdemircik1@gmail.com", "qwltpfdiesmpgsmn");
                 client.Send(mimeMessage);
                 client.Disconnect(true);
             }
