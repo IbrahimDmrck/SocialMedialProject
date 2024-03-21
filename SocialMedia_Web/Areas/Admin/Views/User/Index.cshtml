@@ -43,9 +43,9 @@
                                 <a class="btn btn-outline-warning mx-2" href="#">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a class="btn btn-outline-danger" href="#">
+                                <button class="btn btn-outline-danger delete-button" data-id="@item.Id">
                                     <i class="bi bi-trash"></i>
-                                </a>
+                                </button>
 
                             </td>
                         </tr>
@@ -57,6 +57,48 @@
     </div>
 </div>
 
+@section scripts{
+
+
+    <script>
+        $(document).ready(function () {
+
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".delete-button").on("click", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "https://localhost:7110/Admin/User/Delete/" + id,
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+        });
+    </script>
+
+}
 
 
 

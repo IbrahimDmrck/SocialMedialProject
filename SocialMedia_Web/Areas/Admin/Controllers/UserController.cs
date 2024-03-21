@@ -34,6 +34,25 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var responseMessage = await _httpClientFactory.CreateClient().DeleteAsync("http://localhost:65525/api/Users/delete?id="+id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
+
+                var response = new
+                {
+                    Message = apiDataResponse.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
