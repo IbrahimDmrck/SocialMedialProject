@@ -6,6 +6,7 @@ using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.Entityframework;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,11 @@ namespace Business.Concrete
         public IDataResult<List<OperationClaim>> GetAll()
         {
             return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(),Messages.ClaimsListed);
+        }
+
+        public IDataResult<List<ClaimDto>> GetClaimByUsers(int claimId)
+        {
+            return new SuccessDataResult<List<ClaimDto>>(_operationClaimDal.GetClaims(x=>x.ClaimId== claimId), Messages.ClaimsListed);
         }
 
         public IDataResult<OperationClaim> GetEntityById(int id)

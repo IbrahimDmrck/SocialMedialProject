@@ -2,6 +2,7 @@
 using Core.Entities.Concrete;
 using Core.Utilities.Result.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IResult = Core.Utilities.Result.Abstract.IResult;
@@ -22,6 +23,13 @@ namespace Web_Api.Controllers
         public ActionResult GetAll()
         {
             IDataResult<List<OperationClaim>> operationClaims = _operationClaimService.GetAll();
+            return operationClaims.Success ? Ok(operationClaims) : BadRequest(operationClaims);
+        }
+
+        [HttpGet("getclaimbyusers")]
+        public IActionResult GetClaimByUsers(int claimId)
+        {
+            IDataResult<List<ClaimDto>> operationClaims = _operationClaimService.GetClaimByUsers(claimId);
             return operationClaims.Success ? Ok(operationClaims) : BadRequest(operationClaims);
         }
 

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SocialMedia_Web.Models;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace SocialMedia_Web.Areas.Admin.Controllers
 {
@@ -27,6 +29,22 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
             }
             return View("Veri gelmiyor");
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> Add(OperationClaim operationClaim)
+        {
+            var jsonClaim = JsonConvert.SerializeObject(operationClaim);
+            var content = new StringContent(jsonClaim, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/OperationClaims/add", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Claim", new { area = "Admin" });
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
         }
     }
 }

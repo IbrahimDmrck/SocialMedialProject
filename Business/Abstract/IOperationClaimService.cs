@@ -1,6 +1,8 @@
 ﻿using Core.Entities.Concrete;
 using Core.Service;
+using Core.Utilities.Result.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,6 @@ namespace Business.Abstract
 {
     public interface IOperationClaimService : IServiceRepository<OperationClaim>
     {
+        IDataResult<List<ClaimDto>> GetClaimByUsers(int claimId);
     }
 }

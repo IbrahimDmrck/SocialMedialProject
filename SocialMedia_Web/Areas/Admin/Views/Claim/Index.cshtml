@@ -7,9 +7,12 @@
 <div class="col-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title">
+            <h5 class="card-title d-inline">
                 Yetkiler
             </h5>
+             <button class="btn btn-outline-primary float-end" style="font-size:1.25rem;" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                <i class="bi bi-plus-square-dotted fw-bold"></i> Ekle
+            </button>
         </div>
         <div class="card-body">
             <table class="table table-striped table-hover" id="table1">
@@ -47,3 +50,38 @@
     </div>
 </div>
 
+<div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Yetki Oluştur </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form action="/Admin/Claim/Add" method="post">
+                <div class="modal-body">
+                    <label for="topic">Yetki Adı: </label>
+                    <div class="form-group">
+                        <input id="topic" name="Name" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">İptal</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary ms-1"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Oluştur</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
