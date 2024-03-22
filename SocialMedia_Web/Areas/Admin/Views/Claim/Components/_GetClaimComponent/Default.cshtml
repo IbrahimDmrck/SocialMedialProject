@@ -1,0 +1,48 @@
+﻿@model List<OperationClaim>
+
+<div class="modal modal-lg fade text-left" id="inlineForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Yetki Oluştur </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form action="/Admin/Claim/Add" method="post">
+                <div class="modal-body " style="height:400px;">
+                    <label for="claim">Yetki : </label>
+                    <div class="form-group">
+                        <select class="choices form-select" id="claim">
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+
+                            }
+
+                        </select>
+                    </div>
+                    <label for="userName">Kullanıcı Adı: </label>
+                    <div class="form-group">
+                        <input id="userName" name="Name" type="text" class="form-control">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">İptal</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary ms-1"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Oluştur</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

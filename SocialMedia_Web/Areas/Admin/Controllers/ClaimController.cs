@@ -28,7 +28,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
 
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
             }
-            return View("Veri gelmiyor");
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
@@ -43,6 +43,21 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Claim", new { area = "Admin" });
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/OperationClaims/getclaimbyusers?claimId=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ClaimDto>>(jsonResponse);
+
+                return View(apiDataResponse.Data);
             }
             return RedirectToAction("Index", "Claim", new { area = "Admin" });
         }

@@ -1,11 +1,11 @@
 ﻿using Core.DataAccess.EntityFramework;
+using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.Context;
-using Entities.Concrete;
 
 namespace DataAccess.Concrete.Entityframework
 {
-    public class EfTopicDal : EfEntityRepositoryBase<Topic, SocialMediaContext>, ITopicDal
+    public class EfUserOperationClaimDal : EfEntityRepositoryBase<UserOperationClaim, SocialMediaContext>, IUserOperationClaimDal
     {
     }
     
