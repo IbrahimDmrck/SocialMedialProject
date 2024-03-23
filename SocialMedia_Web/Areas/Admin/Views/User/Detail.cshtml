@@ -201,7 +201,7 @@
                 e.preventDefault();
 
                 var UserId = @Model.Id;
-                var Email = "@Model.Email";
+                var Email = "@ViewData["Email"]";
                 $.ajax({
                     type: "POST",
                     url: "/Admin/User/GetVerifyCode",

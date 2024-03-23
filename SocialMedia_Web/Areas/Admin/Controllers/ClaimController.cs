@@ -86,6 +86,28 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> UserClaimAdd(UserOperationClaim userOperationClaim)
+        {
+            var jsonData = JsonConvert.SerializeObject(userOperationClaim);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65525/api/UserOperationClaims/add", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<UserOperationClaim>>(responseContent);
+                var response = new
+                {
+                    Message = data.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
         [HttpPut]
         public async Task<IActionResult> ClaimUpdate(OperationClaim operationClaim)
         {
@@ -127,6 +149,30 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 return Json(response);
             }
             return RedirectToAction("Index", "Claim", new { area = "Admin" });
+        }
+
+        
+        [Authorize(Roles = "admin")]
+        [HttpDelete]
+        public async Task<IActionResult> UserClaimDelete(int userId,int claimId)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync($"http://localhost:65525/api/UserOperationClaims/delete?userId={userId}&claimId={claimId}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserOperationClaim>>(jsonResponse);
+
+                var response = new
+                {
+                    Message = apiDataResponse.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
+
         }
     }
 }

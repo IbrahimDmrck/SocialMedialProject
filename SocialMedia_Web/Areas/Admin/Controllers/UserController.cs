@@ -61,7 +61,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
-
+                ViewData["Email"] = HttpContext.Session.GetString("Email");
                 return  View(apiDataResponse.Data);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
