@@ -106,5 +106,27 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             }
             return RedirectToAction("Index", "Claim", new { area = "Admin" });
         }
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/OperationClaims/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ClaimDto>>(jsonResponse);
+
+                var response = new
+                {
+                    Message = apiDataResponse.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
+        }
     }
 }
