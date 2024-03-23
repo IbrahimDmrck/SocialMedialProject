@@ -19,9 +19,10 @@ namespace DataAccess.Concrete.Entityframework
                              join user in context.Users on userOperationClaim.UserId equals user.Id
                              select new ClaimDto
                              {
+                                 Id=userOperationClaim.Id,
                                  UserId=user.Id,
                                  UserName=user.FirstName + " " + user.LastName,
-                                 ClaimId=operationClaim.Id,
+                                 OperationClaimId = operationClaim.Id,
                                  ClaimName = operationClaim.Name
                              };
                 return filter == null

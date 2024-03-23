@@ -54,10 +54,55 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/OperationClaims/getclaimbyusers?claimId=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
+                ViewBag.ClaimId = id;
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ClaimDto>>(jsonResponse);
 
                 return View(apiDataResponse.Data);
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut]
+        public async Task<IActionResult> UserClaimUpdate(UserOperationClaim userOperationClaim)
+        {
+            var jsonData = JsonConvert.SerializeObject(userOperationClaim);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65525/api/UserOperationClaims/update", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<UserOperationClaim>>(responseContent);
+                var response = new
+                {
+                    Message = data.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Claim", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut]
+        public async Task<IActionResult> ClaimUpdate(OperationClaim operationClaim)
+        {
+            var jsonData = JsonConvert.SerializeObject(operationClaim);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65525/api/OperationClaims/update", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<UserOperationClaim>>(responseContent);
+                var response = new
+                {
+                    Message = data.Message
+                };
+                return Json(response);
             }
             return RedirectToAction("Index", "Claim", new { area = "Admin" });
         }

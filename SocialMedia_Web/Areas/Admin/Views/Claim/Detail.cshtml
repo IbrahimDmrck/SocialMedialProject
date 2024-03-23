@@ -30,10 +30,10 @@
                     {
                         <tr>
                             <td class="fw-bol">@{count += 1;} @count </td>
-                            <td>@item.UserName</td>
+                            <td data-id="@item.UserId" class="id">@item.UserName</td>
                             <td>@item.ClaimName</td>
                             <td class="d-flex justify-content-center">
-                                <button class="btn btn-outline-warning mx-2 update-btn" data-id="@item.ClaimId" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                                <button class="btn btn-outline-warning mx-2 update-btn"  data-uoc="@item.Id">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <a class="btn btn-outline-danger" href="#">
@@ -51,17 +51,69 @@
 
 @await Component.InvokeAsync("_GetClaimComponent")
 
-@section scripts{
+
+
+@section scripts {
     <script src="~/admin/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
     <script src="~/admin/assets/static/js/pages/form-element-select.js"></script>
 
     <script>
         $(document).ready(function () {
-            $(".update-btn").on("click", function () {
-                var ClaimId = $(this).data("id");
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".update-btn").on("click", function (e) {
+                e.preventDefault();
+                $("#inlineForm").modal("show");
+                var ClaimId = @ViewBag.ClaimId;
+                var UOC = $(this).data("uoc");
+                var UserId = $(this).closest("tr").find(".id").data("id");
+                var UserName = $(this).closest("tr").find(".id").text();
                 console.log(ClaimId);
+                console.log(UOC);
+                console.log(UserId);
+                $("input[name=Id]").val(UOC);
+                $("input[name=UserId]").val(UserId);
+                $("input[name=Name]").val(UserName);
+                $("select[name=claim]").val(ClaimId);
             });
+           
+
+            $("#userClaimUpdate").on("submit", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "PUT",
+                    url: "https://localhost:7110/Admin/Claim/UserClaimUpdate",
+                    data: {
+                        Id: $("input[name=Id]").val(),
+                        UserId: $("input[name=UserId]").val(),
+                        OperationClaimId: $("select[name=OperationClaimId]").val(),
+                    },
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            })
+
+
         })
+
+
     </script>
 }
 

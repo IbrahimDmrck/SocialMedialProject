@@ -9,8 +9,9 @@ namespace Entities.DTOs
 {
     public class ClaimDto:IDto
     {
+        public int Id { get; set; }
         public int UserId { get; set; }
-        public int ClaimId { get; set; }
+        public int OperationClaimId { get; set; }
         public string UserName { get; set; }
         public string ClaimName { get; set; }
     }

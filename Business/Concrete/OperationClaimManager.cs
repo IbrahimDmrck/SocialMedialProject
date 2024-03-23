@@ -44,7 +44,7 @@ namespace Business.Concrete
 
         public IDataResult<List<ClaimDto>> GetClaimByUsers(int claimId)
         {
-            return new SuccessDataResult<List<ClaimDto>>(_operationClaimDal.GetClaims(x=>x.ClaimId== claimId), Messages.ClaimsListed);
+            return new SuccessDataResult<List<ClaimDto>>(_operationClaimDal.GetClaims(x=>x.OperationClaimId== claimId), Messages.ClaimsListed);
         }
 
         public IDataResult<OperationClaim> GetEntityById(int id)

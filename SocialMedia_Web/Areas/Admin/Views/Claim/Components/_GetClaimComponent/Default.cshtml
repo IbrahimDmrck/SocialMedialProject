@@ -5,17 +5,19 @@
          role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel33">Yetki Oluştur </h4>
+                <h4 class="modal-title" id="myModalLabel33">Yetki Değiştir </h4>
                 <button type="button" class="close" data-bs-dismiss="modal"
                         aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form action="/Admin/Claim/Add" method="post">
-                <div class="modal-body " style="height:400px;">
+            <form id="userClaimUpdate">
+                <input  name="Id" value="" type="hidden" class="form-control">
+                <input  name="UserId" value="" type="hidden" class="form-control">
+                <div class="modal-body " style="height:250px;">
                     <label for="claim">Yetki : </label>
                     <div class="form-group">
-                        <select class="choices form-select" id="claim">
+                        <select class="choices form-select" name="OperationClaimId">
                             @foreach (var item in Model)
                             {
                                 <option value="@item.Id">@item.Name</option>
@@ -26,7 +28,7 @@
                     </div>
                     <label for="userName">Kullanıcı Adı: </label>
                     <div class="form-group">
-                        <input id="userName" name="Name" type="text" class="form-control">
+                        <input id="userName" name="Name" value="" type="text" class="form-control" readonly="true">
                     </div>
 
                 </div>
@@ -39,10 +41,11 @@
                     <button type="submit" class="btn btn-primary ms-1"
                             data-bs-dismiss="modal">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Oluştur</span>
+                        <span class="d-none d-sm-block">Güncelle</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+

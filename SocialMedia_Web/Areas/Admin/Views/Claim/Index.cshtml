@@ -27,13 +27,13 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td class="fw-bol">@item.Id</td>
-                            <td>@item.Name</td>
+                            <td class="fw-bol claimId">@item.Id</td>
+                            <td class="userName">@item.Name</td>
                             <td class="d-flex justify-content-center">
                                 <a class="btn btn-outline-success" href="/Admin/Claim/Detail/@item.Id">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
-                                <a class="btn btn-outline-warning mx-2" href="#">
+                                <a class="btn btn-outline-warning mx-2 update-btn" href="#">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <a class="btn btn-outline-danger" href="#">
@@ -50,6 +50,7 @@
     </div>
 </div>
 
+<!--Add Claim Modal-->
 <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
@@ -85,3 +86,88 @@
         </div>
     </div>
 </div>
+<!--Update Claim Modal-->
+<div class="modal fade text-left" id="updateClaim" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Yetki Oluştur </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form id="claimUpdate">
+                <input name="Id" type="hidden" >
+                <div class="modal-body">
+                    <label for="topic">Yetki Adı: </label>
+                    <div class="form-group">
+                        <input  name="Name" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">İptal</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary ms-1"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Oluştur</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".update-btn").on("click", function (e) {
+                e.preventDefault();
+                $("#updateClaim").modal("show");
+                var Id = $(this).closest("tr").find(".claimId").text();
+                var UserName = $(this).closest("tr").find(".userName").text();
+                console.log(Id);
+                console.log(UserName);
+                $("input[name=Id]").val(Id);
+                $("input[name=Name]").val(UserName);
+            });
+
+            $("#claimUpdate").on("submit", function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    type: "PUT",
+                    url: "https://localhost:7110/Admin/Claim/ClaimUpdate",
+                    data: {
+                        Id: $("input[name=Id]").val(),
+                        Name: $(this).find("input[name=Name]").val()
+                    },
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            });
+        })
+    </script>
+}
