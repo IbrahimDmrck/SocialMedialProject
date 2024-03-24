@@ -22,7 +22,7 @@ namespace SocialMedia_Web.Controllers
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["UserId"] = userId;
             var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
+            var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

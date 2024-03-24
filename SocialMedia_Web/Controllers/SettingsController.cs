@@ -27,7 +27,7 @@ namespace SocialMedia_Web.Controllers
             var userId = HttpContext.Session.GetInt32("UserId");
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Users/getbyid?id=" + userId);
+            var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Users/getbyid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -46,7 +46,7 @@ namespace SocialMedia_Web.Controllers
             var jsonUserDto = JsonConvert.SerializeObject(userDto);
             var content = new StringContent(jsonUserDto, Encoding.UTF8, "application/json");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/Users/update", content);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65526/api/Users/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
@@ -86,7 +86,7 @@ namespace SocialMedia_Web.Controllers
                     var token = HttpContext.Session.GetString("Token");
                     var httpClient = _httpClientFactory.CreateClient();
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/UserImages/update", formContent);
+                    var responseMessage = await httpClient.PostAsync("http://localhost:65526/api/UserImages/update", formContent);
 
                     var successUpdatedUserImage = await GetUpdateUserImageResponseMessage(responseMessage);
                     TempData["Message"] = successUpdatedUserImage.Message;
@@ -115,7 +115,7 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var jsonInfo = JsonConvert.SerializeObject(verificationCode);
             var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
-            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/VerificationCodes/sendcode", content);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65526/api/VerificationCodes/sendcode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var response = new 
@@ -135,7 +135,7 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var jsonInfo = JsonConvert.SerializeObject(verificationCode);
             var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
-            var responseMessage = await httpClient.PostAsync($"http://localhost:65525/api/VerificationCodes/checkverifycode", content);
+            var responseMessage = await httpClient.PostAsync($"http://localhost:65526/api/VerificationCodes/checkverifycode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -176,7 +176,7 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(changePassword);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await httpClient.PostAsync($"http://localhost:65525/api/Auth/changepassword", content);
+            var responseMessage = await httpClient.PostAsync($"http://localhost:65526/api/Auth/changepassword", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

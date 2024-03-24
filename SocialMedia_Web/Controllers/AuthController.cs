@@ -32,7 +32,7 @@ namespace SocialMedia_Web.Controllers
             var jsonLoginDto = JsonConvert.SerializeObject(loginDto);
             var content = new StringContent(jsonLoginDto, Encoding.UTF8, "application/json");
 
-            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/Auth/login", content);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65526/api/Auth/login", content);
 
             if (responseMessage.IsSuccessStatusCode)
             {

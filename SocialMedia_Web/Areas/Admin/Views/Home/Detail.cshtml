@@ -35,11 +35,11 @@
                             <div class="col-1 text-center" style="border-right: 2px solid #ced4da">
                                 @if (item.Image == "")
                                 {
-                                    <img class="img-fluid mb-2" src="http://localhost:65525/images/default.jpg" alt="@item.UserName" title="@item.UserName" />
+                                    <img class="img-fluid mb-2" src="http://localhost:65526/images/default.jpg" alt="@item.UserName" title="@item.UserName" />
                                 }
                                 else
                                 {
-                                    <img class="img-fluid mb-2" src="http://localhost:65525/@item.Image" alt="@item.UserName" title="@item.UserName">
+                                    <img class="img-fluid mb-2" src="http://localhost:65526/@item.Image" alt="@item.UserName" title="@item.UserName">
                                 }
                                 <small style="font-size:0.7em;">@item.CommentDate.ToShortDateString()</small>
                                 <small style="font-size:0.7em;">@item.CommentDate.ToShortTimeString()</small>
@@ -48,16 +48,19 @@
                             <div class="col-11">
 
                                 <ul class="list-group">
+                                    @* <li class="list-group-item">@item.UserName</li> *@
+                                        <h6 id="userId" data-id="@item.UserId">@item.UserName</h6>
+                                        <h6 id="articleId" data-id="@item.ArticleId" hidden></h6>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span>@item.CommentText</span>
+                                        <span id="commentText">@item.CommentText</span>
                                         <ul class="list-group">
                                             <li class="list-group-item">
-                                                <button class="btn btn-sm btn-success ms-2">
+                                                <button class="btn btn-sm btn-success ms-2 update-btn" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#inlineForm">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                             </li>
                                             <li class="list-group-item">
-                                                <button class="btn btn-sm btn-danger ms-2">
+                                                <button class="btn btn-sm btn-danger ms-2 delete-button" data-id="@item.Id">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </li>
@@ -75,3 +78,126 @@
     </div>
 </div>
 
+<div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Yorum GÜncelle </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form id="updateComment">
+                <input name="Id" type="hidden" value="">
+                <input name="ArticleId" type="hidden" value="">
+                <input name="UserId" type="hidden" value="">
+                <input name="CommentDate" type="hidden" value="@DateTime.Now">
+                <div class="modal-body">
+                    <label for="topic">Yorum : </label>
+                    <div class="form-group">
+                        <input id="comment" name="CommentText" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">İptal</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary ms-1"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Güncelle</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(function () {
+
+            function Toast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#4fbe87",
+                }).showToast();
+            }
+
+            $(".update-btn").on("click", function (e) {
+                e.preventDefault();
+                // var id = $(".update-btn").data("id");
+                // var userId = $("#userId").data("id");
+                // var articleId = $("#articleId").data("id");
+                var commentText = $("#commentText").text();
+                // $("input[name=Id]").val(id);
+                // $("input[name=ArticleId]").val(articleId);
+                // $("input[name=UserId]").val(userId);
+                $("input[name=CommentText]").val(commentText);
+                console.log("yorum id = >" + id);
+                console.log(" kullanıcı id => " + userId);
+                console.log("Paylaşım id => " + articleId);
+                console.log("yorum text => " + commentText);
+            });
+            
+            $("#updateComment").on("submit", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "PUT",
+                    url: "https://localhost:7110/Admin/Home/UpdateComment",
+                    data: {
+                        Id: $(".update-btn").data("id"),
+                        UserId: $("#userId").data("id"),
+                        ArticleId: $("#articleId").data("id"),
+                        CommentText: $("input[name=CommentText]").val(),
+                        CommentDate: $("input[name=CommentDate]").val(),
+                        
+                    },
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+
+            });
+
+            $(".delete-button").on("click", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "DELETE",
+                    url: "https://localhost:7110/Admin/Home/CommentDelete/" + id,
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ajax Error:", error);
+                    },
+                });
+            });
+
+        });
+    </script>
+
+}

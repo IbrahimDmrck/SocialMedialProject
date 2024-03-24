@@ -20,7 +20,7 @@ namespace SocialMedia_Web.Controllers
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getarticlewithdetails");
+            var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Articles/getarticlewithdetails");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

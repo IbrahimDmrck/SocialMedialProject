@@ -78,6 +78,7 @@ namespace Business.Constants
         public static string UserClaimDelete="Yetki Kaldırıldı";
         public static string UserClaimAdded="Yetki Eklendi";
         public static string UsersClaimsListed="Kullanıcı yetkileri listelendi";
+        public static string CommentNotFound="Silinecek yourm bulunamadı";
     }
 }
     

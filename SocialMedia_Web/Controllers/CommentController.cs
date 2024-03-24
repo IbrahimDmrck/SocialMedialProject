@@ -25,7 +25,7 @@ namespace SocialMedia_Web.Controllers
             var jsonComment = JsonConvert.SerializeObject(comment);
             var content = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/Comments/add", content);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65526/api/Comments/add", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var successComment = await GetCommentResponseMessage(responseMessage);
@@ -49,7 +49,7 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/Comments/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65526/api/Comments/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 TempData["Message"] = "Yorum Silindi";
@@ -66,7 +66,7 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
-            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
+            var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

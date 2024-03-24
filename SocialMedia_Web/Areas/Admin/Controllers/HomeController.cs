@@ -23,7 +23,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getarticlewithdetails");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Articles/getarticlewithdetails");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -38,7 +38,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getarticlewithdetailsbyid?id=" + id);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Articles/getarticlewithdetailsbyid?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -54,13 +54,13 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         public async Task<IActionResult> GetUpdateArticle(int id)
         {
             
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getbyid?id=" + id);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Articles/getbyid?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
 
-                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Topics/getall");
+                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Topics/getall");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();
@@ -86,7 +86,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65525/api/Articles/update", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65526/api/Articles/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -107,7 +107,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/Articles/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65526/api/Articles/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -117,6 +117,50 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 {
                     Message = apiDataResponse.Message,
                     Url = "/Admin/Home/Index"
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete]
+        public async Task<IActionResult> CommentDelete(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65526/api/Comments/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<Comment>>(jsonResponse);
+
+                var response = new
+                {
+                    Message = apiDataResponse.Message
+                };
+                return Json(response);
+            }
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateComment(CommentDetail commentDetail)
+        {
+            var jsonComment = JsonConvert.SerializeObject(commentDetail);
+            var content = new StringContent(jsonComment, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65526/api/Comments/update", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<CommentDetail>>(responseContent);
+                var response = new
+                {
+                    Message = data.Message
                 };
                 return Json(response);
             }

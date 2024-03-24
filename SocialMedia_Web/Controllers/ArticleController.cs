@@ -28,7 +28,7 @@ namespace SocialMedia_Web.Controllers
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync("http://localhost:65525/api/Articles/add", content);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65526/api/Articles/add", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var sharedResponse = await GetSharedResponse(responseMessage);
@@ -60,7 +60,7 @@ namespace SocialMedia_Web.Controllers
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PutAsync("http://localhost:65525/api/Articles/update", content);
+            var responseMessage = await httpClient.PutAsync("http://localhost:65526/api/Articles/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var sharedResponse = await GetSharedResponse(responseMessage);
@@ -78,7 +78,7 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65525/api/Articles/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65526/api/Articles/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 TempData["Message"] = "Paylaşım Silindi";
@@ -93,13 +93,13 @@ namespace SocialMedia_Web.Controllers
         public async Task<IActionResult> GetUpdateArticle(int id)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65525/api/Articles/getbyid?id=" + id);
+            var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Articles/getbyid?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
 
-                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Topics/getall");
+                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Topics/getall");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();

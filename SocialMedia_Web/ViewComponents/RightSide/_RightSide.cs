@@ -39,13 +39,13 @@ namespace SocialMedia_Web.ViewComponents.RightSide
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Topics/getall");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Topics/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse);
 
-                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/Articles/getarticlewithdetails");
+                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Articles/getarticlewithdetails");
                 if (responseMessage1.IsSuccessStatusCode)
                 {
                     var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();

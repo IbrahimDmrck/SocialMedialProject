@@ -17,7 +17,7 @@ namespace SocialMedia_Web.Areas.Admin.ViewComponents.GetClaimComponent
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65525/api/OperationClaims/getall");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/OperationClaims/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

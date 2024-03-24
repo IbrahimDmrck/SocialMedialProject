@@ -17,23 +17,23 @@
                         <div class="row">
                             <div class="col-12 d-flex justify-content-center">
                                 <div class="text-center">
-                                    @* <img src="http://localhost:65525/@Model.ImagePath" alt="" srcset=""> *@
+                                    @* <img src="http://localhost:65526/@Model.ImagePath" alt="" srcset=""> *@
 
                                     @if (Model.ImagePath == "" && Model.Gender == "E")
                                     {
-                                        <img src="http://localhost:65525/images/default.jpg" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
+                                        <img src="http://localhost:65526/images/default.jpg" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
                                     }
                                     else if (Model.ImagePath == "" && Model.Gender == "K")
                                     {
-                                        <img src="http://localhost:65525/images/defaultwoman.png" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
+                                        <img src="http://localhost:65526/images/defaultwoman.png" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
                                     }
                                     else if (Model.ImagePath == "" && Model.Gender == "B")
                                     {
-                                        <img src="http://localhost:65525/images/defaultneuter.png" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
+                                        <img src="http://localhost:65526/images/defaultneuter.png" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100" />
                                     }
                                     else
                                     {
-                                        <img src="http://localhost:65525/@Model.ImagePath" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100">
+                                        <img src="http://localhost:65526/@Model.ImagePath" alt="@Model.FirstName" title="@Model.FirstName" width="100" height="100">
                                     }
 
                                     <button type="button" class="btn btn-warning fw-bold mt-3 d-block" data-bs-toggle="modal" data-bs-target="#exampleModal">Fotoğrafı Güncelle</button>
