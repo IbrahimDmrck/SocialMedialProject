@@ -11,12 +11,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
-                options.LoginPath = "/giris-yap";
-                options.AccessDeniedPath = "/giris-yap";
-            });
+////builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+////            .AddCookie(options =>
+////            {
+////                options.LoginPath = "/giris-yap";
+////                options.AccessDeniedPath = "/giris-yap";
+////            });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
+{
+    opt.LoginPath = "/giris-yap";
+    opt.LogoutPath = "/Auth/LogOut";
+    opt.AccessDeniedPath = "/giris-yap";
+    opt.Cookie.HttpOnly = true;
+    opt.Cookie.SameSite = SameSiteMode.Strict;
+    opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    opt.Cookie.Name = "SosyalMedyaProjesi";
+});
 
 builder.Services.AddSession();
 var app = builder.Build();

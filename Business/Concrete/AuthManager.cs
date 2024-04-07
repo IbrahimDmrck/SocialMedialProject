@@ -108,5 +108,24 @@ namespace Business.Concrete
 
             return new ErrorResult(loginResult.Message);
         }
+
+        public async Task<IResult> AdminChangePassword(string email, string newPassword)
+        {
+            var user = _userService.GetUserByMail(email);
+            
+            if (user !=null)
+            {
+                var data = user.Result.Data;
+                
+                byte[] passwordHash, passwordSalt;
+                HashingHelper.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+                data.PasswordHash = passwordHash;
+                data.PasswordSalt = passwordSalt;
+                _userService.Update(data);
+                return new SuccessResult(Messages.PasswordChanged);
+            }
+
+            return new ErrorResult(Messages.UserNotFound);
+        }
     }
 }

@@ -18,5 +18,6 @@ namespace Business.Abstract
         Task<IResult> UserExists(string email);
         IDataResult<AccessToken> CreateAccessToken(User user);
         Task<IResult> ChangePassword(ChangePasswordModel updatedUser);
+        Task<IResult> AdminChangePassword(string email,string newPassword);
     }
 }

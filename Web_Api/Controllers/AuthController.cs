@@ -67,5 +67,17 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
+        [HttpPut("adminchangepassword")]
+        public async Task<ActionResult> AdminChangePassword(string email,string newPassword)
+        {
+            var result = await _authService.AdminChangePassword(email, newPassword);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
     }
 }
