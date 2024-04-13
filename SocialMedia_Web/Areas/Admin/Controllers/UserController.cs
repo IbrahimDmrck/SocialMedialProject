@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NuGet.Common;
 using SocialMedia_Web.Models;
 using System.Net.Http.Headers;
 using System.Text;
+using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SocialMedia_Web.Areas.Admin.Controllers
@@ -37,7 +40,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseMessage = await _httpClientFactory.CreateClient().DeleteAsync("http://localhost:65526/api/Users/delete?id="+id);
+            var responseMessage = await _httpClientFactory.CreateClient().DeleteAsync("http://localhost:65526/api/Users/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -62,7 +65,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
                 ViewData["Email"] = HttpContext.Session.GetString("Email");
-                return  View(apiDataResponse.Data);
+                return View(apiDataResponse.Data);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
@@ -131,7 +134,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                     TempData["Message"] = successUpdatedUserImage.Message;
                     TempData["Success"] = successUpdatedUserImage.Success;
 
-                    return RedirectToAction("Detail", "User", new { area = "Admin",id=userImage.UserId });
+                    return RedirectToAction("Detail", "User", new { area = "Admin", id = userImage.UserId });
                 }
             }
 
@@ -251,6 +254,55 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 };
                 return Json(response);
             }
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> ExportUsers()
+        {
+            using (var httpClient = _httpClientFactory.CreateClient())
+            {
+                var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Users/getalldto");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                    var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<UserDto>>(jsonResponse);
+
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("kayitli_kullanicilar");
+                        worksheet.Cell(1, 1).Value = "ID";
+                        worksheet.Cell(1, 2).Value = "Ad";
+                        worksheet.Cell(1, 3).Value = "Soyad";
+                        worksheet.Cell(1, 4).Value = "Email";
+                        worksheet.Cell(1, 5).Value = "TelNo";
+                        worksheet.Cell(1, 6).Value = "Cinsiyet";
+                        worksheet.Cell(1, 7).Value = "fotoğraf";
+
+                        int row = 2;
+                        foreach (var userDto in apiDataResponse.Data)
+                        {
+                            worksheet.Cell(row, 1).Value = userDto.Id;
+                            worksheet.Cell(row, 2).Value = userDto.FirstName;
+                            worksheet.Cell(row, 3).Value = userDto.LastName;
+                            worksheet.Cell(row, 4).Value = userDto.Email;
+                            worksheet.Cell(row, 5).Value = userDto.PhoneNumber;
+                            worksheet.Cell(row, 6).Value = userDto.Gender;
+                            worksheet.Cell(row, 7).Value = $"http://localhost:65526/{userDto.ImagePath}";
+                            row++;
+                        }
+
+                        using (var stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            var content = stream.ToArray();
+                            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "kayitli_kullanicilar.xlsx");
+                        }
+                    }
+                }
+            }
+
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
     }
 }
