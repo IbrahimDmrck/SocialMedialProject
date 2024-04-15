@@ -10,7 +10,7 @@ namespace Business.Constants
 {
     public class Messages
     {
-        public static string UserRegistered="Kayıt başarılı bir şekilde yapıldı";
+        public static string UserRegistered="Kayıt başarılı bir şekilde yapıldı. Lütfen Bekleyin, Yönlendiriliyorsunuz";
         public static string UserNotFound="Girilen bilgilere ait bir kullanıcı bulunamadı";
         public static string PasswordError="Yanlış şifre girdiniz, lütfen şifrenizi kontrol edip tekrar deneyin";
         public static string SuccessfulLogin="Giriş Başarılı , Hoşgeldiniz";

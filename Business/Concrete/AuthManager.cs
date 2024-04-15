@@ -5,12 +5,15 @@ using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
+using Core.Utilities.Business;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.JWT;
+using DataAccess.Abstract;
 using Entities.DTOs;
 using Entities.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +24,19 @@ namespace Business.Concrete
 {
     public class AuthManager : IAuthService
     {
-        private IUserService _userService;
-        private ITokenHelper _tokenHelper;
+        private readonly IUserService _userService;
+        private readonly ITokenHelper _tokenHelper;
+        private readonly IUserDal _userDal;
+        private readonly IUserOperationClaimDal _userOperationClaimDal;
+        private readonly IUserImageDal _userImageDal;
 
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, IUserDal userDal, IUserOperationClaimDal userOperationClaimDal, IUserImageDal userImageDal)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _userDal = userDal;
+            _userOperationClaimDal = userOperationClaimDal;
+            _userImageDal = userImageDal;
         }
 
         // [ValidationAspect(typeof(UserForRegisterDtoValidator))]
@@ -48,6 +57,32 @@ namespace Business.Concrete
                 Status = true
             };
             _userService.Add(user);
+
+            var result = _userDal.Get(x=>x.Email==user.Email);
+            var resultClaim = _userDal.GetClaims(user);
+            var resultImage = _userImageDal.Get(x=>x.UserId==result.Id);
+            if (result != null && resultClaim  != null && resultImage !=null)
+            {
+                return new ErrorDataResult<User>(Messages.UserNotFound);
+            }
+
+            var userOperationClaim = new UserOperationClaim
+            {
+                UserId = result.Id,
+                OperationClaimId = 2
+            };
+
+            UserImage userImage = new UserImage
+            {
+                ImagePath = "images/default.jpg",
+                UserId = result.Id,
+                Date = DateTime.Now
+            };
+
+            _userImageDal.Add(userImage);
+            _userOperationClaimDal.Add(userOperationClaim);
+
+
             return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
 
@@ -127,5 +162,7 @@ namespace Business.Concrete
 
             return new ErrorResult(Messages.UserNotFound);
         }
+
+        //BUSSINESS RULES   
     }
 }

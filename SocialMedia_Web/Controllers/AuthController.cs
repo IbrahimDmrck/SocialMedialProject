@@ -39,7 +39,7 @@ namespace SocialMedia_Web.Controllers
                 var userForLogin = await GetUserForLogin(responseMessage);
 
                 TempData["Baslik"] = "Giriş Başarılı";
-                TempData["Message"] = " Merhaba "+userForLogin.Message+", hoş geldin.";
+                TempData["Message"] = " Merhaba " + userForLogin.Message + ", hoş geldin.";
                 TempData["Success"] = userForLogin.Success;
 
                 if (userForLogin.Data != null)
@@ -86,10 +86,30 @@ namespace SocialMedia_Web.Controllers
         }
 
         [HttpGet("aramiza-katil")]
-        public IActionResult Register() => View();
+        public IActionResult Register()
+        {
+            return View();
+        }
 
         [HttpPost]
-        public IActionResult Register(UserForRegisterDto registerDto) => View();
+        public async Task<IActionResult> Register(UserForRegisterDto registerDto)
+        {
+            var jsonRegisterDto = JsonConvert.SerializeObject(registerDto);
+            var content = new StringContent(jsonRegisterDto, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/Auth/register", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var result= JsonConvert.DeserializeObject<ApiDataResponse<UserForRegisterDto>>(responseContent);
+                var response = new
+                {
+                    Message = result.Message,
+                    Url= "/giris-yap"
+                };
+                return Json(response);
+            }
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> LogOut()
