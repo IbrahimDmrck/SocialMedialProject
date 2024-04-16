@@ -99,17 +99,25 @@ namespace SocialMedia_Web.Controllers
             var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/Auth/register", content);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var responseContent = await responseMessage.Content.ReadAsStringAsync();
-                var result= JsonConvert.DeserializeObject<ApiDataResponse<UserForRegisterDto>>(responseContent);
                 var response = new
                 {
-                    Message = result.Message,
-                    Url= "/giris-yap"
+                    Success = true,
+                    Message = "Başarılı bir şekilde kayıt oldunuz. Giriş sayfasına yönlendiriliyorsunuz",
+                    Url = "/giris-yap"
                 };
                 return Json(response);
             }
-            return View();
+            else
+            {
+                var response = new
+                {
+                    Success = false,
+                    Message = "Bilgilerinizi kontrol edip tekrar deneyin"
+                };
+                return Json(response);
+            }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> LogOut()

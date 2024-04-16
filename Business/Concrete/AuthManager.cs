@@ -39,8 +39,8 @@ namespace Business.Concrete
             _userImageDal = userImageDal;
         }
 
-        // [ValidationAspect(typeof(UserForRegisterDtoValidator))]
-        //[LogAspect(typeof(FileLogger))]
+        [LogAspect(typeof(FileLogger))]
+        [ValidationAspect(typeof(UserForRegisterDtoValidator))]
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;
@@ -52,38 +52,19 @@ namespace Business.Concrete
                 LastName = userForRegisterDto.LastName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Gender=userForRegisterDto.Gender,
-                PhoneNumber=userForRegisterDto.PhoneNumber,
+                Gender = userForRegisterDto.Gender,
+                PhoneNumber = userForRegisterDto.PhoneNumber,
                 Status = true
             };
             _userService.Add(user);
-
-            var result = _userDal.Get(x=>x.Email==user.Email);
-            var resultClaim = _userDal.GetClaims(user);
-            var resultImage = _userImageDal.Get(x=>x.UserId==result.Id);
-            if (result != null && resultClaim  != null && resultImage !=null)
+            var registeredUser = _userDal.Get(x => x.Email == user.Email);
+            var rulesResult = BusinessRules.Run(CheckIfEmailExist(user.Email), CheckIfUserClaimExist(registeredUser), CheckIfUserImageExist(registeredUser.Id));
+            if (rulesResult != null)
             {
-                return new ErrorDataResult<User>(Messages.UserNotFound);
+                return new SuccessDataResult<User>(rulesResult.Message);
             }
 
-            var userOperationClaim = new UserOperationClaim
-            {
-                UserId = result.Id,
-                OperationClaimId = 2
-            };
-
-            UserImage userImage = new UserImage
-            {
-                ImagePath = "images/default.jpg",
-                UserId = result.Id,
-                Date = DateTime.Now
-            };
-
-            _userImageDal.Add(userImage);
-            _userOperationClaimDal.Add(userOperationClaim);
-
-
-            return new SuccessDataResult<User>(user, Messages.UserRegistered);
+            return new SuccessDataResult<User>(registeredUser, Messages.UserRegistered);
         }
 
         [ValidationAspect(typeof(UserForLoginDtoValidator))]
@@ -104,7 +85,7 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(userToCheck.Data, Messages.SuccessfulLogin);
         }
         //
-        public async Task <IResult> UserExists(string email)
+        public async Task<IResult> UserExists(string email)
         {
             var check = await _userService.GetUserByMail(email);
             if (check.Data != null)
@@ -122,14 +103,14 @@ namespace Business.Concrete
         }
 
         //  [ValidationAspect(typeof(ChangePasswordValidator))]
-        public async Task< IResult> ChangePassword(ChangePasswordModel updatedUser)
+        public async Task<IResult> ChangePassword(ChangePasswordModel updatedUser)
         {
             UserForLoginDto checkedUser = new UserForLoginDto
             {
                 Email = updatedUser.Email,
                 Password = updatedUser.OldPassword
             };
-            var loginResult =await Login(checkedUser);
+            var loginResult = await Login(checkedUser);
             if (loginResult.Success)
             {
                 var user = loginResult.Data;
@@ -147,11 +128,11 @@ namespace Business.Concrete
         public async Task<IResult> AdminChangePassword(string email, string newPassword)
         {
             var user = _userService.GetUserByMail(email);
-            
-            if (user !=null)
+
+            if (user != null)
             {
                 var data = user.Result.Data;
-                
+
                 byte[] passwordHash, passwordSalt;
                 HashingHelper.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
                 data.PasswordHash = passwordHash;
@@ -163,6 +144,56 @@ namespace Business.Concrete
             return new ErrorResult(Messages.UserNotFound);
         }
 
-        //BUSSINESS RULES   
+        //Business Rules
+
+        private IResult CheckIfEmailExist(string userEmail)
+        {
+            var result = BaseCheckIfEmailExist(userEmail);
+            if (result)
+            {
+                return new SuccessResult();
+            }
+            return new ErrorResult(Messages.UserNotFound);
+        }
+        private IResult CheckIfUserClaimExist(User user)
+        {
+            var result = _userDal.GetClaims(user);
+            if (result.Count() == 0)
+            {
+                var userOperationClaim = new UserOperationClaim
+                {
+                    UserId = user.Id,
+                    OperationClaimId = 2
+                };
+
+                _userOperationClaimDal.Add(userOperationClaim);
+                return new SuccessResult();
+            }
+            return new ErrorResult(Messages.UserAlreadyExists);
+        }
+
+        private IResult CheckIfUserImageExist(int userId)
+        {
+            var getUserImage = _userImageDal.Get(x => x.UserId == userId);
+            if (getUserImage == null)
+            {
+                UserImage userImage = new UserImage
+                {
+                    ImagePath = "images/default.jpg",
+                    UserId = userId,
+                    Date = DateTime.Now
+                };
+                _userImageDal.Add(userImage);
+                return new SuccessResult();
+            }
+
+            return new ErrorResult(Messages.UserImageIdExist);
+
+        }
+
+        private bool BaseCheckIfEmailExist(string userEmail)
+        {
+            return _userDal.GetAll(u => u.Email == userEmail).Any();
+        }
     }
 }

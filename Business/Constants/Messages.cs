@@ -56,6 +56,7 @@ namespace Business.Constants
         public static string ErrorDeletingImage = "Resim silinirken hata olustu";
         public static string UserImageLimitExceeded = "Bu kullanıcıya daha fazla resim eklenemez";
         public static string UserImageIdNotExist = "Kullanıcı resmi mevcut degil";
+        public static string UserImageIdExist = "Kullanıcı resmi zaten mevcut";
 
         public static string GetDefaultImage = "Kullanıcının bir resmi olmadigi icin varsayilan resim getirildi";
         public static string NoPictureOfTheUser = "Kullanıcının hic resmi yok";
