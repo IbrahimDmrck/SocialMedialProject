@@ -8,10 +8,12 @@ using NuGet.Common;
 using SocialMedia_Web.Models;
 using SocialMedia_Web.Utilities.Helpers;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Web;
 
 namespace SocialMedia_Web.Controllers
 {
@@ -32,7 +34,7 @@ namespace SocialMedia_Web.Controllers
         {
             var jsonLoginDto = JsonConvert.SerializeObject(loginDto);
             var content = new StringContent(jsonLoginDto, Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/Auth/login", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/Auth/login", content);
 
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -96,7 +98,7 @@ namespace SocialMedia_Web.Controllers
         {
             var jsonRegisterDto = JsonConvert.SerializeObject(registerDto);
             var content = new StringContent(jsonRegisterDto, Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/Auth/register", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/Auth/register", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var response = new
@@ -116,6 +118,78 @@ namespace SocialMedia_Web.Controllers
                 };
                 return Json(response);
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ResetPassword resetPassword)
+        {
+            var jsonEmail= JsonConvert.SerializeObject(resetPassword);
+            var contentEmail = new StringContent(jsonEmail, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/VerificationCodes/sendcodeforpasswordreset", contentEmail);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var response = new
+                {
+                    Success = true,
+                    Message = "E-posta adresinize bir doğrulama kodu gönderildi",
+                    Url= "/Auth/CheckCode"
+                };
+                TempData["UserEmail"]=resetPassword.Email;
+                return Json(response);
+            }
+            else
+            {
+                var response = new
+                {
+                    Success = false,
+                    Message = "Bilgilerinizi kontrol edip tekrar deneyin"
+                };
+                return Json(response);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CheckCode()
+        {
+            ViewData["Email"] = TempData["UserEmail"];
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckCode(ResetPassword resetPassword)
+        {
+            var jsonInfo = JsonConvert.SerializeObject(resetPassword);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync($"http://localhost:65527/api/VerificationCodes/checkcodeforpasswordreset", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<VerificationCode>>(jsonResponse);
+                TempData["UserEmail"] = resetPassword.Email;
+                var response = new
+                {
+                    Success = apiDataResponse.Success,
+                    Message = apiDataResponse.Message,
+                    Url = "/Auth/ResetPassword"
+                };
+                return Json(response);
+
+            }
+            else
+            {
+                var response = new
+                {
+                    Message = "Kod doğrulanamadı ! . Lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            ViewData["Email"] = TempData["UserInfo"];
+            return View();
         }
 
 

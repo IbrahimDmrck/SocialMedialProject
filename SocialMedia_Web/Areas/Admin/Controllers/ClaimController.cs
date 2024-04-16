@@ -20,7 +20,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/OperationClaims/getall");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/OperationClaims/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -39,7 +39,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonClaim, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/OperationClaims/add", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/OperationClaims/add", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Claim", new { area = "Admin" });
@@ -51,7 +51,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/OperationClaims/getclaimbyusers?claimId=" + id);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/OperationClaims/getclaimbyusers?claimId=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 ViewBag.ClaimId = id;
@@ -71,7 +71,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65526/api/UserOperationClaims/update", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65527/api/UserOperationClaims/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -93,7 +93,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/UserOperationClaims/add", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/UserOperationClaims/add", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -115,7 +115,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65526/api/OperationClaims/update", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65527/api/OperationClaims/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -136,7 +136,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65526/api/OperationClaims/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/OperationClaims/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -159,7 +159,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync($"http://localhost:65526/api/UserOperationClaims/delete?userId={userId}&claimId={claimId}");
+            var responseMessage = await httpClient.DeleteAsync($"http://localhost:65527/api/UserOperationClaims/delete?userId={userId}&claimId={claimId}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

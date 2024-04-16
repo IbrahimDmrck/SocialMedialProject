@@ -117,12 +117,12 @@ namespace Business.Concrete
 
             return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
         }
-
+        [LogAspect(typeof(FileLogger))]
         public async Task <IDataResult<User>> GetUserByMail(string email)
         {
             return  new SuccessDataResult<User>(_userDal.Get(u => u.Email == email));
         }
-
+        [LogAspect(typeof(FileLogger))]
         public IDataResult<UserDto> GetUserDtoByMail(string email)
         {
             return new SuccessDataResult<UserDto>(_userDal.GetUsersDtos(u => u.Email == email).SingleOrDefault(), message: Messages.UserListed);

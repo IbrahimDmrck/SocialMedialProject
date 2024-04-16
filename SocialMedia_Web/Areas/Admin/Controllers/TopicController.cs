@@ -22,7 +22,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Topics/getall");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -39,7 +39,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65526/api/Topics/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Topics/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -60,7 +60,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         public async Task<IActionResult> GetUpdateTopic(int id)
         {
 
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Topics/getbyid?id="+id);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getbyid?id="+id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse1 = await responseMessage.Content.ReadAsStringAsync();
@@ -80,7 +80,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonTopic, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65526/api/Topics/update", content);
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65527/api/Topics/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -102,7 +102,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonTopic, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65526/api/Topics/add",content);
+            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/Topics/add",content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Topic", new { area = "Admin" });

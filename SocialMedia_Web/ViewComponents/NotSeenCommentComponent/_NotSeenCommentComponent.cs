@@ -24,7 +24,7 @@ namespace SocialMedia_Web.ViewComponents.NotSeenCommentComponent
             var httpClient = _httpClientFactory.CreateClient();
             int userId = _httpContextAccessor.HttpContext.Session.GetInt32("UserId") ?? 0;
 
-            var responseMessage = await httpClient.GetAsync("http://localhost:65526/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
+            var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

@@ -16,6 +16,7 @@ using Core.Entities.Concrete;
 using Core.Utilities.Business;
 using System.Diagnostics;
 using Entities.DTOs;
+using Entities.Models;
 
 namespace Business.Concrete
 {
@@ -52,6 +53,45 @@ namespace Business.Concrete
             return new SuccessResult(Messages.SendVerifyCode);
         }
 
+        public IResult SendCodeForPasswordReset(ResetPassword resetPassword)
+        {
+            string randomCode = GenerateRandomCode(12);
+            var rulesResult = BusinessRules.Run(CheckIfUserExist(resetPassword.Email),CheckIfEmailAvailable(resetPassword.Email), SendEmail(resetPassword.Email, randomCode));
+            if (rulesResult != null)
+            {
+                return new ErrorResult(rulesResult.Message);
+            }
+
+            var user = _userDal.Get(x=>x.Email==resetPassword.Email);
+
+            var verifyCode = new VerificationCode
+            {
+                UserId = user.Id,
+                Code = randomCode,
+                CreationTime = DateTime.Now
+            };
+
+            _verificationCodeDal.Add(verifyCode);
+            Task.Run(() => DeleteExpiredCodes());
+            return new SuccessResult(Messages.SendVerifyCode);
+        }
+
+        public IResult CheckCodeForPasswordReset(ResetPassword resetPassword)
+        {
+            var rulesResult = BusinessRules.Run(CheckIfUserExist(resetPassword.Email), CheckIfEmailAvailable(resetPassword.Email));
+            if (rulesResult != null)
+            {
+                return new ErrorResult(rulesResult.Message);
+            }
+            var user = _userDal.Get(x => x.Email == resetPassword.Email);
+            var checkCode = _verificationCodeDal.Get(x => x.UserId == user.Id && x.Code == resetPassword.Code);
+
+            if (checkCode == null)
+            {
+                return new ErrorResult(Messages.CodeNotFound);
+            }
+            return new SuccessResult(Messages.VerificationSuccessfull);
+        }
 
         public IResult CheckVerifyCode(VerificationCodeDto verificationCode)
         {
@@ -101,6 +141,16 @@ namespace Business.Concrete
         }
 
         //Business Rules
+
+        private IResult CheckIfUserExist(string email)
+        {
+            var result = _userDal.GetAll(u => u.Email == email).Any();
+            if (!result)
+            {
+                return new ErrorResult(Messages.UserNotExist);
+            }
+            return new SuccessResult();
+        }
 
         private IResult CheckIfUserIdExist(int userId)
         {
@@ -164,7 +214,7 @@ namespace Business.Concrete
 
         public static string GenerateRandomCode(int length)
         {
-            const string validChars = @"[A-Za-z0-9!@#$%^&*()_+{}|[\]:;=,.?/]";
+            const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|[]:;,.?/";
             var chars = new char[length];
             var rand = new Random();
 

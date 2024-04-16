@@ -15,7 +15,7 @@ namespace SocialMedia_Web.ViewComponents.SharingContentForm
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Topics/getall");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

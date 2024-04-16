@@ -2,6 +2,7 @@
 using Core.Entities.Concrete;
 using Core.Utilities.Result.Abstract;
 using Entities.DTOs;
+using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using IResult = Core.Utilities.Result.Abstract.IResult;
@@ -32,6 +33,14 @@ namespace WebAPI.Controllers
         {
 
             IDataResult<List<UserDto>> result = _userService.GetAllDto();
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("getbyemail")]
+        public IActionResult GetByEmail(string email)
+        {
+
+            IDataResult<UserDto> result = _userService.GetUserDtoByMail(email);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 

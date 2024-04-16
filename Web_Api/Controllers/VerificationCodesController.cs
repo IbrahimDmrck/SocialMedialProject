@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.DTOs;
+using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,14 @@ namespace Web_Api.Controllers
             var result = _verificationCodeService.SendVerificationCode(verificationCode);
 
             return result.Success ? Ok(result) : BadRequest(result);
+        } 
+        
+        [HttpPost("sendcodeforpasswordreset")]
+        public IActionResult SendCodeForPasswordReset(ResetPassword resetPassword)
+        {
+            var result = _verificationCodeService.SendCodeForPasswordReset(resetPassword);
+
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
 
@@ -37,6 +46,14 @@ namespace Web_Api.Controllers
         public IActionResult CheckVerfiyCode(VerificationCodeDto verificationCode)
         {
             var result = _verificationCodeService.CheckVerifyCode(verificationCode);
+
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("checkcodeforpasswordreset")]
+        public IActionResult CheckCodeForPasswordReset(ResetPassword resetPassword)
+        {
+            var result = _verificationCodeService.CheckCodeForPasswordReset(resetPassword);
 
             return result.Success ? Ok(result) : BadRequest(result);
         }
