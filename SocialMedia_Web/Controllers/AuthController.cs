@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
 using NuGet.Common;
 using SocialMedia_Web.Models;
@@ -123,7 +124,7 @@ namespace SocialMedia_Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ResetPassword resetPassword)
         {
-            var jsonEmail= JsonConvert.SerializeObject(resetPassword);
+            var jsonEmail = JsonConvert.SerializeObject(resetPassword);
             var contentEmail = new StringContent(jsonEmail, Encoding.UTF8, "application/json");
             var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/VerificationCodes/sendcodeforpasswordreset", contentEmail);
             if (responseMessage.IsSuccessStatusCode)
@@ -132,9 +133,9 @@ namespace SocialMedia_Web.Controllers
                 {
                     Success = true,
                     Message = "E-posta adresinize bir doğrulama kodu gönderildi",
-                    Url= "/Auth/CheckCode"
+                    Url = "/Auth/CheckCode"
                 };
-                TempData["UserEmail"]=resetPassword.Email;
+                TempData["UserEmail"] = resetPassword.Email;
                 return Json(response);
             }
             else
@@ -188,8 +189,39 @@ namespace SocialMedia_Web.Controllers
         [HttpGet]
         public IActionResult ResetPassword()
         {
-            ViewData["Email"] = TempData["UserInfo"];
+            ViewData["Email"] = TempData["UserEmail"];
             return View();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> ResetPassword(Models.ChangePassword changePassword)
+        {
+            var jsonData = JsonConvert.SerializeObject(changePassword);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClientFactory.CreateClient().PutAsync($"http://localhost:65527/api/Auth/adminchangepassword", content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<Models.ChangePassword>>(jsonResponse);
+
+                var response = new
+                {
+                    Success = apiDataResponse.Success,
+                    Message = apiDataResponse.Message,
+                    Url="/giris-yap"
+
+                };
+                return Json(response);
+            }
+            else
+            {
+                var response = new
+                {
+                    Success=false,
+                    Message = "Şifre güncellenemedi, lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
         }
 
 

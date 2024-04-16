@@ -69,9 +69,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("adminchangepassword")]
-        public async Task<ActionResult> AdminChangePassword(string email,string newPassword)
+        public async Task<ActionResult> AdminChangePassword(ChangePasswordModel changePassword)
         {
-            var result = await _authService.AdminChangePassword(email, newPassword);
+            var result = await _authService.AdminChangePassword(changePassword);
             if (result.Success)
             {
                 return Ok(result);

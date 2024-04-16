@@ -125,16 +125,16 @@ namespace Business.Concrete
             return new ErrorResult(loginResult.Message);
         }
 
-        public async Task<IResult> AdminChangePassword(string email, string newPassword)
+        public async Task<IResult> AdminChangePassword(ChangePasswordModel changePassword)
         {
-            var user = _userService.GetUserByMail(email);
+            var user = _userService.GetUserByMail(changePassword.Email);
 
             if (user != null)
             {
                 var data = user.Result.Data;
 
                 byte[] passwordHash, passwordSalt;
-                HashingHelper.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+                HashingHelper.CreatePasswordHash(changePassword.NewPassword, out passwordHash, out passwordSalt);
                 data.PasswordHash = passwordHash;
                 data.PasswordSalt = passwordSalt;
                 _userService.Update(data);
