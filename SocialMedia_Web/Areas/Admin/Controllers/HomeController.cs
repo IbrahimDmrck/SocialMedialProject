@@ -82,11 +82,12 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateContent(Article article)
         {
+            var httpClient = _httpClientFactory.CreateClient();
             var jsonArticle = JsonConvert.SerializeObject(article);
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
-            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65527/api/Articles/update", content);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.PutAsync("http://localhost:65527/api/Articles/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -149,11 +150,12 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateComment(CommentDetail commentDetail)
         {
+            var httpClient = _httpClientFactory.CreateClient();
             var jsonComment = JsonConvert.SerializeObject(commentDetail);
             var content = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
-            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65527/api/Comments/update", content);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.PutAsync("http://localhost:65527/api/Comments/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();

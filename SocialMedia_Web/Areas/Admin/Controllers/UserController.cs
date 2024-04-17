@@ -40,7 +40,10 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var responseMessage = await _httpClientFactory.CreateClient().DeleteAsync("http://localhost:65527/api/Users/delete?id=" + id);
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Users/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -74,11 +77,12 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateAccountSetting(UserDto userDto)
         {
+            var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             var jsonUserDto = JsonConvert.SerializeObject(userDto);
             var content = new StringContent(jsonUserDto, Encoding.UTF8, "application/json");
-            _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/Users/update", content);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/Users/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
@@ -151,9 +155,12 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> GetVerifyCode(VerificationCode verificationCode)
         {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonInfo = JsonConvert.SerializeObject(verificationCode);
             var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync("http://localhost:65527/api/VerificationCodes/sendcode", content);
+            var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/VerificationCodes/sendcode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
@@ -186,9 +193,12 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> VerifyCode(VerificationCode verificationCode)
         {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonInfo = JsonConvert.SerializeObject(verificationCode);
             var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync($"http://localhost:65527/api/VerificationCodes/checkverifycode", content);
+            var responseMessage = await httpClient.PostAsync($"http://localhost:65527/api/VerificationCodes/checkverifycode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -230,9 +240,12 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePassword changePassword)
         {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonData = JsonConvert.SerializeObject(changePassword);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClientFactory.CreateClient().PostAsync($"http://localhost:65527/api/Auth/changepassword", content);
+            var responseMessage = await httpClient.PostAsync($"http://localhost:65527/api/Auth/changepassword", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

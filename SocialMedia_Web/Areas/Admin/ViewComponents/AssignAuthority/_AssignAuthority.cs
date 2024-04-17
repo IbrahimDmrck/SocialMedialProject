@@ -15,13 +15,13 @@ namespace SocialMedia_Web.Areas.Admin.ViewComponents.AssignAuthority
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var responseMessageClaim = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/OperationClaims/getall");
+            var responseMessageClaim = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/OperationClaims/getall");
             if (responseMessageClaim.IsSuccessStatusCode)
             {
                 var jsonResponseClaim = await responseMessageClaim.Content.ReadAsStringAsync();
                 var apiDataResponseClaim = JsonConvert.DeserializeObject<ApiListDataResponse<OperationClaim>>(jsonResponseClaim);
 
-                var responseMessageUser = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65526/api/Users/getalldto");
+                var responseMessageUser = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Users/getalldto");
                 if (responseMessageUser.IsSuccessStatusCode)
                 {
                     var jsonResponseUser = await responseMessageUser.Content.ReadAsStringAsync();

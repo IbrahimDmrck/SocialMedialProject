@@ -8,6 +8,7 @@ using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
+using Core.Utilities.Helpers.FileHelper;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,11 +28,15 @@ namespace Business.Concrete
         private readonly IUserDal _userDal;
         private readonly IArticleDal _articleDal;
         private readonly ICommentDal _commentDal;
-        public UserManager(IUserDal userDal, IArticleDal articleDal, ICommentDal commentDal)
+        private readonly IUserImageDal _userImageDal;
+        private readonly IUserOperationClaimDal _userOperationClaimDal;
+        public UserManager(IUserDal userDal, IArticleDal articleDal, ICommentDal commentDal, IUserImageDal userImageDal, IUserOperationClaimDal userOperationClaimDal)
         {
             _userDal = userDal;
             _articleDal = articleDal;
             _commentDal = commentDal;
+            _userImageDal = userImageDal;
+            _userOperationClaimDal = userOperationClaimDal;
         }
 
         public IDataResult<List<User>> GetAll()
@@ -168,10 +174,29 @@ namespace Business.Concrete
                     }
                     _articleDal.Delete(item);
                 }
-                _userDal.Delete(deletedUser);
-                return new SuccessResult(Messages.UserDeleted);
             }
-            return new ErrorResult(Messages.UserNotFound);
+
+            var deletedImage = _userImageDal.Get(c => c.UserId == userId);
+            var result = FileHelper.Delete(deletedImage.ImagePath);
+            if (!result.Success)
+            {
+                return new ErrorResult(Messages.ErrorDeletingImage);
+            }
+            _userImageDal.Delete(deletedImage);
+
+            var deletedClaims = _userOperationClaimDal.GetAll(x=>x.UserId==userId);
+            if (deletedClaims !=null)
+            {
+                foreach (var userClaim in deletedClaims)
+                {
+                    var deletedClaim = _userOperationClaimDal.Get(x => x.UserId == userClaim.UserId && x.OperationClaimId == userClaim.OperationClaimId);
+                    _userOperationClaimDal.Delete(deletedClaim);
+                }
+            }
+
+            _userDal.Delete(deletedUser);
+            return new SuccessResult(Messages.UserDeleted);
+
         }
 
         //Business Rules

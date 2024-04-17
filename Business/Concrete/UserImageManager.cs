@@ -1,7 +1,10 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Logging;
+using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
@@ -25,6 +28,9 @@ namespace Business.Concrete
             _userImageDal = userImageDal;
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IUserImageService.Get")]
         public IResult Add(IFormFile file, int userId)
         {
             IResult rulesResult = BusinessRules.Run(CheckIfUserImageLimitExceeded(userId));
@@ -49,6 +55,9 @@ namespace Business.Concrete
             return new SuccessResult(Messages.UserImageAdded);
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IUserImageService.Get")]
         public IResult Delete(UserImage userImage)
         {
             IResult rulesResult = BusinessRules.Run(CheckIfUserImageIdExist(userImage.Id));

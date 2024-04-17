@@ -1,7 +1,15 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingconcerns.Logging.Log4Net.Loggers;
 using Core.Entities;
 using Core.Entities.Concrete;
+using Core.Utilities.Business;
 using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Abstract;
@@ -24,12 +32,25 @@ namespace Business.Concrete
             _operationClaimDal = operationClaimDal;
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [ValidationAspect(typeof(OperationClaimValidator))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Add(OperationClaim entity)
         {
+            var rulesResult = BusinessRules.Run(CheckIfOperationClaimIdExist(entity.Name));
+            if (rulesResult != null)
+            {
+                return rulesResult;
+            }
+
             _operationClaimDal.Add(entity);
             return new SuccessResult(Messages.ClaimAdded);
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Delete(int id)
         {
             var deletedClaim = _operationClaimDal.Get(x => x.Id == id);
@@ -37,11 +58,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ClaimDeleted);
         }
 
+        [CacheAspect(5)]
         public IDataResult<List<OperationClaim>> GetAll()
         {
             return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetAll(),Messages.ClaimsListed);
         }
 
+        [CacheAspect(5)]
         public IDataResult<List<ClaimDto>> GetClaimByUsers(int claimId)
         {
             return new SuccessDataResult<List<ClaimDto>>(_operationClaimDal.GetClaims(x=>x.OperationClaimId== claimId), Messages.ClaimsListed);
@@ -52,10 +75,31 @@ namespace Business.Concrete
             return new SuccessDataResult<OperationClaim>(_operationClaimDal.Get(x=>x.Id==id), Messages.ClaimListed);
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Update(OperationClaim entity)
         {
+            var rulesResult = BusinessRules.Run(CheckIfOperationClaimIdExist(entity.Name));
+            if (rulesResult != null)
+            {
+                return rulesResult;
+            }
+
             _operationClaimDal.Update(entity);
             return new SuccessResult(Messages.ClaimUpdated);
+        }
+
+        //Business Rules
+
+        private IResult CheckIfOperationClaimIdExist(string claim)
+        {
+            var result = _operationClaimDal.GetAll(u => u.Name.ToLower() == claim.ToLower()).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.ClaimExist);
+            }
+            return new SuccessResult();
         }
     }
 }

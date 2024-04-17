@@ -81,6 +81,8 @@ namespace Business.Constants
         public static string UsersClaimsListed="Kullanıcı yetkileri listelendi";
         public static string CommentNotFound="Silinecek yourm bulunamadı";
         public static string ArticleNotFound="Silinecek Article Bulunamadı";
+        public static string ClaimExist="Bu yetki zaten var";
+        public static string UserClaimExist="Bu kullanıcını bu yetkiye zaten sahip";
     }
 }
     
