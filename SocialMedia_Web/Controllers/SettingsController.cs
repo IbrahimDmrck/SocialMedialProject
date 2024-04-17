@@ -103,6 +103,7 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("kod-doğrulama")]
         public IActionResult GetVerifyCode()
         {
+            ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
             ViewData["Email"] = HttpContext.Session.GetString("Email");
             return View();
@@ -167,6 +168,7 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("sifre-guncelle")]
         public async Task<IActionResult> ChangePassword()
         {
+            ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["Email"] = HttpContext.Session.GetString("Email");
             return View();
         }
