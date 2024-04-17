@@ -23,10 +23,12 @@ namespace Business.Concrete
     public class ArticleManager : IArticleService
     {
         private readonly IArticleDal _articleDal;
+        private readonly ICommentDal _commentDal;
 
-        public ArticleManager(IArticleDal articleDal)
+        public ArticleManager(IArticleDal articleDal, ICommentDal commentDal)
         {
             _articleDal = articleDal;
+            _commentDal = commentDal;
         }
 
         [LogAspect(typeof(FileLogger))]
@@ -39,14 +41,26 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ArticleAdded);
         }
 
+        [LogAspect(typeof(FileLogger))]
         [SecuredOperation("admin,user")]
-        //[ValidationAspect(typeof(ArticleValidator))]
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Delete(int id)
         {
             var deletedArticle = _articleDal.Get(x=>x.Id==id);
-            _articleDal.Delete(deletedArticle);
-            return new SuccessResult(Messages.ArticleDeleted);
+            if (deletedArticle != null)
+            {
+                var deletedComment = _commentDal.GetAll(x=>x.ArticleId==deletedArticle.Id);
+                if (deletedComment != null)
+                {
+                    foreach (var item in deletedComment)
+                    {
+                        _commentDal.Delete(item);
+                    }
+                }
+                _articleDal.Delete(deletedArticle);
+                return new SuccessResult(Messages.ArticleDeleted);
+            }
+            return new ErrorResult(Messages.ArticleNotFound);
         }
 
         [CacheAspect(1)]
@@ -77,6 +91,10 @@ namespace Business.Concrete
             return new SuccessDataResult<Article>(_articleDal.Get(x=>x.Id==id),Messages.ArticleListed);
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [ValidationAspect(typeof(ArticleValidator))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IArticleService.Get")]
         public IResult Update(Article entity)
         {
             _articleDal.Update(entity);

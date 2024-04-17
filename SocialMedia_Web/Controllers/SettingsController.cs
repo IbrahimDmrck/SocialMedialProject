@@ -109,6 +109,7 @@ namespace SocialMedia_Web.Controllers
             return View();
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpPost("kod")]
         public async Task<IActionResult> GetVerifyCode(VerificationCode verificationCode)
         {
@@ -117,6 +118,8 @@ namespace SocialMedia_Web.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var jsonInfo = JsonConvert.SerializeObject(verificationCode);
             var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/VerificationCodes/sendcode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -130,13 +133,15 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("AccountSetting", "Settings");
         }
 
-
+        [Authorize(Roles = "admin,user")]
         [HttpPost("verify-code")]
         public async Task<IActionResult> VerifyCode(VerificationCode verificationCode)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var jsonInfo = JsonConvert.SerializeObject(verificationCode);
             var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var responseMessage = await httpClient.PostAsync($"http://localhost:65527/api/VerificationCodes/checkverifycode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -173,12 +178,15 @@ namespace SocialMedia_Web.Controllers
             return View();
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpPost("sifre-guncelle")]
         public async Task<IActionResult> ChangePassword(ChangePassword changePassword)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(changePassword);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var responseMessage = await httpClient.PostAsync($"http://localhost:65527/api/Auth/changepassword", content);
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -206,10 +214,15 @@ namespace SocialMedia_Web.Controllers
             }
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAccount(int id)
         {
-            var responseMessage = await _httpClientFactory.CreateClient().DeleteAsync("http://localhost:65527/api/Users/delete?id=" + id);
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Users/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();

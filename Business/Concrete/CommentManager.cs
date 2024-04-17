@@ -32,6 +32,9 @@ namespace Business.Concrete
             return new SuccessResult(Messages.Comment_Add);
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("ICommentService.Get")]
         public IResult Delete(int id)
         {
             var deletedComment = _commentDal.Get(x => x.Id == id);
@@ -65,6 +68,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Comment>>(_commentDal.GetAll(x => x.Status == true), Messages.FalseComment);
         }
 
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("ICommentService.Get")]
         public IResult Update(Comment entity)
         {
             _commentDal.Update(entity);

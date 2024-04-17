@@ -83,8 +83,9 @@ namespace SocialMedia_Web.Controllers
         [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> ReadAllNotifications()
         {
+            var httpClient = _httpClientFactory.CreateClient();
             int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
+            var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
@@ -108,7 +109,9 @@ namespace SocialMedia_Web.Controllers
 
                         var jsonComment = JsonConvert.SerializeObject(commentDetail);
                         var content = new StringContent(jsonComment, Encoding.UTF8, "application/json");
-                        var responseReadAllNotifications = await _httpClientFactory.CreateClient().PutAsync("http://localhost:65527/api/Comments/update", content);
+                        var token = HttpContext.Session.GetString("Token");
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        var responseReadAllNotifications = await httpClient.PutAsync("http://localhost:65527/api/Comments/update", content);
                         if (responseReadAllNotifications.IsSuccessStatusCode)
                         {
                             continue;

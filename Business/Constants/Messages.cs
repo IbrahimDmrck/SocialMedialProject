@@ -80,6 +80,7 @@ namespace Business.Constants
         public static string UserClaimAdded="Yetki Eklendi";
         public static string UsersClaimsListed="Kullanıcı yetkileri listelendi";
         public static string CommentNotFound="Silinecek yourm bulunamadı";
+        public static string ArticleNotFound="Silinecek Article Bulunamadı";
     }
 }
     
