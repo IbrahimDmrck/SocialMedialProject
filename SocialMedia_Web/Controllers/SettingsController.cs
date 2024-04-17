@@ -25,6 +25,7 @@ namespace SocialMedia_Web.Controllers
         {
 
             var userId = HttpContext.Session.GetInt32("UserId");
+            ViewData["UserId"] = userId;
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             var httpClient = _httpClientFactory.CreateClient();
             var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Users/getbyid?id=" + userId);
@@ -198,6 +199,33 @@ namespace SocialMedia_Web.Controllers
                 var response = new
                 {
                     Message = "Şifre güncellenemedi, lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            var responseMessage = await _httpClientFactory.CreateClient().DeleteAsync("http://localhost:65527/api/Users/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
+
+                var response = new
+                {
+                    Success= apiDataResponse.Success,
+                    Message = apiDataResponse.Message
+                };
+                return Json(response);
+            }
+            else
+            {
+                var response = new
+                {
+                    Success =false,
+                    Message ="Bir hata oluştu , lütfen tekrar deneyin"
                 };
                 return Json(response);
             }
