@@ -64,6 +64,7 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("notifications")]
         public async Task<IActionResult> Notifications()
         {
+            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
             var httpClient = _httpClientFactory.CreateClient();
             int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");

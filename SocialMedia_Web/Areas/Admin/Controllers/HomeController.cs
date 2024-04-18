@@ -28,7 +28,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
-
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : RedirectToAction("Index", "Home", new { area = "Admin" });
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
@@ -43,7 +43,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
-
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
@@ -65,7 +65,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 {
                     var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();
                     var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse1);
-
+                    ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                     var response = new ArticleTopicsResponse
                     {
                         Article = data.Data,

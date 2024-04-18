@@ -30,7 +30,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<UserDto>>(jsonResponse);
-
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : RedirectToAction("Index", "Home", new { area = "Admin" });
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
@@ -68,6 +68,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
                 ViewData["Email"] = HttpContext.Session.GetString("Email");
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 return View(apiDataResponse.Data);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
@@ -181,6 +182,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult VerifyCode()
         {
+            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
             VerificationCode verificationCode = new VerificationCode
             {
                 UserId = (int)TempData["UserId"],
@@ -228,6 +230,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
+            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
             VerificationCode verificationCode = new VerificationCode
             {
                 UserId = (int)TempData["UserId"],

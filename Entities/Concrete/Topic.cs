@@ -11,5 +11,7 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public string TopicTitle { get; set; }
+        public DateTime Date { get; set; }
+        public bool Status { get; set; }
     }
 }

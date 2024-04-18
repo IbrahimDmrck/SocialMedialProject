@@ -10,6 +10,11 @@ using Core.Utilities.IoC;
 using Core.DependencyResolvers;
 using Core.Extensions.Exception;
 using Microsoft.OpenApi.Models;
+using Hangfire;
+using Business.Concrete;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,11 +45,15 @@ builder.Services.AddDependencyResolvers(new ICoreModule[]
 });
 
 
-// Add services to the container.
-//builder.Services.AddScoped(sp => new HttpClient { });
+
 builder.Services.AddControllers();
+builder.Services.AddHangfire(x =>
+{
+    x.UseSqlServerStorage(@"Server=(localdb)\MSSQLLocalDB;Database=HangfireDb;Trusted_Connection=true;TrustServerCertificate=true;");
+    RecurringJob.AddOrUpdate<TopicManager>(j => j.DeleteTopicDaily(), "36 10 * * *");
+});
+builder.Services.AddHangfireServer();
 builder.Services.AddCors();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
 {
@@ -76,6 +85,8 @@ builder.Services.AddSwaggerGen(swagger =>
     });
 });
 
+
+
 var app = builder.Build();
 
 
@@ -102,5 +113,7 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
 
 app.Run();

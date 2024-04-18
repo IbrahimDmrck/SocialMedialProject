@@ -26,6 +26,7 @@ namespace SocialMedia_Web.Controllers
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
                 ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
 
                 int myArticleCount = apiDataResponse.Data.Count(x => x.UserId == (int)ViewData["UserId"]);
 

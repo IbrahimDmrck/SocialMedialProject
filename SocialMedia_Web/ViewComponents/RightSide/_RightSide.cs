@@ -57,7 +57,7 @@ namespace SocialMedia_Web.ViewComponents.RightSide
                     // Her TopicTitle için Article sayısını ve Topic'i bul
                     var topicArticleCounts = apiDataResponse.Data.Select(topic =>
                     {
-                        var articleCount = groupedByTopicTitle.FirstOrDefault(x => x.Key == topic.TopicTitle)?.Count() ?? 0;
+                        var articleCount = groupedByTopicTitle.FirstOrDefault(x => x.Key == topic.TopicTitle && topic.Status==true)?.Count() ?? 0;
                         return Tuple.Create(topic, articleCount);
                     }).ToList();
 

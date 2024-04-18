@@ -55,9 +55,11 @@ namespace SocialMedia_Web.Controllers
                     {
                         _httpClientFactory.CreateClient().DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", userForLogin.Data.Token);
                         var userId = ExtractUserIdentityFromJwtToken.GetUserIdentityFromJwtToken(userForLogin.Data.Token);
+                        var userName = ExtractUserNameFromJwtToken.GetUserNameFromJwtToken(userForLogin.Data.Token);
 
                         HttpContext.Session.SetInt32("UserId", userId);
                         HttpContext.Session.SetString("Email", loginDto.Email);
+                        HttpContext.Session.SetString("UserName", userName);
                         HttpContext.Session.SetString("Token", userForLogin.Data.Token);
 
                         claims.Add(new Claim("socialmediawebsitetoken", userForLogin.Data.Token));

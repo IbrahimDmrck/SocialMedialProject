@@ -25,6 +25,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse);
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
@@ -66,7 +67,7 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                 var jsonResponse1 = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<Topics>>(jsonResponse1);
 
-
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 return View(apiDataResponse.Data);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });

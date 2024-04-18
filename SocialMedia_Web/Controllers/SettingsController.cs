@@ -25,6 +25,7 @@ namespace SocialMedia_Web.Controllers
         {
 
             var userId = HttpContext.Session.GetInt32("UserId");
+            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
             ViewData["UserId"] = userId;
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             var httpClient = _httpClientFactory.CreateClient();
@@ -103,6 +104,7 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("kod-doğrulama")]
         public IActionResult GetVerifyCode()
         {
+            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
             ViewData["Email"] = HttpContext.Session.GetString("Email");
@@ -173,6 +175,7 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("sifre-guncelle")]
         public async Task<IActionResult> ChangePassword()
         {
+            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["Email"] = HttpContext.Session.GetString("Email");
             return View();

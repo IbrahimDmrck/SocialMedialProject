@@ -12,10 +12,14 @@
             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show ps-1">
                 @foreach (var item in Model)
                 {
-                    <div class="accordion-body p-1">
-                        @* <i class="bi bi-share"><strong class="ps-1"><small>15</small></strong> @item.TopicTitle</i> *@
-                        <u><strong class="ps-1"><small>#</small></strong> @item.Item1.TopicTitle</u> <small><i class="bi bi-share ms-1"> @item.Item2</i></small>
-                    </div>
+                    @if (item.Item1.Status==true)
+                    {
+                        <div class="accordion-body p-1">
+                            @* <i class="bi bi-share"><strong class="ps-1"><small>15</small></strong> @item.TopicTitle</i> *@
+                            <u><strong class="ps-1"><small>#</small></strong> @item.Item1.TopicTitle</u> <small><i class="bi bi-share ms-1"> @item.Item2</i></small>
+                        </div>
+                    }
+                    
                 }
             </div>
         </div>

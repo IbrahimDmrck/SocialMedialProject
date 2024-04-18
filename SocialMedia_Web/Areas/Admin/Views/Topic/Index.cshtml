@@ -20,6 +20,7 @@
                     <tr>
                         <th>#</th>
                         <th>Konu Başlığı</th>
+                        <th>Durum</th>
                         <th class="text-center">İşlemler</th>
                     </tr>
                 </thead>
@@ -29,10 +30,20 @@
                         <tr>
                             <td class="fw-bol">@item.Id</td>
                             <td>@item.TopicTitle</td>
+                            <td>
+                                @if (item.Status == true)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Pasif</span>
+                                }
+                            </td>
                             <td class="d-flex justify-content-center">
                                 @* <a class="btn btn-outline-success" href="#">
-                                    <i class="bi bi-eye-fill"></i>
-                                </a> *@
+                            <i class="bi bi-eye-fill"></i>
+                            </a> *@
                                 <a class="btn btn-outline-warning mx-2" href="/Admin/Topic/GetUpdateTopic/@item.Id">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
@@ -87,7 +98,7 @@
     </div>
 </div>
 
-@section scripts{
+@section scripts {
 
     <script>
         $(document).ready(function () {

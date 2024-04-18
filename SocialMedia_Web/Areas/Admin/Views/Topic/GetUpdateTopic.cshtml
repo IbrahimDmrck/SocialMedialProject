@@ -21,6 +21,16 @@
                     <input type="text" id="first-name-vertical" name="TopicTitle" class="form-control" value="@Model.TopicTitle" />
                 </div>
 
+
+                <div class="form-group">
+                    <select class="form-control" name="Status">
+                        <option value="" disabled> Aktif / Pasif </option>
+                        <option value="1" class="bg-success text-white"> Aktif </option>
+                        <option value="0" class="bg-secondary text-white"> Pasif </option>
+                        
+                    </select>
+                </div>
+
                 <div class="form-group text-center">
                     <button type="submit" class="btn btn-success ">Güncelle</button>
                 </div>
@@ -46,12 +56,14 @@
 
             $(".update-topic").on("submit", function (e) {
                 e.preventDefault();
+                
                 $.ajax({
                     type: "PUT",
                     url: "https://localhost:7110/Admin/Topic/UpdateTopic",
                     data: {
                         Id: $("input[name=Id]").val(),
                         TopicTitle: $("input[name=TopicTitle]").val(),
+                        Status: $("select[name=Status]").val() == 1 ? true : false
                     },
                     success: function (response) {
                         Toast(response.message);
