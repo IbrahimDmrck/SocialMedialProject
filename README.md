@@ -233,3 +233,30 @@ This project is a social media website where users can sign up, view what others
       update-database
    ```
 5. Finally Press the Start Button
+
+
+## Tech Stack
+| Technology / Library | Version |
+| ------------- | ------------- |
+| .NET | 8.0 |
+| Autofac	| 8.0 | 
+| Autofac.Extensions.DependencyInjection| 9.0 | 
+| Autofac.Extras.DynamicProxy |7.1.0 | 
+| FluentValidation | 11.8.0| 
+| Microsoft.AspNetCore.Authentication.JwtBearer| 	7.0.13| 
+| Microsoft.AspNetCore.Http	| 2.2.2| 
+| Microsoft.AspNetCore.Http.Abstractions	| 2.2.0| 
+| Microsoft.AspNetCore.Features	| 5.0.9| 
+| log4net	| 2.0.15 | 
+| MailKit	| 4.4.0 | 
+| Hangfire	| 1.8.12 | 
+| Hangfire.AspNetCore	| 1.8.12 | 
+| Hangfire.SqlServer	| 1.8.12 | 
+| Microsoft.EntityFrameworkCore	| 7.0.13| 
+| Microsoft.EntityFrameworkCore.Design	| 7.0.13| 
+| Microsoft.EntityFrameworkCore.SqlServer	| 7.0.13| 
+| Microsoft.EntityFrameworkCore.Tools	| 7.0.13| 
+| Microsoft.IdentityModel.Tokens	| 6.24.0| 
+| Mime-Detective	| 22.12.14| 
+| Newtonsoft.Json| 	13.0.31| 
+| ClosedXML | 0.102.2 | 
