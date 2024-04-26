@@ -9,8 +9,6 @@ This project is a social media website where users can sign up, view what others
 - [Features](#features)
 - [Installation](#installation)
 - [Tech Stack](#tech-stack)
-- [Associated Project](#associated-project)
-- [Contributions](#contributions)
 
 ## Pages
 
