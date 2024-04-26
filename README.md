@@ -7,8 +7,7 @@ This project is a social media website where users can sign up, view what others
 ## Contents
 - [Pages](#pages)
 - [Features](#features)
-- [Getting Started](#getting-started)
-  * [Installation](#installation)
+- [Installation](#installation)
 - [Tech Stack](#tech-stack)
 - [Associated Project](#associated-project)
 - [Contributions](#contributions)
@@ -217,4 +216,20 @@ This project is a social media website where users can sign up, view what others
 + Admins can add, delete, and change the role of any user.
 + An admin can update the password of any user by sending a 12-character security code valid for 3 minutes to the admin's email address. If the admin enters this code correctly and within the specified time, they can update the user's password.
 
+### Installation
 
+1. Clone the repo
+   ```sh
+   git clone https://github.com/IbrahimDmrck/SocialMedialProject.git
+   ```
+2. Create Database And Initialize Migration
+   ```sh
+   SocialMediaProject > DataAccess > Concrete > Context > SocialMediaContext.cs
+    optionsBuilder.UseSqlServer(@"Server=Your-DB-Server ;Database=Your-DB;Trusted_Connection=true;TrustServerCertificate=true;");
+   ```
+3. and then open the Package Manager Console in Visual Studio , choose Data Access Layer the "Default Project"
+4. Write this in the Package Manager Console:
+   ```
+      update-database
+   ```
+5. Finally Press the Start Button
