@@ -187,3 +187,34 @@ This project is a social media website where users can sign up, view what others
 
 <br>
 
+## Features
+
++ Users can sign up and log in to this website.
++ Users who sign up and log in can view the posts and comments of other users on this website.
++ Users can make their own posts and comments.
++ If a user's token has expired, they are automatically logged out of the system.
++ Users can view and update their information.
++ Users can share, edit, and delete their own content using a text editor.
++ When making a post, users can select a topic from active topics to make the post.
++ Users can view comments made on their posts in bulk and mark these comments as "read".
++ The number of unread comments on a user's posts is shown to the user.
++ Users can update their account information, profile picture, and password on the "Settings" page, and they can also delete their account if they wish.
++ On the "My Profile" page, users can see a list of their own posts and information on how many comments each post has received, along with the titles of the topics of their posts.
++ Users are denied access when attempting to view a page for which they do not have permission.
++ When a user wants to update their password or has forgotten their password, a 12-character security code valid for 3 minutes is sent to their email address. If the user enters this code correctly and within the specified time, they can update or reset their password.
+
+-Admin Panel-
+
++ When a user logs in, if their role is 'Admin', a special 'header' is displayed to allow them access to the admin panel on the website.
++ Admins can edit and delete all posts, topics, users, comments, and permissions through the admin panel.
++ Admins can edit and delete a post and the comments on it.
++ Admins can create, edit, change the status (active/inactive), and delete topics.
++ Topics are automatically checked, and their status is set to inactive at a specified time every day.
++ Users can only see topics that are active.
++ Admins can view users, edit their information, and delete users.
++ Admins can export all users to an Excel spreadsheet and download this spreadsheet.
++ Admins can edit, delete, and create new roles.
++ Admins can add, delete, and change the role of any user.
++ An admin can update the password of any user by sending a 12-character security code valid for 3 minutes to the admin's email address. If the admin enters this code correctly and within the specified time, they can update the user's password.
+
+
