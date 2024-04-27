@@ -8,35 +8,31 @@ namespace SocialMedia_Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public HomeController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
-
         [Authorize(Roles = "admin,user")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Articles/getarticlewithdetails");
+            var httpClient = new HttpClient();
+            var responseMessage = await httpClient.GetAsync("https://localhost:44347/api/Articles/getarticlewithdetails");
             if (responseMessage.IsSuccessStatusCode)
             {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
                 ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
                 ViewData["UserName"] = HttpContext.Session.GetString("UserName");
 
-                int myArticleCount = apiDataResponse.Data.Count(x => x.UserId == (int)ViewData["UserId"]);
 
-                HttpContext.Session.SetInt32("MyArticle", apiDataResponse.Data.Count(x => x.UserId == (int)ViewData["UserId"]));
-                ViewData["MyArticle"] = myArticleCount;
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
+
+                int myArticle = apiDataResponse.Data.Count(x => x.UserId == (int)ViewData["UserId"]);
+                HttpContext.Session.SetInt32("MyArticle", myArticle);
+                ViewData["MyArticle"] = myArticle;
 
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : (IActionResult)View("Veri gelmiyor");
             }
+
             return View("Veri gelmiyor");
         }
+
 
     }
 }

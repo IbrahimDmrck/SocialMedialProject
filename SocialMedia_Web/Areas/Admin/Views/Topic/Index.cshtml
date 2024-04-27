@@ -8,81 +8,83 @@
     <div class="card">
         <div class="card-header">
             <h5 class="card-title d-inline">
-                Gündemdeki Başlıklar
+                Konular
             </h5>
-            <button class="btn btn-outline-primary float-end" style="font-size:1.25rem;" data-bs-toggle="modal" data-bs-target="#inlineForm">
-                <i class="bi bi-plus-square-dotted fw-bold"></i> Ekle
+            <button class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                Ekle
             </button>
         </div>
         <div class="card-body">
-            <table class="table table-striped table-hover" id="table1">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Konu Başlığı</th>
-                        <th>Durum</th>
-                        <th class="text-center">İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <div class="table-responsive">
+                <table class="table" id="table1">
+                    <thead>
                         <tr>
-                            <td class="fw-bol">@item.Id</td>
-                            <td>@item.TopicTitle</td>
-                            <td>
-                                @if (item.Status == true)
-                                {
-                                    <span class="badge bg-success">Aktif</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Pasif</span>
-                                }
-                            </td>
-                            <td class="d-flex justify-content-center">
-                                @* <a class="btn btn-outline-success" href="#">
-                            <i class="bi bi-eye-fill"></i>
-                            </a> *@
-                                <a class="btn btn-outline-warning mx-2" href="/Admin/Topic/GetUpdateTopic/@item.Id">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <button class="btn btn-outline-danger delete-button" data-id="@item.Id">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                            <th>#</th>
+                            <th>Konu Başlığı</th>
+                            <th>Aktif / Pasif</th>
+                            <th class="text-center">İşlemler</th>
 
-                            </td>
                         </tr>
-                    }
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td id="topicTitle">@item.TopicTitle</td>
+                                <td id="topicStatus" data-status="@item.Status">
+                                    @if (item.Status == true)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Pasif</span>
+                                    }
+                                </td>
+                                <td class="d-flex justify-content-center">
+                                    <a class="btn btn-outline-success " href="#">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <button class="btn btn-outline-warning mx-2 update-btn" data-id="@item.Id">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger delete-btn" data-id="@item.Id">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
-
 <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
          role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel33">Konu Oluştur </h4>
+                <h4 class="modal-title" id="myModalLabel33">Başlık Ekleme Formu </h4>
                 <button type="button" class="close" data-bs-dismiss="modal"
                         aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form action="/Admin/Topic/AddTopic" method="post">
+            <form method="post" action="/Admin/Topic/Add">
                 <div class="modal-body">
-                    <label for="topic">Konu: </label>
+                    <label for="email">Yorum: </label>
                     <div class="form-group">
-                        <input id="topic" name="TopicTitle" type="text" class="form-control">
+
+                        <input type="text" name="TopicTitle" class="form-control">
                     </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary"
+                    <button type="reset" class="btn btn-light-secondary"
                             data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">İptal</span>
@@ -90,7 +92,56 @@
                     <button type="submit" class="btn btn-primary ms-1"
                             data-bs-dismiss="modal">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Oluştur</span>
+                        <span class="d-none d-sm-block">Ekle</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade text-left" id="topicUpdateForm" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Başlık Güncelleme Formu </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form id="UpdateTopicForm">
+                <div class="modal-body">
+                    <label for="email">Konu Başlığı : </label>
+                    <div class="form-group">
+
+                        <input id="TopicTitle" type="text" name="TopicTitle" class="form-control">
+                        <input id="TopicId" type="hidden" name="Id" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+
+                        <select class="form-select" name="Status">
+                            <option value="" disabled>Aktif / Pasif</option>
+                            <option value="true">Aktif</option>
+                            <option value="false">Pasif</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">İptal</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary ms-1"
+                            data-bs-dismiss="modal">
+                        <i class="bx bx-check d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Güncelle</span>
                     </button>
                 </div>
             </form>
@@ -99,10 +150,8 @@
 </div>
 
 @section scripts {
-
     <script>
         $(document).ready(function () {
-
             function Toast(message) {
                 Toastify({
                     text: message,
@@ -114,28 +163,62 @@
                 }).showToast();
             }
 
-            $(".delete-button").on("click", function (e) {
+            $(".update-btn").on("click", function (e) {
                 e.preventDefault();
+
+                $("#topicUpdateForm").modal("show");
                 var id = $(this).data("id");
+                var topicTitle = $(this).closest("tr").find("#topicTitle").text();
+                var topicStatus = $(this).closest("tr").find("#topicStatus").data("status").toLowerCase();
+                $("input[id=TopicId]").val(id);
+                $("input[id=TopicTitle]").val(topicTitle);
+                $("select[name=Status]").val(topicStatus);
+                console.log(topicStatus);
+                console.log(topicTitle);
+
+            })
+
+            $("#UpdateTopicForm").on("submit", function (e) {
+                e.preventDefault();
 
                 $.ajax({
-                    type: "DELETE",
-                    url: "https://localhost:7110/Admin/Topic/Delete/" + id,
+                    type: "PUT",
+                    url: "/Admin/Topic/Update/",
+                    data: $(this).serialize(),
                     success: function (response) {
                         Toast(response.message);
 
                         setTimeout(function () {
-                            window.location.href = response.url;
+                            window.location.reload();
                         }, 3000);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
+                    }, error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                })
 
-            });
+            })
 
-        });
+            $(".delete-btn").on("click", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "DELETE",
+                    url: "/Admin/Topic/Delete/" + id,
+                    success: function (response) {
+                        Toast(response.message);
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+                    }, error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                })
+            })
+
+        })
     </script>
-
 }
+
+
+

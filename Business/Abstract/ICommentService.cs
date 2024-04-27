@@ -10,6 +10,7 @@ namespace Business.Abstract
         IDataResult<List<Comment>> NotSeen(int id);
         IDataResult<List<Comment>> FalseComment();
 
-        
+        IDataResult<List<Comment>> GetbyArticleId(int id);
+        IResult AllCommentDeleteByUserId(int id);
     }
 }

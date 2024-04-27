@@ -7,7 +7,7 @@ namespace SocialMedia_Web.Controllers
 {
     public class ProfileController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        IHttpClientFactory _httpClientFactory;
 
         public ProfileController(IHttpClientFactory httpClientFactory)
         {
@@ -17,20 +17,21 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("profilim")]
         public async Task<IActionResult> Profile()
         {
-
-            var userId = HttpContext.Session.GetInt32("UserId");
+            var UserId = HttpContext.Session.GetInt32("UserId");
             ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
-            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
-            ViewData["UserId"] = userId;
+            ViewData["UserId"] = UserId;
+
+
             var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Articles/getarticlewithdetailsbyuserid?id=" + userId);
+            var responseMessage = await httpClient.GetAsync("https://localhost:44347/api/Articles/getarticlewithdetailsbyuserid?id=" + UserId);
             if (responseMessage.IsSuccessStatusCode)
             {
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : (IActionResult)View("Veri gelmiyor");
             }
-            return View("Veri gelmiyor");
+            return View();
         }
     }
 }

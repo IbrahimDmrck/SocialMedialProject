@@ -4,7 +4,7 @@ using Entities.Concrete;
 using Entities.DTOs;
 namespace Business.Abstract
 {
-    public interface IArticleService: IServiceRepository<Article>
+    public interface IArticleService : IServiceRepository<Article>
     {
         IDataResult<List<ArticleDetailDto>> GetArticleDetails();
         IDataResult<List<ArticleDetailDto>> GetArticleDetailsByUserId(int id);

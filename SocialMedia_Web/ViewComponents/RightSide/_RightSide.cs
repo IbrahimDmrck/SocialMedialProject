@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SocialMedia_Web.Models;
 using System.Net.Http;
+using SocialMedia_Web.Models;
 
 namespace SocialMedia_Web.ViewComponents.RightSide
 {
@@ -14,50 +14,26 @@ namespace SocialMedia_Web.ViewComponents.RightSide
             _httpClientFactory = httpClientFactory;
         }
 
-        //public async Task<IViewComponentResult> InvokeAsync()
-        //{
-        //    var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
-        //    if (responseMessage.IsSuccessStatusCode)
-        //    {
-        //        var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-        //        var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse);
-
-
-        //        var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Articles/getarticlewithdetails");
-        //        if (responseMessage.IsSuccessStatusCode)
-        //        {
-        //            var jsonResponse1 = await responseMessage.Content.ReadAsStringAsync();
-        //            var apiDataResponse1 = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
-
-
-        //        }
-
-        //        return apiDataResponse.Success ? View(apiDataResponse.Data) : View();
-        //    }
-        //    return View();
-        //}
-
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
+
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("https://localhost:44347/api/Topics/getall");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse);
-
-                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Articles/getarticlewithdetails");
-                if (responseMessage1.IsSuccessStatusCode)
+                var trueTopic = apiDataResponse.Data.Where(x => x.Status == true).ToList();
+                var responseArticleMessage = await _httpClientFactory.CreateClient().GetAsync("https://localhost:44347/api/Articles/getarticlewithdetails");
+                if (responseArticleMessage.IsSuccessStatusCode)
                 {
-                    var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();
-                    var apiDataResponse1 = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse1);
+                    var jsonArticleResponse = await responseArticleMessage.Content.ReadAsStringAsync();
+                    var apiArticleDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonArticleResponse);
 
-                    // TopicTitle'lara göre gruplama yap
-                    var groupedByTopicTitle = apiDataResponse1.Data.GroupBy(x => x.TopicTitle);
+                    var groupByTopicTitle = apiArticleDataResponse.Data.GroupBy(x=>x.TopicTitle);
 
-                    // Her TopicTitle için Article sayısını ve Topic'i bul
-                    var topicArticleCounts = apiDataResponse.Data.Select(topic =>
+                    var topicArticleCounts = trueTopic.Select(topic =>
                     {
-                        var articleCount = groupedByTopicTitle.FirstOrDefault(x => x.Key == topic.TopicTitle && topic.Status==true)?.Count() ?? 0;
+                        var articleCount = groupByTopicTitle.FirstOrDefault(x => x.Key == topic.TopicTitle)?.Count() ?? 0;
                         return Tuple.Create(topic, articleCount);
                     }).ToList();
 
@@ -66,6 +42,5 @@ namespace SocialMedia_Web.ViewComponents.RightSide
             }
             return View();
         }
-
     }
 }

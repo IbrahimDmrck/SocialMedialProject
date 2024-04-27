@@ -13,11 +13,14 @@ namespace Business.Abstract
 {
     public interface IAuthService
     {
-        IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password);
-        Task<IDataResult<User>> Login(UserForLoginDto userForLoginDto);
-        Task<IResult> UserExists(string email);
+        IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string passowrd);
+        IDataResult<User> Login(UserForLoginDto userForLoginDto);
+        IResult UserExist(string email);
+        IResult ChangePassword(ChangePasswordModel changePassword);
+        IResult AdminChangePassword(ChangePasswordModel changePassword);
+
         IDataResult<AccessToken> CreateAccessToken(User user);
-        Task<IResult> ChangePassword(ChangePasswordModel updatedUser);
-        Task<IResult> AdminChangePassword(ChangePasswordModel changePassword);
+
+
     }
 }

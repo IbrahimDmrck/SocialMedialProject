@@ -19,30 +19,31 @@ namespace Web_Api.Controllers
         }
 
         [HttpGet("getall")]
-        public ActionResult GetAll()
+        public IActionResult GetAll()
         {
-            IDataResult<List<UserOperationClaim>> operationClaims = _userOperationClaimService.GetAll();
-            return operationClaims.Success ? Ok(operationClaims) : BadRequest(operationClaims);
+            var result = _userOperationClaimService.GetAll();
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
+
         [HttpPost("add")]
-        public IActionResult Add(UserOperationClaim operationClaim)
+        public IActionResult Add(UserOperationClaim useroperationClaim)
         {
-            IResult result = _userOperationClaimService.Add(operationClaim);
+            var result = _userOperationClaimService.Add(useroperationClaim);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpDelete("delete")]
         public IActionResult Delete(int userId, int claimId)
         {
-            IResult result = _userOperationClaimService.Delete(userId, claimId);
+            var result = _userOperationClaimService.Delete(userId, claimId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPut("update")]
-        public IActionResult Update(UserOperationClaim operationClaim)
+        public IActionResult Update(UserOperationClaim useroperationClaim)
         {
-            IResult result = _userOperationClaimService.Update(operationClaim);
+            var result = _userOperationClaimService.Update(useroperationClaim);
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }

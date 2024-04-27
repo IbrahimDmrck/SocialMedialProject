@@ -10,68 +10,70 @@
             <h5 class="card-title d-inline">
                 Yetkiler
             </h5>
-             <button class="btn btn-outline-primary float-end" style="font-size:1.25rem;" data-bs-toggle="modal" data-bs-target="#inlineForm">
-                <i class="bi bi-plus-square-dotted fw-bold"></i> Ekle
+            <button class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                Ekle
             </button>
         </div>
         <div class="card-body">
-            <table class="table table-striped table-hover" id="table1">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Yetki Adı</th>
-                        <th class="text-center">İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <div class="table-responsive">
+                <table class="table" id="table1">
+                    <thead>
                         <tr>
-                            <td class="fw-bol claimId">@item.Id</td>
-                            <td class="userName">@item.Name</td>
-                            <td class="d-flex justify-content-center">
-                                <a class="btn btn-outline-success" href="/Admin/Claim/Detail/@item.Id">
-                                    <i class="bi bi-eye-fill"></i>
-                                </a>
-                                <a class="btn btn-outline-warning mx-2 update-btn" href="#">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a class="btn btn-outline-danger delete-button" data-id="@item.Id">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-
-                            </td>
+                            <th>#</th>
+                            <th>Yetki Adı</th>
+                            <th>İşlemler</th>
                         </tr>
-                    }
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td id="name">@item.Name</td>
+                                <td class="d-flex justify-content-center">
+                                    <a class="btn btn-outline-success " href="/Admin/Claim/Detail/@item.Id">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <button class="btn btn-outline-warning mx-2 update-btn" data-id="@item.Id">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger delete-btn" data-id="@item.Id">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-<!--Add Claim Modal-->
 <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel33" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
          role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel33">Yetki Oluştur </h4>
+                <h4 class="modal-title" id="myModalLabel33">Yetki Ekleme Formu </h4>
                 <button type="button" class="close" data-bs-dismiss="modal"
                         aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form action="/Admin/Claim/Add" method="post">
+            <form method="post" action="/Admin/Claim/Add">
                 <div class="modal-body">
-                    <label for="topic">Yetki Adı: </label>
+                    <label for="claim">Yetki: </label>
                     <div class="form-group">
-                        <input id="topic" name="Name" type="text" class="form-control">
+
+                        <input id="claim" type="text" name="Name" class="form-control">
                     </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary"
+                    <button type="reset" class="btn btn-light-secondary"
                             data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">İptal</span>
@@ -79,34 +81,39 @@
                     <button type="submit" class="btn btn-primary ms-1"
                             data-bs-dismiss="modal">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Oluştur</span>
+                        <span class="d-none d-sm-block">Ekle</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!--Update Claim Modal-->
-<div class="modal fade text-left" id="updateClaim" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+
+
+<div class="modal fade text-left" id="claimUpdateForm" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel33">Yetki Oluştur </h4>
+                <h4 class="modal-title" id="myModalLabel33">Yetki Güncelleme Formu </h4>
                 <button type="button" class="close" data-bs-dismiss="modal"
                         aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form id="claimUpdate">
-                <input name="Id" type="hidden" >
+            <form id="UpdateClaimForm">
                 <div class="modal-body">
-                    <label for="topic">Yetki Adı: </label>
+                    <label for="email">Konu Başlığı : </label>
                     <div class="form-group">
-                        <input  name="Name" type="text" class="form-control">
+
+                        <input id="Name" type="text" name="Name" class="form-control">
+                        <input id="Id" type="hidden" name="Id" class="form-control">
                     </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary"
+                    <button type="reset" class="btn btn-light-secondary"
                             data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">İptal</span>
@@ -114,13 +121,14 @@
                     <button type="submit" class="btn btn-primary ms-1"
                             data-bs-dismiss="modal">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Oluştur</span>
+                        <span class="d-none d-sm-block">Güncelle</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 @section scripts {
     <script>
         $(document).ready(function () {
@@ -137,58 +145,55 @@
 
             $(".update-btn").on("click", function (e) {
                 e.preventDefault();
-                $("#updateClaim").modal("show");
-                var Id = $(this).closest("tr").find(".claimId").text();
-                var UserName = $(this).closest("tr").find(".userName").text();
-                console.log(Id);
-                console.log(UserName);
-                $("input[name=Id]").val(Id);
-                $("input[name=Name]").val(UserName);
-            });
 
-            $("#claimUpdate").on("submit", function (e) {
+                $("#claimUpdateForm").modal("show");
+                var id = $(this).data("id");
+                var name = $(this).closest("tr").find("#name").text();
+                $("input[id=Id]").val(id);
+                $("input[id=Name]").val(name);
+                console.log(name + "-" + id);
+
+            })
+
+            $("#UpdateClaimForm").on("submit", function (e) {
                 e.preventDefault();
 
                 $.ajax({
                     type: "PUT",
-                    url: "https://localhost:7110/Admin/Claim/ClaimUpdate",
-                    data: {
-                        Id: $("input[name=Id]").val(),
-                        Name: $(this).find("input[name=Name]").val()
-                    },
+                    url: "/Admin/Claim/Update/",
+                    data: $(this).serialize(),
                     success: function (response) {
                         Toast(response.message);
 
                         setTimeout(function () {
                             window.location.reload();
                         }, 3000);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
-            });
+                    }, error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                })
 
-            $(".delete-button").on("click", function (e) {
+            })
+
+            $(".delete-btn").on("click", function (e) {
                 e.preventDefault();
                 var id = $(this).data("id");
-
                 $.ajax({
                     type: "DELETE",
-                    url: "https://localhost:7110/Admin/Claim/Delete/" + id,
+                    url: "/Admin/Claim/Delete/" + id,
                     success: function (response) {
                         Toast(response.message);
 
                         setTimeout(function () {
                             window.location.reload();
                         }, 3000);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
+                    }, error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                })
+            })
 
-            });
         })
     </script>
 }
+

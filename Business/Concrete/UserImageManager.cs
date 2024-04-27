@@ -75,7 +75,9 @@ namespace Business.Concrete
             _userImageDal.Delete(deletedImage);
             return new SuccessResult(Messages.UserImageDeleted);
         }
-
+        [LogAspect(typeof(FileLogger))]
+        [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IUserImageService.Get")]
         public IResult DeleteAllImagesOfUserByUserId(int userId)
         {
             var deletedImages = _userImageDal.GetAll(c => c.UserId == userId);
@@ -90,7 +92,7 @@ namespace Business.Concrete
             }
             return new SuccessResult(Messages.UserImageDeleted);
         }
-
+        [CacheAspect(2)]
         public IDataResult<List<UserImage>> GetAll()
         {
            return new SuccessDataResult<List<UserImage>>(_userImageDal.GetAll(), Messages.UserImagesListed);
@@ -112,6 +114,7 @@ namespace Business.Concrete
 
         [LogAspect(typeof(FileLogger))]
         [SecuredOperation("admin,user")]
+        [CacheRemoveAspect("IUserImageService.Get")]
         public IResult Update(UserImage userImage, IFormFile file)
         {
             IResult rulesResult = BusinessRules.Run(CheckIfUserImageIdExist(userImage.Id),

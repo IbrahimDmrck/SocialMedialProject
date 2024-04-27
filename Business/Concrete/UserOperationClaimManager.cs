@@ -32,19 +32,23 @@ namespace Business.Concrete
             _userOperationClaimDal = userOperationClaimDal;
         }
 
+
+
         [LogAspect(typeof(FileLogger))]
-        [ValidationAspect(typeof(UserOperationClaimValidator))]
-        [SecuredOperation("admin,user")]
+        [ValidationAspect(typeof(UserOperationValidator))]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IUserOperationClaimService.Get")]
-        public IResult Add(UserOperationClaim entity)
+        public IResult Add(UserOperationClaim userOperationClaim)
         {
-            var rulesResult = BusinessRules.Run(CheckIfUserOperationClaimIdExist(entity.UserId, entity.OperationClaimId));
+
+            var rulesResult = BusinessRules.Run(CheckIfUserOperationClaimIdExist(userOperationClaim.UserId, userOperationClaim.OperationClaimId));
             if (rulesResult != null)
             {
                 return rulesResult;
             }
-            _userOperationClaimDal.Add(entity);
-            return new SuccessResult(Messages.UserClaimAdded);
+
+            _userOperationClaimDal.Add(userOperationClaim);
+            return new SuccessResult(Messages.UserClaimAdd);
         }
 
         [LogAspect(typeof(FileLogger))]
@@ -53,36 +57,46 @@ namespace Business.Concrete
         public IResult Delete(int userId, int claimId)
         {
             var deletedClaim = _userOperationClaimDal.Get(x => x.UserId == userId && x.OperationClaimId == claimId);
-            _userOperationClaimDal.Delete(deletedClaim);
-            return new SuccessResult(Messages.UserClaimDelete);
+            if (deletedClaim != null)
+            {
+                _userOperationClaimDal.Delete(deletedClaim);
+                return new SuccessResult(Messages.UserClaimDeleted);
+            }
+            return new ErrorResult(Messages.UserClaimNotFound);
+        }
+
+        [CacheAspect(2)]
+        public IDataResult<List<UserOperationClaim>> GetAll()
+        {
+            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(), Messages.UserClaimslisted);
+        }
+
+        public IDataResult<List<UserOperationClaim>> GetAllByUserId(int id)
+        {
+            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(x => x.UserId == id), Messages.UserClaimslisted);
         }
 
         [LogAspect(typeof(FileLogger))]
-        [ValidationAspect(typeof(UserOperationClaimValidator))]
-        [SecuredOperation("admin,user")]
+        [ValidationAspect(typeof(UserOperationValidator))]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IUserOperationClaimService.Get")]
-        public IResult Update(UserOperationClaim entity)
+        public IResult Update(UserOperationClaim userOperationClaim)
         {
-            var rulesResult = BusinessRules.Run(CheckIfUserOperationClaimIdExist(entity.UserId,entity.OperationClaimId));
+            var rulesResult = BusinessRules.Run(CheckIfUserOperationClaimIdExist(userOperationClaim.UserId, userOperationClaim.OperationClaimId));
             if (rulesResult != null)
             {
                 return rulesResult;
             }
-            _userOperationClaimDal.Update(entity);
-            return new SuccessResult(Messages.UserClaimUpdated);
-        }
 
-        [CacheAspect(5)]
-        public IDataResult<List<UserOperationClaim>> GetAll()
-        {
-            return new SuccessDataResult<List<UserOperationClaim>>(_userOperationClaimDal.GetAll(),Messages.UsersClaimsListed);
+            _userOperationClaimDal.Update(userOperationClaim);
+            return new SuccessResult(Messages.UserClaimUpdate);
         }
 
         //Business Rules
 
-        private IResult CheckIfUserOperationClaimIdExist(int userId,int claimId)
+        private IResult CheckIfUserOperationClaimIdExist(int userId, int claimId)
         {
-            var result = _userOperationClaimDal.GetAll(u => u.UserId==userId && u.OperationClaimId==claimId).Any();
+            var result = _userOperationClaimDal.GetAll(x => x.UserId == userId && x.OperationClaimId == claimId).Any();
             if (result)
             {
                 return new ErrorResult(Messages.UserClaimExist);

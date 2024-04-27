@@ -23,12 +23,12 @@ namespace Business.Concrete
     public class ArticleManager : IArticleService
     {
         private readonly IArticleDal _articleDal;
-        private readonly ICommentDal _commentDal;
+        private readonly ICommentService _commentService;
 
-        public ArticleManager(IArticleDal articleDal, ICommentDal commentDal)
+        public ArticleManager(IArticleDal articleDal, ICommentService commentService)
         {
             _articleDal = articleDal;
-            _commentDal = commentDal;
+            _commentService = commentService;
         }
 
         [LogAspect(typeof(FileLogger))]
@@ -37,8 +37,8 @@ namespace Business.Concrete
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Add(Article entity)
         {
-           _articleDal.Add(entity);
-            return new SuccessResult(Messages.ArticleAdded);
+            _articleDal.Add(entity);
+            return new SuccessResult(Messages.Article_Add);
         }
 
         [LogAspect(typeof(FileLogger))]
@@ -46,59 +46,62 @@ namespace Business.Concrete
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Delete(int id)
         {
-            var deletedArticle = _articleDal.Get(x=>x.Id==id);
-            if (deletedArticle != null)
+            var deleteArticle = _articleDal.Get(x => x.Id == id);
+            if (deleteArticle != null)
             {
-                var deletedComment = _commentDal.GetAll(x=>x.ArticleId==deletedArticle.Id);
-                if (deletedComment != null)
+                var deledetComment = _commentService.GetbyArticleId(deleteArticle.Id);
+                if (deledetComment != null)
                 {
-                    foreach (var item in deletedComment)
+                    foreach (var item in deledetComment.Data)
                     {
-                        _commentDal.Delete(item);
+                        _commentService.Delete(item.Id);
                     }
                 }
-                _articleDal.Delete(deletedArticle);
-                return new SuccessResult(Messages.ArticleDeleted);
+                _articleDal.Delete(deleteArticle);
+                return new SuccessResult(Messages.Article_Deleted);
             }
             return new ErrorResult(Messages.ArticleNotFound);
+
         }
 
-        [CacheAspect(1)]
+        [CacheAspect(2)]
         public IDataResult<List<Article>> GetAll()
         {
-            return new SuccessDataResult<List<Article>>(_articleDal.GetAll(),Messages.ArticlesListed);
+            return new SuccessDataResult<List<Article>>(_articleDal.GetAll(), Messages.Articles_Listed);
         }
 
-       // [CacheAspect(10)]
+        [CacheAspect(2)]
         public IDataResult<List<ArticleDetailDto>> GetArticleDetails()
         {
-            return new SuccessDataResult<List<ArticleDetailDto>>( _articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
+            return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(), Messages.ArticleWithDetailListed);
         }
 
+        [CacheAspect(2)]
         public IDataResult<ArticleDetailDto> GetArticleDetailsById(int id)
         {
             return new SuccessDataResult<ArticleDetailDto>(_articleDal.GetArticleDetailsById(x => x.Id == id), Messages.ArticleWithDetailListed);
         }
 
+        [CacheAspect(2)]
         public IDataResult<List<ArticleDetailDto>> GetArticleDetailsByUserId(int id)
         {
-            return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(x=>x.UserId==id), Messages.ArticleWithDetailListed);
+            return new SuccessDataResult<List<ArticleDetailDto>>(_articleDal.GetArticleDetails(x => x.UserId == id), Messages.ArticleWithDetailListed);
         }
 
-        //[CacheAspect(10)]
+
+        [CacheAspect(2)]
         public IDataResult<Article> GetEntityById(int id)
         {
-            return new SuccessDataResult<Article>(_articleDal.Get(x=>x.Id==id),Messages.ArticleListed);
+            return new SuccessDataResult<Article>(_articleDal.Get(x => x.Id == id), Messages.Article_Listed);
         }
 
         [LogAspect(typeof(FileLogger))]
-        [ValidationAspect(typeof(ArticleValidator))]
         [SecuredOperation("admin,user")]
         [CacheRemoveAspect("IArticleService.Get")]
         public IResult Update(Article entity)
         {
             _articleDal.Update(entity);
-            return new SuccessResult(Messages.ArticleUpdated);
+            return new SuccessResult(Messages.Article_Edit);
         }
     }
 }

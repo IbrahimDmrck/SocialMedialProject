@@ -49,8 +49,10 @@ builder.Services.AddDependencyResolvers(new ICoreModule[]
 builder.Services.AddControllers();
 builder.Services.AddHangfire(x =>
 {
+    var turkeyTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+    DateTime scheduledTime = TimeZoneInfo.ConvertTime(DateTime.SpecifyKind(DateTime.Today.AddHours(15).AddMinutes(8), DateTimeKind.Unspecified), turkeyTimeZone, TimeZoneInfo.Utc);
     x.UseSqlServerStorage(@"Server=(localdb)\MSSQLLocalDB;Database=HangfireDb;Trusted_Connection=true;TrustServerCertificate=true;");
-    RecurringJob.AddOrUpdate<TopicManager>(j => j.DeleteTopicDaily(), "36 10 * * *");
+    RecurringJob.AddOrUpdate<TopicManager>(j => j.DeleteTopicDaily(), Cron.Daily(scheduledTime.Hour, scheduledTime.Minute));
 });
 builder.Services.AddHangfireServer();
 builder.Services.AddCors();

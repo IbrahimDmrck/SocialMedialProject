@@ -23,28 +23,28 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Articles/getarticlewithdetails");
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("https://localhost:44347/api/Articles/getarticlewithdetails");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<ArticleDetailDto>>(jsonResponse);
                 ViewData["UserName"] = HttpContext.Session.GetString("UserName");
-                return apiDataResponse.Success ? View(apiDataResponse.Data) : RedirectToAction("Index", "Home", new { area = "Admin" });
+                return View(apiDataResponse.Data);
             }
-            return RedirectToAction("Index", "Home", new { area = "Admin" });
+            return View();
         }
 
         [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Articles/getarticlewithdetailsbyid?id=" + id);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync($"https://localhost:44347/api/Articles/getarticlewithdetailsbyid?id={id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
                 ViewData["UserName"] = HttpContext.Session.GetString("UserName");
-                return apiDataResponse.Success ? View(apiDataResponse.Data) : View("Veri gelmiyor");
+                return View(apiDataResponse.Data);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
@@ -53,14 +53,13 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUpdateArticle(int id)
         {
-            
-            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Articles/getbyid?id=" + id);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("https://localhost:44347/api/Articles/getbyid?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
 
-                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
+                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("https://localhost:44347/api/Topics/getall");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();
@@ -69,33 +68,34 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
                     var response = new ArticleTopicsResponse
                     {
                         Article = data.Data,
-                        Topics = apiDataResponse.Data
+                        Topics = apiDataResponse.Data.Where(x => x.Status == true).ToList()
                     };
+
                     return View(response);
                 }
-
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
-
         [Authorize(Roles = "admin")]
-        [HttpPut]
-        public async Task<IActionResult> UpdateContent(Article article)
+        [HttpPost]
+        public async Task<IActionResult> UpdateArticle(Article article)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var jsonArticle = JsonConvert.SerializeObject(article);
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PutAsync("http://localhost:65527/api/Articles/update", content);
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/Articles/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
+
                 var response = new
                 {
                     Message = data.Message
                 };
+
                 return Json(response);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
@@ -108,17 +108,17 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Articles/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("https://localhost:44347/api/Articles/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ArticleDetailDto>>(jsonResponse);
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
 
                 var response = new
                 {
-                    Message = apiDataResponse.Message,
-                    Url = "/Admin/Home/Index"
+                    Message = data.Message
                 };
+
                 return Json(response);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
@@ -131,23 +131,24 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Comments/delete?id=" + id);
+            var responseMessage = await httpClient.DeleteAsync("https://localhost:44347/api/Comments/delete?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<Comment>>(jsonResponse);
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiDataResponse<Comment>>(responseContent);
 
                 var response = new
                 {
-                    Message = apiDataResponse.Message
+                    Message = data.Message
                 };
+
                 return Json(response);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> UpdateComment(CommentDetail commentDetail)
         {
             var httpClient = _httpClientFactory.CreateClient();
@@ -155,15 +156,17 @@ namespace SocialMedia_Web.Areas.Admin.Controllers
             var content = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PutAsync("http://localhost:65527/api/Comments/update", content);
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/Comments/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ApiDataResponse<CommentDetail>>(responseContent);
+
                 var response = new
                 {
                     Message = data.Message
                 };
+
                 return Json(response);
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });

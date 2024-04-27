@@ -1,0 +1,7 @@
+﻿@model List<Topics>
+<select class="js-example-basic-single form-control" name="TopicId" id="topic">
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id">@item.TopicTitle</option>
+    }
+</select>

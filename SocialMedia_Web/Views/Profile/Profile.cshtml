@@ -6,37 +6,41 @@
 }
 
 <div id="mainContent" class="col-8 d-flex flex-wrap col-12 col-md-auto mb-2 align-items-start justify-content-center  p-1">
-
     <div class="row py-3 border rounded-3 shadow ">
-        <form action="deneme.php" method="get">
-            <input id="summernote" type="text" class=" w-100" placeholder="Yorumunuz" style="display: none;">
+        <form action="/share-content" method="post">
+            <input type="hidden" value="@ViewData["UserId"]" name="UserId" />
+            <input type="hidden" value="@DateTime.Now" name="SharingDate" />
+            <div class="form-group w-100 mb-3">
+                <label for="topic" class="d-block fw-bold">Bir Konu Şeçiniz:</label>
+                @await Component.InvokeAsync("_FormTopic")
+            </div>
+            <textarea id="summernote" type="text" class=" w-100" name="Content"></textarea>
             <button class="btn btn-outline-success float-end mt-2" type="submit">Paylaş</button>
         </form>
     </div>
-    <!-- paylaşılan içerik başlangıç -->
     @if (Model != null && Model.Any())
     {
-        foreach (var articleDetail in Model)
+        foreach (var articleDetail in Model.OrderByDescending(x => x.Id))
         {
-            
-                 <div class="row mt-3 w-100">
+            <div class="row mt-3 w-100">
                 <div class="contentUserImage col-2 justify-content-start h-50 py-1 px-1 text-center">
                     <div class="userImageArea border py-3 mb-4 mt-3  h-auto">
                         <a class="d-inline-flex align-items-center text-decoration-none" href="">
-                            <img src="http://localhost:65527/@articleDetail.UserImage" class="img-fluid img-thumbnail rounded-circle" width="50" height="50" alt="">
+                            <img src="https://localhost:44347/@articleDetail.UserImage" class="img-fluid img-thumbnail rounded-circle" width="50" height="50" alt="">
                         </a>
                         <h6>@articleDetail.UserName</h6>
                     </div>
                 </div>
                 <div class="contents col-10 border ps-3 py-3 ms-0 shadow">
-                    <div class="mb-1">
-                        <span class=""><b><i>#@articleDetail.TopicTitle</i></b></span>
-                        @if (UserId == articleDetail.UserId)
+                    <div>
+                        <span class="fw-bold"><i>#@articleDetail.TopicTitle</i></span>
+                        @if ((int)ViewData["UserId"] == articleDetail.UserId)
                         {
-                            <button type="button" class="btn btn-close float-end pt-3 delete-article" data-article="@articleDetail.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
-                            <button class="btn btn-outline-warning  border-0 float-end get-article" data-article="@articleDetail.Id" data-bs-toggle="modal" data-bs-target="#articleUpdateModal"><i class="bi bi-pencil-square"></i></button>
+                            <button type="button" class="btn-close float-end pt-3 delete-article" data-article="@articleDetail.Id" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button>
+                            <button class="btn btn-outline-warning border-0 float-end get-article" data-article="@articleDetail.Id" data-bs-toggle="modal" data-bs-target="#articleUpdateModal"><i class="bi bi-pencil-square"></i></button>
                         }
                     </div>
+
                     @Html.Raw(articleDetail.Content)
 
                     <div class="pt-3 ps-2 pe-2">
@@ -51,27 +55,37 @@
                                 @foreach (var comment in articleDetail.CommentDetails)
                                 {
                                     <div class="d-flex flex-wrap col-12 col-md-auto mb-2 align-items-center justify-content-center">
-                                        <div class="contentUserImage col-2 justify-content-start h-25 py-1 px-1 text-center">
-                                            <div class="userImageArea border py-3 mb-4 mt-3 h-auto">
-                                                <a class="d-inline-flex align-items-center text-decoration-none" href="#">
-                                                    <img class="img-fluid rounded-circle " src="http://localhost:65527/@comment.Image" width="50" height="50" alt="">
-                                                </a>
-                                                <h6>@comment.UserName</h6>
+                                        @if (comment.Id != -1)
+                                        {
+                                            <div class="contentUserImage col-2 justify-content-start h-25 py-1 px-1 text-center">
+                                                <div class="userImageArea border py-3 mb-4 mt-3 h-auto">
+                                                    <a class="d-inline-flex align-items-center text-decoration-none" href="#">
+                                                        <img class="img-fluid rounded-circle " src="https://localhost:44347/@comment.Image" width="50" height="50" alt="">
+                                                    </a>
+                                                    <h6>@comment.UserName</h6>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-10 border ps-3 py-3 ms-0 shadow">
-                                            <div class="mb-1">
-                                                @if (UserId == comment.UserId)
+                                            <div class="col-10 border ps-3 py-3 ms-0 shadow">
+                                                @if ((int)ViewData["UserId"] == comment.UserId)
                                                 {
-                                                    <button type="button" class="btn btn-close float-end delete-comment me-2" data-comment="@comment.Id" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal1"></button>
+                                                    <div>
+
+                                                        <button type="button" class="btn-close float-end delete-comment" data-comment="@comment.Id" data-bs-toggle="modal" data-bs-target="#staticBackdrop1"></button>
+                                                    </div>
                                                 }
+                                                @comment.CommentText
                                             </div>
-                                            @comment.CommentText
-                                        </div>
+                                        }
+                                        else
+                                        {
+                                            <p>Henüz Yorum Yapılmadı</p>
+                                        }
+
                                     </div>
                                 }
                             }
                             <!-- Yorum Alanı bitiş -->
+
                             <div class="dropdown-item w-100 mb-3">
                                 <form action="#" method="post">
                                     <label for="commentText">Yorumunuz : </label>
@@ -83,25 +97,24 @@
                         <button class="btn btn-outline-secondary float-end">@articleDetail.SharingDate</button>
                     </div>
                 </div>
+
             </div>
-            
-           
         }
     }
 
-
-    <!-- paylaşılan içerik bitiş -->
 
 </div>
 <div id="topRight" class="sticky-top col-2  text-center ms-1">
     <div class="accordion mt-3" id="accordionPanelsStayOpenExample">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button border border-primary" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                <button class="accordion-button border border-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                        aria-controls="panelsStayOpen-collapseOne">
                     <i class="bi bi-hash"></i>İstatistiklerim
                 </button>
             </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" style="">
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                 <div class="accordion-body accordion-profile">
                     @foreach (var articleDetail in Model)
                     {
@@ -109,10 +122,12 @@
                             <h6>@articleDetail.TopicTitle</h6>
                             <div class=" align-items-center justify-content-center justify-content-md-between mb-5">
                                 <a href="" class="col-8 border py-1 px-1 mb-5  float-start text-decoration-none"><i class="bi bi-calendar3 me-2"></i>@articleDetail.SharingDate</a>
-                                <a href="" class="col-4 border py-1 px-1 mb-5 float-end text-decoration-none"><i class="bi bi-chat-left-text-fill me-2"></i>@articleDetail.CommentDetails.Count(x=>x.UserId != UserId && x.UserId != -1)</a>
+                                <a href="" class="col- 4 border py-1 px-1 mb-5 float-end text-decoration-none"><i class="bi bi-chat-left-text-fill me-2"></i>@articleDetail.CommentDetails.Where(x => x.Id != -1).Count()</a>
                             </div>
                         </div>
                     }
+
+
                 </div>
             </div>
         </div>
@@ -120,106 +135,110 @@
     </div>
 
 </div>
-
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3" id="exampleModalLabel">UYARI !!</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">İçerik Siliniyor !</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/delete-article" method="post">
+
                     <div class="input-group mt-3 mb-3">
                         <input type="hidden" name="id" class="form-control" id="articleId">
-                        <span>Bu paylaşımı silmek istediğinizden emin misiniz ?</span>
+                        <span>Bu paylaşımı silmek istediğinize emin misiniz ?</span>
                         <span>Bu işlemi geri alamazsınız !</span>
                     </div>
 
-                    <div class="modal-footer text-center">
-                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
-                        <button class="btn btn-success">Sil</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-success">Eminim Sil</button>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Modal1 -->
-<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3" id="exampleModalLabel1">UYARI !!</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel1">Yorum Siliniyor !</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/delete-comment" method="post">
+
                     <div class="input-group mt-3 mb-3">
                         <input type="hidden" name="id" class="form-control" id="commentId">
-                        <span>Bu yorumu silmek istediğinizden emin misiniz ?</span>
+                        <span>Bu yorumu silmek istediğinize emin misiniz ?</span>
                         <span>Bu işlemi geri alamazsınız !</span>
                     </div>
 
-                    <div class="modal-footer text-center">
-                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
-                        <button class="btn btn-success">Sil</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-success">Eminim Sil</button>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- articleUpdateModal -->
-<div class="modal modal-lg fade" id="articleUpdateModal" tabindex="-1" aria-labelledby="articleUpdateModalLabel" aria-hidden="true">
+<!-- ArticleUpdateModal -->
+<div class="modal modal-lg fade" id="articleUpdateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="articleUpdateModalLabel1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5 text-warning text-center mx-auto w-100 fs-3 " id="articleUpdateModalLabel">Güncelleme İşlemi</h1>
+                <h1 class="modal-title fs-5" id="articleUpdateModalLabel1">Güncelleme İşlemi</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/update-content" method="post">
-                    <div class="form-group w-100 mb-3">
-                        <input type="hidden" name="Id" id="Id" />
-                        <input type="hidden" value="@ViewData["UserId"]" name="UserId" />
-                        <input type="hidden" value="@DateTime.Now" name="SharingDate" />
-                        <label for="topic" class="d-block fw-bold">Bir Konu Seçiniz:</label>
-                        <select class="form-select select-topic" name="TopicId" aria-label="Konular">
+                    <input type="hidden" name="Id" class="form-control" id="Id">
+                    <input type="hidden" name="UserId" class="form-control" value="@ViewData["UserId"]">
+                    <input type="hidden" name="SharingDate" class="form-control" value="@DateTime.Now">
+
+                    <label class="form-label">Bir Konu Seçiniz:</label>
+                    <div class="input-group mt-1 mb-3">
+                        <select class="form-select select-topic" name="TopicId">
                             <option>-Lütfen Bir Konu Başlığı Seçiniz-</option>
                         </select>
                     </div>
+
                     <div class="input-group mt-3 mb-3">
-                        <textarea id="summernote1" class=" w-100" name="Content"></textarea>
+                        <textarea id="summernote1" class="w-100" name="Content"></textarea>
                     </div>
 
-                    <div class="modal-footer text-center">
-                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">iptal</button>
-                        <button class="btn btn-success">Güncelle</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-success">Güncelle</button>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
-
-@section scripts{
+@section scripts {
     <script>
         $(document).ready(function () {
-
             $(".contents > * > img").addClass("img-fluid");
+
             $(".comment-form").on("click", function (e) {
                 e.preventDefault();
-                var form = $(this).closest('form');
+                var form = $(this).closest("form");
                 var ArticleId = $(this).data("id");
                 var UserId = @ViewData["UserId"];
-                var CommentText = form.find('input[name=CommentText]').val();
+                var CommentText = form.find("input[name=CommentText]").val();
                 var CommentDate = new Date().toLocaleString();
-
-                console.log(ArticleId + " , " + UserId + " , " + CommentText + " , " + CommentDate);
+                console.log(ArticleId + ", " + UserId + " , " + CommentText + " , " + CommentDate);
 
                 $.ajax({
                     type: "POST",
@@ -228,21 +247,23 @@
                         ArticleId: ArticleId,
                         UserId: UserId,
                         CommentText: CommentText,
-                        CommentDate: CommentDate,
+                        CommentDate: CommentDate
                     },
                     success: function (response) {
                         window.location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
+                    }, error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                })
             })
 
             $(".get-article").on("click", function (e) {
                 e.preventDefault();
+
                 var ArticleId = $(this).data("article");
                 console.log(ArticleId);
+
+                var tag = $(".select-topic");
 
                 $.ajax({
                     type: "GET",
@@ -253,19 +274,18 @@
                     success: function (response) {
                         console.log(response.article);
                         console.log(response.topics);
+
                         $("#Id").val(ArticleId);
                         $("#summernote1").summernote('code', response.article.content);
-                        var tag = $(".select-topic");
                         tag.empty();
                         $.each(response.topics, function (index, item) {
-                            console.log(item.content);
-                            var option = `<option value="${item.id}" ${item.id == response.article.topicId ? 'selected' : ''}>${item.topicTitle}</option>`;
+                            var option = `<option value="${item.id}" ${response.article.topicId == item.id ? 'selected' : ''}>${item.topicTitle}</option>`;
                             tag.append(option);
                         });
-                    },
-                    error: function (xhr, status, error) {
+
+                    }, error: function (xhr, status, error) {
                         console.error("Ajax Error:", error);
-                    },
+                    }
                 });
             })
 
@@ -282,9 +302,11 @@
                 console.log(CommentId);
                 $("#commentId").val(CommentId);
             })
+
+
         });
     </script>
-
 }
+
 
 

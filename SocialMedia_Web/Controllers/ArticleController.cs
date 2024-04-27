@@ -28,7 +28,7 @@ namespace SocialMedia_Web.Controllers
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/Articles/add", content);
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/Articles/add", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var sharedResponse = await GetSharedResponse(responseMessage);
@@ -52,6 +52,24 @@ namespace SocialMedia_Web.Controllers
         }
 
         [Authorize(Roles = "admin,user")]
+        [HttpPost("delete-article")]
+        public async Task<IActionResult> DeleteArticle(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync("https://localhost:44347/api/Articles/delete?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var sharedResponse = await GetSharedResponse(responseMessage);
+                TempData["Message"] = sharedResponse.Message;
+                TempData["Success"] = sharedResponse.Success;
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        [Authorize(Roles = "admin,user")]
         [HttpPost("update-content")]
         public async Task<IActionResult> UpdateContent(Article article)
         {
@@ -60,30 +78,14 @@ namespace SocialMedia_Web.Controllers
             var content = new StringContent(jsonArticle, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PutAsync("http://localhost:65527/api/Articles/update", content);
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/Articles/update", content);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var sharedResponse = await GetSharedResponse(responseMessage);
                 TempData["Message"] = sharedResponse.Message;
                 TempData["Success"] = sharedResponse.Success;
                 return RedirectToAction("Index", "Home");
-            }
-            return RedirectToAction("Index", "Home");
-        }
 
-        [Authorize(Roles = "admin,user")]
-        [HttpPost("delete-article")]
-        public async Task<IActionResult> DeleteArticle(int id)
-        {
-            var httpClient = _httpClientFactory.CreateClient();
-            var token = HttpContext.Session.GetString("Token");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Articles/delete?id=" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                TempData["Message"] = "Paylaşım Silindi";
-                TempData["Success"] = true;
-                return RedirectToAction("Index", "Home");
             }
             return RedirectToAction("Index", "Home");
         }
@@ -93,14 +95,14 @@ namespace SocialMedia_Web.Controllers
         public async Task<IActionResult> GetUpdateArticle(int id)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Articles/getbyid?id=" + id);
+            var responseMessage = await httpClient.GetAsync("https://localhost:44347/api/Articles/getbyid?id=" + id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
 
-                var responseMessage1 = await _httpClientFactory.CreateClient().GetAsync("http://localhost:65527/api/Topics/getall");
-                if (responseMessage.IsSuccessStatusCode)
+                var responseMessage1 = await httpClient.GetAsync("https://localhost:44347/api/Topics/getall");
+                if (responseMessage1.IsSuccessStatusCode)
                 {
                     var jsonResponse1 = await responseMessage1.Content.ReadAsStringAsync();
                     var apiDataResponse = JsonConvert.DeserializeObject<ApiListDataResponse<Topics>>(jsonResponse1);
@@ -108,15 +110,14 @@ namespace SocialMedia_Web.Controllers
                     var response = new ArticleTopicsResponse
                     {
                         Article = data.Data,
-                        Topics = apiDataResponse.Data
+                        Topics = apiDataResponse.Data.Where(x => x.Status == true).ToList()
                     };
+
                     return Json(response);
                 }
-
             }
             return RedirectToAction("Index", "Home");
         }
-
 
 
         private async Task<ApiDataResponse<Article>> GetSharedResponse(HttpResponseMessage responseMessage)
@@ -124,5 +125,8 @@ namespace SocialMedia_Web.Controllers
             var responseContent = await responseMessage.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ApiDataResponse<Article>>(responseContent);
         }
+
+
+
     }
 }

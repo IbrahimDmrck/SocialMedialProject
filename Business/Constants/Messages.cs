@@ -10,79 +10,76 @@ namespace Business.Constants
 {
     public class Messages
     {
-        public static string UserRegistered="Kayıt başarılı bir şekilde yapıldı. Lütfen Bekleyin, Yönlendiriliyorsunuz";
-        public static string UserNotFound="Girilen bilgilere ait bir kullanıcı bulunamadı";
-        public static string PasswordError="Yanlış şifre girdiniz, lütfen şifrenizi kontrol edip tekrar deneyin";
-        public static string SuccessfulLogin="Giriş Başarılı , Hoşgeldiniz";
-        public static string UserAlreadyExists="Böyle bir kullanıcı zaten kayıtlı";
-        public static string AccessTokenCreated="Token Oluşturuldu";
-        public static string PasswordChanged="Şifre başarılı bir şekilde değiştirildi";
-        public static string AuthorizationDenied="Yetkisiz Kullanıcı";
-        public static string UsersListed="Kullanıcılar listelendi";
-        public static string UserListed="Kullanıcı listelendi";
-        public static string UserNotExist="Kullanıcı bulunamadı";
-        public static string UserAdded="Kullanıcı başarıyla eklendi";
-        public static string UserUpdated="Kullanıcı başarıyla güncellendi";
-        public static string UserDeleted="Kullanıcı silindi";
-        public static string UserEmailExist="Bu maile ait kullanıcı zaten tanımlı";
-        public static string UserEmailNotAvailable="Bu kullanıcı maili erişilebilir değil";
-
-        public static string ArticleListed="Paylaşım listelendi";
-        public static string ArticlesListed="Paylaşımlar listelendi";
-        public static string ArticleUpdated="Paylaşım güncellendi";
-        public static string ArticleDeleted="Paylaşım silindi";
-        public static string ArticleAdded="Paylaşım yayımlandı";
-
-        public static string Comment_Add="Yorum yapıldı";
-        public static string Comment_Delete="Yorum silindi";
-        public static string Comment_Update="Yorum güncellendi";
-        public static string Comment_Listed="Yorum listelendi";
-        public static string Comments_Listed="Yorumlar listelendi";
-
-        public static string Topic_Add="Konu oluşturuldu";
+        public static string UserClaimNotFound = "Kullanıcı yetkisi bulunamadı";
+        public static string UsersListed = "Kullanıcılar Listelendi";
+        public static string Article_Add = "Paylaşım yapıldı";
+        public static string Article_Edit = "Paylaşım Düzenlendi";
+        public static string Article_Deleted = "içerik silindi";
+        public static string Articles_Listed = "içerikler listelendi";
+        public static string Article_Listed = "içerik listelendi";
+        public static string Comment_Add = "yorum yapıldı";
+        public static string Comment_Delete = "yorum silindi";
+        public static string Comment_Update = "yorum güncellendi";
+        public static string Comment_Listed = "yorum listelendi";
+        public static string Comments_List = "Yorumlar listelendi";
+        public static string Topic_Add = "konu oluşturuldu";
         public static string Topic_Delete = "Konu silindi";
-        public static string Topic_Update = "Konu güncellendi";
-        public static string Topic_Listed = "Konu listelendi";
-        public static string Topics_Listed = "Konular listelendi";
-        public static string ArticleWithDetailListed="Paylaşımlar ve yorumları listelendi";
-
-        public static string UserImagesListed = "Kullanıcının resimleri listelendi";
-        public static string UsersImagesListed = "Tum Kullanıcı resimleri listelendi";
-        public static string UserImageListed = "Kullanıcı resmi listelendi";
-        public static string UserImageAdded = "Kullanıcı resmi eklendi";
-        public static string UserImageDeleted = "Kullanıcı resmi silindi";
-        public static string UserImageUpdated = "Kullanıcı resmi guncellendi";
-        public static string ErrorUpdatingImage = "Resim guncellenirken hata olustu";
-        public static string ErrorDeletingImage = "Resim silinirken hata olustu";
-        public static string UserImageLimitExceeded = "Bu kullanıcıya daha fazla resim eklenemez";
-        public static string UserImageIdNotExist = "Kullanıcı resmi mevcut degil";
-        public static string UserImageIdExist = "Kullanıcı resmi zaten mevcut";
-
-        public static string GetDefaultImage = "Kullanıcının bir resmi olmadigi icin varsayilan resim getirildi";
-        public static string NoPictureOfTheUser = "Kullanıcının hic resmi yok";
-        public static string TrueComment="Geçmiş bildirimler";
-        public static string FalseComment = "Yeni bildirimler";
-
-        public static string SendVerifyCode="E-postanıza şifre güncelleme işlemi için doğrulama kodu gönderilmiştir";
-        public static string VerifyCodeDeleted="Doğrulama Kodu Silindi";
-        public static string CodeNotFound="Herhangi bir kod bulunamadı, lütfen tekrar deneyin";
-        public static string VerificationSuccessfull= "Doğrulama başarılı, yönlendiriyorsunuz";
-
-        public static string ClaimAdded="Yetki Oluşturuldu";
-        public static string ClaimDeleted="Yetki Silindi";
-        public static string ClaimsListed="Yetkiler Listelendi";
-        public static string ClaimListed="Yetki Getirildi";
-        public static string ClaimUpdated="Yetki Güncellendi";
-        public static string Claim_Delete="Yetki Silindi";
-
-        public static string UserClaimUpdated="Yetki Değiştirildi";
-        public static string UserClaimDelete="Yetki Kaldırıldı";
-        public static string UserClaimAdded="Yetki Eklendi";
-        public static string UsersClaimsListed="Kullanıcı yetkileri listelendi";
-        public static string CommentNotFound="Silinecek yourm bulunamadı";
-        public static string ArticleNotFound="Silinecek Article Bulunamadı";
-        public static string ClaimExist="Bu yetki zaten var";
-        public static string UserClaimExist="Bu kullanıcını bu yetkiye zaten sahip";
+        public static string Topic_Update = "konu güncellendi";
+        public static string Topic_List = "Konu listelendi";
+        public static string Topics_List = "Konular listelendi";
+        public static string UserRegistered = "Kullanıcı kayıt edildi";
+        public static string UserNotFound = "Kullanıcı bulunamadı";
+        public static string PasswordError = "Şifre hatalı";
+        public static string SuccessfulLogin = "giriş başarılı";
+        public static string UserExist = "Kullanıcı mevcut";
+        public static string UserNotExist = "Böyle bir kullanıcı yok";
+        public static string UserEmailExist = "Bu e-posta kullanılıyor";
+        public static string userEmailNotAvailable = "Geçersiz bir email girdiniz";
+        public static string UserUpdated = "Kullanıcı güncellendi";
+        public static string UserListed = "Kullanıcı listelendi";
+        public static string userDeleted = "Kullanıcı silindi";
+        public static string UserAdded = "Kullanıcı eklendi";
+        public static string AuthorizationDenied = "Bu işlemi yapabilmek için yetkiniz yok";
+        public static string ArticleWithDetailListed = "Paylaşımlar ve yorumları listelendi";
+        public static string UserImageLimitExceeded = "";
+        public static string GetDefaultImage = "varsayılan görsel getirildi";
+        public static string UserImageAdded = "kullanıcı görseli eklendi";
+        public static string ErrorDeletingImage = "görsel silinemedi";
+        public static string UserImageDeleted = "kullanıcı görseli silindi";
+        public static string NoPictureOfTheUser = "kullanıcı görseli yok";
+        public static string UserImagesListed = "Kullanıcı görselleri listeledi";
+        public static string UserImageListed = "Kullanıcı görseli listelendi";
+        public static string ErrorUpdatingImage = "Görsel güncellenirken bir hata oluştu";
+        public static string UserImageUpdated = "Kullanıcı görseli güncellendi";
+        public static string UserImageIdNotExist = "Kullanıcı görseli bulunamadı";
+        public static string SendVerifyCode = " E-posta adresinize doğrulama Kodu gönderildi";
+        public static string VerifyCodesDeleted = "Doğrulama kodu silindi";
+        public static string CodeNotFound = "KOd bulunamadı";
+        public static string VerificationSuccessfull = "Kod doğrulama başarılı, şifre güncelleme sayfasına yönlendiriliyorsunuz";
+        public static string PasswordChanged = "Şifre başarıyla güncellendi, ana sayfaya yönlendiriliyorsunuz";
+        public static string ClaimAdd = "Yetki Eklendi";
+        public static string ClaimsListed = "Yetkiler listelendi";
+        public static string UserClaimAdd = "Kullanıcıya Yetki Eklendi";
+        public static string UserClaimslisted = "Kullanıcı Yetkileri Listelendi";
+        public static string UserClaimUpdate = "Kullanıcıya ait yetki güncellendi";
+        public static string ClaimDeleted = "Yetki silindi";
+        public static string UserClaimDeleted = "Kullanıcı Yetkisi Kaldırıldı";
+        public static string UserImageIdExist;
+        public static string ArticleNotFound;
+        public static string CommentNotFound;
+        public static string ClaimExist;
+        public static string ClaimNotFound;
+        public static string TopicNotFound;
+        public static string UserClaimExist;
+        internal static string FalseComment;
+        internal static string Comments_Listed;
+        internal static string ClaimUpdate;
+        internal static string ClaimListed;
+        internal static string Topics_Listed;
+        internal static string Topic_Listed;
+        internal static string UserClaimAdded;
+        internal static string UserClaimDelete;
+        internal static string UsersClaimsListed;
     }
 }
     

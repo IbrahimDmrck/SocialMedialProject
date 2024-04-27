@@ -20,7 +20,7 @@ namespace Business.Abstract
         IResult Update(User user);
         IResult UpdateByDto(UserDto userDto);
         IDataResult<List<OperationClaim>> GetClaims(User user);
-         Task <IDataResult<User>> GetUserByMail( string email);
-        IDataResult<UserDto> GetUserDtoByMail(string email);
+        IDataResult<User> GetUserByMail( string email);
+        IResult DeleteById(int userId);
     }
 }

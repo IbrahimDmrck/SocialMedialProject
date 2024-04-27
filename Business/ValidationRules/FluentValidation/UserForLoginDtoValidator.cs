@@ -1,5 +1,10 @@
 ﻿using Entities.DTOs;
 using FluentValidation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.ValidationRules.FluentValidation
 {
@@ -7,8 +12,16 @@ namespace Business.ValidationRules.FluentValidation
     {
         public UserForLoginDtoValidator()
         {
-            RuleFor(x => x.Email).NotEmpty().NotNull().EmailAddress().WithMessage("Lütfen geçerli bir e-posta adresi yazınız");
-            RuleFor(x => x.Password).NotEmpty().NotNull().MinimumLength(8).WithMessage("Lütfen şifrenizi en az 8 karakter uzunluğunda yazınız");
+            RuleFor(x => x.Email).NotEmpty();
+            RuleFor(x => x.Email).NotNull();
+            RuleFor(x => x.Email).EmailAddress();
+
+            RuleFor(x => x.Password).NotEmpty();
+            RuleFor(x => x.Password).NotNull();
+            RuleFor(x => x.Password).MinimumLength(8);
+            RuleFor(x => x.Password).MaximumLength(25);
+
+
         }
     }
 }

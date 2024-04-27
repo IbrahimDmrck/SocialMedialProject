@@ -4,63 +4,60 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="col-md-12">
+<div class="col-12">
     <div class="card">
         <div class="card-header">
             <h5 class="card-title">@Model.TopicTitle</h5>
         </div>
         <div class="card-body">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Paylaşım</a>
+                    <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab"
+                       aria-controls="home" aria-selected="true">Paylaşım</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Yorumlar</a>
+                    <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
+                       aria-controls="profile" aria-selected="false">Yorum</a>
                 </li>
 
             </ul>
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade active show pt-3" id="home" role="tabpanel" aria-labelledby="home-tab">
-
-
-                    <p class="mt-2">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <p class='my-2'>
                         @Html.Raw(Model.Content)
                     </p>
-
                 </div>
-                <div class="tab-pane fade pt-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     @foreach (var item in Model.CommentDetails)
                     {
-                        <div class="row border border-light border-2 rounded-3  p-2 mb-2">
-                            <div class="col-1 text-center" style="border-right: 2px solid #ced4da">
+                        <div class="row border border-light border-2 rounded-3 p-2 mb-2">
+                            <div class="col-1 text-center" style="border-right:2px solid #ced4da">
                                 @if (item.Image == "")
                                 {
-                                    <img class="img-fluid mb-2" src="http://localhost:65526/images/default.jpg" alt="@item.UserName" title="@item.UserName" />
+                                    <img class="img-fluid mb-2" src="https://localhost:44345/images/default.jpg" />
                                 }
                                 else
                                 {
-                                    <img class="img-fluid mb-2" src="http://localhost:65526/@item.Image" alt="@item.UserName" title="@item.UserName">
+                                    <img class="img-fluid mb-2" src="https://localhost:44345/@item.Image" />
                                 }
                                 <small style="font-size:0.7em;">@item.CommentDate.ToShortDateString()</small>
                                 <small style="font-size:0.7em;">@item.CommentDate.ToShortTimeString()</small>
-
                             </div>
                             <div class="col-11">
-
-                                <ul class="list-group">
-                                    @* <li class="list-group-item">@item.UserName</li> *@
-                                        <h6 id="userId" data-id="@item.UserId">@item.UserName</h6>
-                                        <h6 id="articleId" data-id="@item.ArticleId" hidden></h6>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <ul class="list-group comment-list">
+                                    <h6 id="userId" data-id="@item.UserId">@item.UserName</h6>
+                                    <h6 id="articleId" data-id="@item.ArticleId" hidden></h6>
+                                    <li class="list-group-item comment d-flex justify-content-between align-items-center">
                                         <span id="commentText">@item.CommentText</span>
                                         <ul class="list-group">
                                             <li class="list-group-item">
-                                                <button class="btn btn-sm btn-success ms-2 update-btn" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                                                <button class="btn btn-sm btn-success ms-2 update-btn" data-id="@item.Id" data-bs-toggle="modal"
+                                                        data-bs-target="#inlineForm">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                             </li>
                                             <li class="list-group-item">
-                                                <button class="btn btn-sm btn-danger ms-2 delete-button" data-id="@item.Id">
+                                                <button class="btn btn-sm btn-danger ms-2 delete-btn" data-id="@item.Id">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </li>
@@ -69,7 +66,6 @@
                                 </ul>
                             </div>
                         </div>
-
                     }
                 </div>
 
@@ -84,25 +80,25 @@
          role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel33">Yorum GÜncelle </h4>
+                <h4 class="modal-title" id="myModalLabel33">Yorum Güncelleme Formu </h4>
                 <button type="button" class="close" data-bs-dismiss="modal"
                         aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form id="updateComment">
-                <input name="Id" type="hidden" value="">
-                <input name="ArticleId" type="hidden" value="">
-                <input name="UserId" type="hidden" value="">
-                <input name="CommentDate" type="hidden" value="@DateTime.Now">
+            <form id="UpdateCommentForm">
                 <div class="modal-body">
-                    <label for="topic">Yorum : </label>
+                    <label for="email">Yorum: </label>
                     <div class="form-group">
-                        <input id="comment" name="CommentText" type="text" class="form-control">
+                        <input type="hidden" name="Id">
+                        <input type="hidden" name="UserId">
+                        <input type="text" name="CommentText" class="form-control">
+                        <input type="hidden" name="CommentDate" value="@DateTime.Now" class="form-control">
                     </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary"
+                    <button type="reset" class="btn btn-light-secondary"
                             data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">İptal</span>
@@ -119,11 +115,8 @@
 </div>
 
 @section scripts {
-
-
     <script>
         $(document).ready(function () {
-
             function Toast(message) {
                 Toastify({
                     text: message,
@@ -137,32 +130,27 @@
 
             $(".update-btn").on("click", function (e) {
                 e.preventDefault();
-                // var id = $(".update-btn").data("id");
-                // var userId = $("#userId").data("id");
-                // var articleId = $("#articleId").data("id");
-                var commentText = $("#commentText").text();
-                // $("input[name=Id]").val(id);
-                // $("input[name=ArticleId]").val(articleId);
-                // $("input[name=UserId]").val(userId);
+                var id = $(this).data("id");
+                var userId = $(this).closest(".comment-list").find("#userId").data("id");
+                var commentText = $(this).closest(".comment").find("#commentText").text();
                 $("input[name=CommentText]").val(commentText);
-                console.log("yorum id = >" + id);
-                console.log(" kullanıcı id => " + userId);
-                console.log("Paylaşım id => " + articleId);
-                console.log("yorum text => " + commentText);
+                $("input[name=Id]").val(id);
+                $("input[name=UserId]").val(userId);
+
             });
-            
-            $("#updateComment").on("submit", function (e) {
+
+            $("#UpdateCommentForm").on("submit", function (e) {
                 e.preventDefault();
+
                 $.ajax({
-                    type: "PUT",
-                    url: "https://localhost:7110/Admin/Home/UpdateComment",
+                    type: "POST",
+                    url: "/Admin/Home/UpdateComment",
                     data: {
-                        Id: $(".update-btn").data("id"),
-                        UserId: $("#userId").data("id"),
+                        Id: $("input[name=Id]").val(),
+                        UserId: $("input[name=UserId]").val(),
                         ArticleId: $("#articleId").data("id"),
                         CommentText: $("input[name=CommentText]").val(),
-                        CommentDate: $("input[name=CommentDate]").val(),
-                        
+                        CommentDate: $("input[name=CommentDate]").val()
                     },
                     success: function (response) {
                         Toast(response.message);
@@ -170,34 +158,32 @@
                         setTimeout(function () {
                             window.location.reload();
                         }, 3000);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
+                    }, error: function (xhr, status, error) {
+                        console.error(error);
+                    }
                 });
-
             });
 
-            $(".delete-button").on("click", function (e) {
+            $(".delete-btn").on("click", function (e) {
                 e.preventDefault();
                 var id = $(this).data("id");
+                console.log(id);
                 $.ajax({
                     type: "DELETE",
-                    url: "https://localhost:7110/Admin/Home/CommentDelete/" + id,
+                    url: "/Admin/Home/CommentDelete/" + id,
                     success: function (response) {
+                        console.log(response);
                         Toast(response.message);
 
                         setTimeout(function () {
                             window.location.reload();
                         }, 3000);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
+                    }, error: function (xhr, status, error) {
+                        console.error(error);
+                    }
                 });
             });
 
-        });
+        })
     </script>
-
 }

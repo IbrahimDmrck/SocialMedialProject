@@ -13,6 +13,6 @@ namespace Business.Abstract
         IResult Add(UserOperationClaim entity);
         IResult Update(UserOperationClaim entity);
         IDataResult<List<UserOperationClaim>> GetAll();
-
+        IDataResult<List<UserOperationClaim>> GetAllByUserId(int id);
     }
 }

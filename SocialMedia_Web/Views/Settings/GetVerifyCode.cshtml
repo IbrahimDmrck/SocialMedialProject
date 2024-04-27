@@ -3,148 +3,134 @@
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
 }
 
-<div class="col-10 d-flex flex-wrap gap-3 justify-content-center  p-1">
+<div class="col-10 d-flex flex-wrap gap-3 justify-content-center p-1">
     <div class="row col-12">
         <ul class="w-auto mx-auto border-1 rounded-2 shadow p-5">
-            <li>Lütfen E-posta hesabınızı kontrol edin !</li>
-            <li>E-posta adresinize gönderilen 12 haneli doğrulama kodunu yazın !</li>
-            <li>Kodu doğru girmeniz halinde şifre güncelleme sayfasına yönlendirileceksizin.</li>
-            <li>Gönderilen kodun süresi 3 dakikadır.</li>
-            <li style="list-style-type:none;text-align:center;font-size:2rem;" class="pt-5"><span id="countdown">00 : 00 : 00 : 0000</span></li>
+            <li>Lütfen E-posta adresinizi kontrol edin !</li>
+            <li>E-posta adresinize gönderilen 12 haneli doğrulama kodunu yazın</li>
+            <li>Kodu doğru girmeniz halinde şifre güncelleme sayfasına yönlendirileceksiniz</li>
+            <li>Gönderilen kodun süresi 3 dakikadır</li>
+            <li style="list-style-type:none;text-align:center;font-size:2rem;" class="pt-5">
+                <span id="countdown">00 : 00 : 00 : 00000</span>
+            </li>
         </ul>
-
     </div>
 
-    <div id="codeInput" class=" col-9 border-1 rounded-2 shadow">
+    <div id="codeInput" class="col-9 border-1 rounded-2 shadow">
         <form id="verifyForm">
             <div class="form-group d-flex justify-content-center p-5">
-            <label class="d-flex">Kodu Giriniz :
+                <label class="d-flex">
+                    Kodu Giriniz :
                     <input type="text" name="code" class="form-control w-50 ms-3" />
                 </label>
             </div>
             <div class="form-group d-flex justify-content-center">
-            <button type="submit" class="btn btn-primary w-25 mb-2">Gönder</button>
+                <button type="submit" class="btn btn-primary w-25 mb-2">Gönder</button>
             </div>
         </form>
         <a href="#" id="code" class="btn btn-outline-primary" hidden>Kodu Tekrar Gönder</a>
     </div>
 
-
-
 </div>
-
 <!-- Modal -->
-<div class="modal fade" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5 text-center" id="verifyModalLabel"></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header"></div>
+            <div class="modal-body">
             </div>
-            <div class="modal-body p-5 fw-bolder">
-               
-            </div>
+
         </div>
     </div>
 </div>
-
-@section scripts{
+@section scripts {
     <script>
         $(document).ready(function () {
-            // Başlangıç zamanını belirle (3 dakika)
             var startTime = new Date();
             startTime.setMinutes(startTime.getMinutes() + 3);
 
-            // Geri sayımı başlat
             var countdown = setInterval(function () {
                 var now = new Date().getTime();
                 var distance = startTime - now;
-                // Geri sayım tamamlandıysa, yazıyı güncelle ve geri sayımı durdur
+
                 if (distance < 0) {
                     clearInterval(countdown);
-                    $('#countdown').text("Süre doldu!");
-                    $("#verifyForm").attr("hidden","true");
+                    $("#countdown").text("Süre Sonlandı");
+                    $("#verifyForm").attr("hidden", "true");
                     $("#codeInput").addClass("p-3 d-flex justify-content-center");
                     $("#code").removeAttr("hidden");
-                    
+
                     return;
                 }
 
-                // Zamanı hesapla
                 var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                $("#countdown").text("Kalan Süre: " + minutes + " dakika :" + seconds + " saniye ");
+            }, 1000);
 
-                // Sonucu ekrana yazdır
-                $('#countdown').text("Kalan süre: " + minutes + " dakika " + seconds + " saniye");
-            }, 1000); // 1 saniyede bir güncelle
-        });
-    </script>
 
-    <script>
-        $(document).ready(function () {
             $("#verifyForm").on("submit", function (e) {
                 e.preventDefault();
-
                 var Code = $("input[name=code]").val();
                 var UserId = @ViewData["UserId"];
 
-                console.log(code);
+                console.log(Code);
 
                 $.ajax({
                     type: "POST",
                     url: "/verify-code",
-                    data: { Code: Code,UserId:UserId },
+                    data: {
+                        UserId: UserId,
+                        Code: Code
+                    },
                     success: function (response) {
                         if (response.success) {
-                            $("#verifyModal").modal("show");
-                            $(".modal-body").text(" ✔️ " + response.message);
-                            
-                            setTimeout(function () {
-                                $("#verifyModal").modal("hide"); 
-                            window.location.href = response.url;
-                            }, 3000);
+                            $("#staticBackdrop").modal("show");
+                            $(".modal-body").text(response.message);
 
+
+                            setTimeout(() => {
+                                $("#staticBackdrop").modal("hide");
+                                window.location.href = response.url;
+                            }, 3000);
                         } else {
-                            $("#verifyModal").modal("show");
-                            $(".modal-body").text("⚠️ " + response.message);
-                            setTimeout(function () {
-                                $("#verifyModal").modal("hide"); 
+                            $("#staticBackdrop").modal("show");
+                            $(".modal-body").text(response.message);
+
+                            setTimeout(() => {
+                                $("#staticBackdrop").modal("hide");
                             }, 3000);
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
+                    }, error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                })
             })
-
 
             $("#code").on("click", function (e) {
                 e.preventDefault();
-
                 var UserId = @ViewData["UserId"];
                 var Email = "@ViewData["Email"]";
-
-                console.log(UserId + " , " + Email);
 
                 $.ajax({
                     type: "POST",
                     url: "/kod",
-                    data: { UserId: UserId, Email: Email },
+                    data: {
+                        UserId: UserId,
+                        Email: Email
+                    },
                     success: function (response) {
                         if (response.success) {
                             window.location.href = response.url;
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
+                    }, error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                })
             })
+
 
         });
     </script>
-
 }
-
 

@@ -9,28 +9,32 @@
     <div class="row">
         <h4 class="text-center mb-4"> - Kullanıcı Bilgilerim - </h4>
         <form action="/bilgileri-guncelle" method="post">
+            <input type="hidden" name="Id" value="@Model.Id">
             <div class="input-group text-center mt-1 mb-4">
                 <div class="d-flex justify-content-center w-100">
                     @if (Model.ImagePath == "" && Model.Gender == "E")
                     {
-                        <img src="http://localhost:65527/images/default.jpg" width="150" height="150" />
+                        <img src="https://localhost:44347/images/default.jpg" width="150" height="150" />
                     }
                     else if (Model.ImagePath == "" && Model.Gender == "K")
                     {
-                        <img src="http://localhost:65527/images/defaultwoman.png" width="150" height="150" />
+                        <img src="https://localhost:44347/images/defaultwoman.png" width="150" height="150" />
                     }
                     else if (Model.ImagePath == "" && Model.Gender == "B")
                     {
-                        <img src="http://localhost:65527/images/defaultneuter.png" width="150" height="150" />
+                        <img src="https://localhost:44347/images/defaultneuter.png" width="150" height="150" />
                     }
                     else
                     {
-                        <img src="http://localhost:65527/@Model.ImagePath" width="150" height="150" />
+                        <img src="https://localhost:44347/@Model.ImagePath" width="150" height="150" />
                     }
                 </div>
-                <button type="button" class="btn btn-warning fw-bold rounded-1 mx-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">Fotoğrafı Güncelle</button>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-warning fw-bold rounded-1 mx-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Fotoğrafı Güncelle
+                </button>
             </div>
-            <input type="hidden" name="Id" value="@Model.Id" />
+
             <div class="input-group">
                 <span class="input-group-text">Ad - Soyad</span>
                 <input type="text" name="FirstName" aria-label="First name" value="@Model.FirstName" class="form-control">
@@ -44,24 +48,24 @@
 
             <div class="input-group mt-3 mb-3" hidden>
                 <span for="exampleInputEmail1" class="input-group-text">Şifreniz</span>
-                <input type="hidden" class="form-control" name="password" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="password" class="form-control" name="password" aria-describedby="emailHelp">
             </div>
 
             <div class="input-group mt-3 mb-3" hidden>
                 <span for="exampleInputEmail1" class="input-group-text">Şifre Tekrar</span>
-                <input type="hidden" class="form-control" name="password" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="password" class="form-control" name="password" aria-describedby="emailHelp">
             </div>
 
             <div class="input-group mt-3 mb-3">
                 <label class="input-group-text" for="inputGroupSelect01">Cinsiyet</label>
                 <select class="form-select" name="Gender" id="inputGroupSelect01">
-                    <option value="" disabled> Cinsiyetinizi seçin </option>
+                    <option selected>Cinsiyetiniz...</option>
                     @{
                         var genderOptions = new[]
                         {
-                    new { Value = "E", Text = "Erkek" },
-                    new { Value = "K", Text = "Kadın" },
-                    new { Value = "B", Text = "Belirtmek istemiyorum" }
+                    new {Value="E",Text="Erkek"},
+                    new {Value="K",Text="Kadın"},
+                    new {Value="B",Text="Belirtmek İstemiyorum"}
                     };
                     }
                     @foreach (var option in genderOptions)
@@ -83,123 +87,145 @@
                 <input type="tel" id="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" aria-describedby="emailHelp">
             </div>
 
+
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">Bilgilerimi Güncelle</button>
-                <a href="#" id="code" class="btn btn-secondary ms-3">Şifremi değiştir</a>
+                <button class="btn btn-primary">Bilgilerimi Güncelle</button>
+                <a href="#" id="code" class="btn btn-secondary ms-3">Şifremi Değiştir</a>
             </div>
         </form>
         <div class="text-center my-3">
-            <button type="submit" id="deleteAccount" class="btn btn-lg btn-danger mx-auto"><i class="bi bi-trash3-fill me-2"></i>Hesabımı Sil</button>
+            <button id="deleteAccount" class="btn btn-lg btn-danger ms-3"><i class="bi bi-trash me-2"></i>Hesabımı Sil</button>
         </div>
     </div>
 
 </div>
 
+
+
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Profil Fotoğrafı Güncelle</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Profil Fotoğrafını Güncelle</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/photo-update" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="Id" value="@Model.ImageId" />
-                    <input type="hidden" name="UserId" value="@Model.Id" />
+                    <input type="hidden" name="Id" value="@Model.ImageId">
+                    <input type="hidden" name="UserId" value="@Model.Id">
                     <div class="input-group mt-3 mb-3">
                         <input type="file" name="ImagePath" class="form-control" id="inputGroupFile02">
                         <label class="input-group-text" for="inputGroupFile02">Profil Fotoğrafı</label>
                     </div>
 
-                    <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-success">Kaydet</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-success">Kaydet</button>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
 
-
 @section scripts {
     <script>
         $(document).ready(function () {
-
             $("#code").on("click", function (e) {
                 e.preventDefault();
-
                 var UserId = @Model.Id;
                 var Email = "@Model.Email";
-
-                console.log(UserId + " , " + Email);
 
                 $.ajax({
                     type: "POST",
                     url: "/kod",
-                    data: { UserId: UserId, Email: Email },
+                    data: {
+                        UserId: UserId,
+                        Email: Email
+                    },
                     success: function (response) {
                         if (response.success) {
                             window.location.href = response.url;
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ajax Error:", error);
-                    },
-                });
+                    }, error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                })
+            })
 
-            });
+            function getCookieAccount(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+            function setCookieAccount(cname, exminutes) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exminutes * 60 * 1000));
+                var expiress = "expires=" + d.toGMTString();
+                document.cookie = cname + "=" + getCookieAccount("activeMenu") + ";" + expiress + ";path=/";
+            }
 
             $("#deleteAccount").on("click", function (e) {
                 e.preventDefault();
-                let id = @ViewData["UserId"];
+                var id = @Model.Id;
+
                 Swal.fire({
-                    title: "Bunu yapmak istediğine emin misin ?",
-                    text: "Bu işlemi geri alamazsın !",
+                    title: "Bunu Yapmak İstediğine Emin misin ?",
+                    text: "Bu İşlemi Geri Alamazsın !",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Evet sil"
+                    confirmButtonText: "Evet Sil",
+                    cancelButtonText: "İptal"
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        setCookieAccount("activeMenu", -1);
                         $.ajax({
                             type: "DELETE",
-                            url: "https://localhost:7110/Settings/DeleteAccount/" + id,
+                            url: "/Settings/DeleteAccount/" + id,
                             success: function (response) {
                                 if (response.success == true) {
                                     Swal.fire({
-                                        title: "Hesabınız silindi!",
-                                        text: "Aramızdan ayrıldığınız için çok üzgünüz .",
-                                        icon: "success"
+                                        position: "center",
+                                        text: response.message,
+                                        icon: "success",
+                                        showConfirmButton: false,
+                                        timer: 4000
                                     }).then(() => {
-                                        window.location.href = "/Auth/LogOut"
+                                        window.location.href = response.url;
                                     });
                                 } else {
                                     Swal.fire({
-                                        position: 'center',
-                                        icon: 'error',
+                                        position: "center",
                                         text: response.message,
+                                        icon: "error",
                                         showConfirmButton: false,
                                         timer: 4000
                                     });
                                 }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Ajax Error:", error);
-                            },
-                        });
-
-                        
+                            }, error: function (xhr, status, error) {
+                                console.log(error);
+                            }
+                        })
                     }
                 });
 
-            })
 
+            })
         });
     </script>
-
 }
-
-

@@ -1,5 +1,10 @@
 ﻿using Entities.DTOs;
 using FluentValidation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.ValidationRules.FluentValidation
 {
@@ -7,17 +12,26 @@ namespace Business.ValidationRules.FluentValidation
     {
         public UserForRegisterDtoValidator()
         {
-            RuleFor(x => x.Email).NotEmpty().NotNull().EmailAddress().WithMessage("Lütfen geçerli bir e-posta adresi yazınız");
-            RuleFor(x => x.Password).NotEmpty().NotNull().MinimumLength(8).WithMessage("Lütfen şifrenizi en az 8 karakter uzunluğunda yazınız");
-
-            RuleFor(x=>x.FirstName).NotNull().MinimumLength(2).WithMessage("Adınız boş bırakılamaz ve en az 2 karakter olmalı");
-            RuleFor(x=>x.LastName).NotNull().MinimumLength(2).WithMessage("Soyadınız boş bırakılamaz ve en az 2 karakter olmalı");
-
-            RuleFor(x=>x.Gender).NotEmpty().NotNull().WithMessage("Lütfen cinsiyetinizi seçiniz");
-            RuleFor(x=>x.PhoneNumber).NotEmpty().NotNull().WithMessage("Lütfen telefon numaranızı yazınız");
+            RuleFor(x => x.FirstName).NotNull();
+            RuleFor(x => x.FirstName).NotEmpty();
+            RuleFor(x => x.FirstName).MinimumLength(2);
+            RuleFor(x => x.FirstName).MaximumLength(50);
 
 
+            RuleFor(x => x.LastName).NotNull();
+            RuleFor(x => x.LastName).NotEmpty();
+            RuleFor(x => x.LastName).MinimumLength(2);
+            RuleFor(x => x.LastName).MaximumLength(50);
 
+
+            RuleFor(x => x.Email).NotNull();
+            RuleFor(x => x.Email).NotEmpty();
+            RuleFor(x => x.Email).EmailAddress();
+
+            RuleFor(x => x.Password).NotNull();
+            RuleFor(x => x.Password).NotEmpty();
+            RuleFor(x => x.Password).MinimumLength(8);
+            RuleFor(x => x.Password).MaximumLength(25);
 
         }
     }

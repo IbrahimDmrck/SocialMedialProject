@@ -14,6 +14,7 @@ namespace SocialMedia_Web.Controllers
     public class SettingsController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
         public SettingsController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -23,20 +24,17 @@ namespace SocialMedia_Web.Controllers
         [HttpGet("hesap-bilgilerim")]
         public async Task<IActionResult> AccountSetting()
         {
-
             var userId = HttpContext.Session.GetInt32("UserId");
-            ViewData["UserName"] = HttpContext.Session.GetString("UserName");
-            ViewData["UserId"] = userId;
-            ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
-            var httpClient = _httpClientFactory.CreateClient();
-            var responseMessage = await httpClient.GetAsync("http://localhost:65527/api/Users/getbyid?id=" + userId);
+            var responseMessage = await _httpClientFactory.CreateClient().GetAsync("https://localhost:44347/api/Users/getbyid?id=" + userId);
             if (responseMessage.IsSuccessStatusCode)
             {
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
                 var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
+                ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
                 return apiDataResponse.Success ? View(apiDataResponse.Data) : (IActionResult)View("Veri gelmiyor");
             }
-            return View("Veri gelmiyor");
+            return View("Veri Gelmiyor");
         }
 
         [Authorize(Roles = "admin,user")]
@@ -45,10 +43,11 @@ namespace SocialMedia_Web.Controllers
         {
             var httpClient = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonUserDto = JsonConvert.SerializeObject(userDto);
             var content = new StringContent(jsonUserDto, Encoding.UTF8, "application/json");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/Users/update", content);
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/Users/update", content);
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var successUpdatedUser = await GetUpdateUserResponseMessage(responseMessage);
@@ -63,7 +62,6 @@ namespace SocialMedia_Web.Controllers
                 TempData["Success"] = successUpdatedUser.Success;
                 return View();
             }
-
         }
 
         [Authorize(Roles = "admin,user")]
@@ -81,16 +79,17 @@ namespace SocialMedia_Web.Controllers
                     {
                         Headers =
                         {
-                            ContentLength = userImage.ImagePath.Length,
-                            ContentType = new MediaTypeHeaderValue(userImage.ImagePath.ContentType)
+                            ContentLength=userImage.ImagePath.Length,
+                            ContentType=new MediaTypeHeaderValue(userImage.ImagePath.ContentType)
                         }
-                    }, "ImageFile", userImage.ImagePath.FileName);
-                    var token = HttpContext.Session.GetString("Token");
-                    var httpClient = _httpClientFactory.CreateClient();
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/UserImages/update", formContent);
+                    },
+                    "ImageFile", userImage.ImagePath.FileName);
 
-                    var successUpdatedUserImage = await GetUpdateUserImageResponseMessage(responseMessage);
+                    var httpClient = _httpClientFactory.CreateClient();
+                    var token = HttpContext.Session.GetString("Token");
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseMesssage = await httpClient.PostAsync("https://localhost:44347/api/UserImages/update", formContent);
+                    var successUpdatedUserImage = await GetUpdateUserImageResponseMessage(responseMesssage);
                     TempData["Message"] = successUpdatedUserImage.Message;
                     TempData["Success"] = successUpdatedUserImage.Success;
 
@@ -101,11 +100,11 @@ namespace SocialMedia_Web.Controllers
             return RedirectToAction("AccountSetting", "Settings");
         }
 
-        [HttpGet("kod-doğrulama")]
-        public IActionResult GetVerifyCode()
+        [Authorize(Roles = "admin,user")]
+        [HttpGet("kod-dogrulama")]
+        public async Task<IActionResult> GetVerifyCode()
         {
             ViewData["UserName"] = HttpContext.Session.GetString("UserName");
-            ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["UserId"] = HttpContext.Session.GetInt32("UserId");
             ViewData["Email"] = HttpContext.Session.GetString("Email");
             return View();
@@ -113,53 +112,49 @@ namespace SocialMedia_Web.Controllers
 
         [Authorize(Roles = "admin,user")]
         [HttpPost("kod")]
-        public async Task<IActionResult> GetVerifyCode(VerificationCode verificationCode)
+        public async Task<IActionResult> GetVerifyCode(VerificationCode verificationCodeDto)
         {
-           // var token = HttpContext.Session.GetString("Token");
-         //   httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var httpClient = _httpClientFactory.CreateClient();
-            var jsonInfo = JsonConvert.SerializeObject(verificationCode);
-            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync("http://localhost:65527/api/VerificationCodes/sendcode", content);
+            var jsonInfo = JsonConvert.SerializeObject(verificationCodeDto);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/VerificationCodes/sendcode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var response = new 
+                var response = new
                 {
-                    Success= true,
-                    Url= "/kod-doğrulama"
+                    Success = true,
+                    Url = "kod-dogrulama"
                 };
+
                 return Json(response);
             }
             return RedirectToAction("AccountSetting", "Settings");
         }
-
         [Authorize(Roles = "admin,user")]
         [HttpPost("verify-code")]
-        public async Task<IActionResult> VerifyCode(VerificationCode verificationCode)
+        public async Task<IActionResult> VerifyCode(VerificationCode verificationCodeDto)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var jsonInfo = JsonConvert.SerializeObject(verificationCode);
-            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync($"http://localhost:65527/api/VerificationCodes/checkverifycode", content);
+            var jsonInfo = JsonConvert.SerializeObject(verificationCodeDto);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/VerificationCodes/checkcode", content);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<VerificationCode>>(jsonResponse);
-                var message = apiDataResponse.Message;
-                var success = apiDataResponse.Success;
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<VerificationCode>>(responseContent);
 
                 var response = new
                 {
-                    Success = apiDataResponse.Success,
+                    Success = true,
                     Message = apiDataResponse.Message,
                     Url = "sifre-guncelle"
                 };
-                return Json(response);
 
+                return Json(response);
             }
             else
             {
@@ -169,96 +164,96 @@ namespace SocialMedia_Web.Controllers
                 };
                 return Json(response);
             }
-           
+
         }
 
+        [Authorize(Roles = "admin,user")]
         [HttpGet("sifre-guncelle")]
         public async Task<IActionResult> ChangePassword()
         {
             ViewData["UserName"] = HttpContext.Session.GetString("UserName");
-            ViewData["MyArticle"] = HttpContext.Session.GetInt32("MyArticle");
             ViewData["Email"] = HttpContext.Session.GetString("Email");
             return View();
         }
-
         [Authorize(Roles = "admin,user")]
         [HttpPost("sifre-guncelle")]
         public async Task<IActionResult> ChangePassword(ChangePassword changePassword)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(changePassword);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var token = HttpContext.Session.GetString("Token");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.PostAsync($"http://localhost:65527/api/Auth/changepassword", content);
+            var jsonInfo = JsonConvert.SerializeObject(changePassword);
+            var content = new StringContent(jsonInfo, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PostAsync("https://localhost:44347/api/Auth/changepassword", content);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ChangePassword>>(jsonResponse);
-                var message = apiDataResponse.Message;
-                var success = apiDataResponse.Success;
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<ChangePassword>>(responseContent);
+
+                var response = new
+                {
+                    Success = true,
+                    Message = apiDataResponse.Message,
+                    Url = "/"
+                };
+
+                return Json(response);
+            }
+            else
+            {
+                var response = new
+                {
+                    Message = "Şifre Güncellenemedi , lütfen tekrar deneyin",
+                };
+                return Json(response);
+            }
+
+        }
+        [Authorize(Roles = "admin,user")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var token = HttpContext.Session.GetString("Token");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var responseMessage = await httpClient.DeleteAsync($"https://localhost:44347/api/Users/delete?id={id}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(responseContent);
 
                 var response = new
                 {
                     Success = apiDataResponse.Success,
                     Message = apiDataResponse.Message,
-                    
+                    Url = "/giris-yap"
                 };
-                return Json(response);
 
+                return Json(response);
             }
             else
             {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(responseContent);
                 var response = new
                 {
-                    Message = "Şifre güncellenemedi, lütfen tekrar deneyin",
-                };
-                return Json(response);
-            }
-        }
-
-        [Authorize(Roles = "admin,user")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAccount(int id)
-        {
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var token = HttpContext.Session.GetString("Token");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var responseMessage = await httpClient.DeleteAsync("http://localhost:65527/api/Users/delete?id=" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-                var apiDataResponse = JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(jsonResponse);
-
-                var response = new
-                {
-                    Success= apiDataResponse.Success,
+                    Success = apiDataResponse.Success,
                     Message = apiDataResponse.Message
                 };
                 return Json(response);
             }
-            else
-            {
-                var response = new
-                {
-                    Success =false,
-                    Message ="Bir hata oluştu , lütfen tekrar deneyin"
-                };
-                return Json(response);
-            }
-        }
 
-        private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)
-        {
-            var responseContent = await responseMessage.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(responseContent);
         }
 
         private async Task<ApiDataResponse<UserImage>> GetUpdateUserImageResponseMessage(HttpResponseMessage responseMessage)
         {
             var responseContent = await responseMessage.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ApiDataResponse<UserImage>>(responseContent);
+        }
+        private async Task<ApiDataResponse<UserDto>> GetUpdateUserResponseMessage(HttpResponseMessage responseMessage)
+        {
+            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ApiDataResponse<UserDto>>(responseContent);
         }
 
     }

@@ -13,6 +13,6 @@ namespace Business.Abstract
 {
     public interface IOperationClaimService : IServiceRepository<OperationClaim>
     {
-        IDataResult<List<ClaimDto>> GetClaimByUsers(int claimId);
+        IDataResult<List<ClaimDto>> GetClaimsById(int claimId);
     }
 }

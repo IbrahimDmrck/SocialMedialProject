@@ -1,0 +1,73 @@
+﻿@model List<ArticleDetailDto>
+@{
+    ViewData["Title"] = "Notification";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    int UserId = (int)ViewData["UserId"];
+    string color,status;
+}
+<style>
+    .comment {
+        cursor: crosshair;
+        border: 1px solid white;
+        transition: all 1s;
+    }
+
+        .comment:hover {
+            border-color: #0d6efd;
+        }
+</style>
+<div class=" col-10 d-flex flex-wrap gap-3 justify-content-center p-1">
+
+    <div class="row col-12 d-block text-center">
+        <a class="btn btn-outline-success w-auto mx-auto" href="/Comment/ReadAllNotification" title="Tümünü okundu olarak işaretle">
+            <i class="bi bi-envelope-paper-fill"></i>
+        </a>
+    </div>
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var ArticleDetail in Model)
+        {
+
+            @foreach (var comment in ArticleDetail.CommentDetails.OrderByDescending(x => x.CommentDate).Where(x => x.Id != -1).ToList())
+            {
+
+                @if (comment.UserId != UserId)
+                {
+                    @if (comment.Status == true)
+                    {
+                        color = "bg-success";
+                        status = "okundu";
+                    }
+                    else
+                    {
+                        color = "bg-danger";
+                        status = "okunmadı";
+                    }
+                    <div class="comment col-5 border-1 rounded-2 shadow">
+                        <div class="ps-2 mb-1">
+                            <span class="">#<b><i>@ArticleDetail.TopicTitle</i></b></span>
+                            <span class="float-end me-1 mt-1 badge badge-sm @color">@status</span>
+                        </div>
+                        <div class="ps-2 mb-1">
+                            <span class=""><b>@comment.UserName</b></span>
+                        </div>
+                        <div>
+                            <p class="px-2 fst-italic" style="text-align:justify">@comment.CommentText</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary float-end me-2 mb-2">@comment.CommentDate.ToString("dd/MM/yy HH:mm")</button>
+                        </div>
+                    </div>
+                }
+
+
+
+            }
+
+        }
+
+
+    }
+
+</div>
+

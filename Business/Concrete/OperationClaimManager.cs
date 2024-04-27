@@ -33,8 +33,8 @@ namespace Business.Concrete
         }
 
         [LogAspect(typeof(FileLogger))]
-        [ValidationAspect(typeof(OperationClaimValidator))]
-        [SecuredOperation("admin,user")]
+        [ValidationAspect(typeof(OperationCValidator))]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Add(OperationClaim entity)
         {
@@ -45,17 +45,22 @@ namespace Business.Concrete
             }
 
             _operationClaimDal.Add(entity);
-            return new SuccessResult(Messages.ClaimAdded);
+            return new SuccessResult(Messages.ClaimAdd);
         }
 
         [LogAspect(typeof(FileLogger))]
-        [SecuredOperation("admin,user")]
+        [ValidationAspect(typeof(OperationCValidator))]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Delete(int id)
         {
             var deletedClaim = _operationClaimDal.Get(x => x.Id == id);
-            _operationClaimDal.Delete(deletedClaim);
-            return new SuccessResult(Messages.ClaimDeleted);
+            if (deletedClaim != null)
+            {
+                _operationClaimDal.Delete(deletedClaim);
+                return new SuccessResult(Messages.ClaimDeleted);
+            }
+            return new ErrorResult(Messages.ClaimNotFound);
         }
 
         [CacheAspect(5)]
@@ -75,8 +80,14 @@ namespace Business.Concrete
             return new SuccessDataResult<OperationClaim>(_operationClaimDal.Get(x=>x.Id==id), Messages.ClaimListed);
         }
 
+        public IDataResult<List<ClaimDto>> GetClaimsById(int claimId)
+        {
+            return new SuccessDataResult<List<ClaimDto>>(_operationClaimDal.GetClaims(x => x.OperationClaimId == claimId), Messages.ClaimsListed);
+        }
+
         [LogAspect(typeof(FileLogger))]
-        [SecuredOperation("admin,user")]
+        [ValidationAspect(typeof(OperationCValidator))]
+        [SecuredOperation("admin")]
         [CacheRemoveAspect("IOperationClaimService.Get")]
         public IResult Update(OperationClaim entity)
         {
@@ -87,7 +98,7 @@ namespace Business.Concrete
             }
 
             _operationClaimDal.Update(entity);
-            return new SuccessResult(Messages.ClaimUpdated);
+            return new SuccessResult(Messages.ClaimAdd);
         }
 
         //Business Rules

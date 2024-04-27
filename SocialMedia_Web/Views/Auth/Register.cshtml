@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/frontend/assets/css/login.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.min.css">
     <style>
         .error {
             padding-left: 10px !important;
@@ -33,62 +33,63 @@
                 <img src="~/frontend/assets/images/5364354.jpg" class="img-fluid py-2" style="border-radius: 20px;" alt="Join Us" title="Join Us" width="">
             </div>
             <div class="col-6">
-                <form action="#" method="post" class="px-5 pt-5 pb-4" id="RegisterForm">
+                <form id="RegisterForm" class="px-5 pt-5 pb-4" autocomplete="off">
                     <h1 class="text-center text-white fw-lighter">Aramıza Katıl</h1>
                     <div class="input-group">
                         <span class="input-group-text">Adınız :</span>
-                        <input type="text" id="FirstName" name="FirstName" aria-label="First name" class="form-control">
+                        <input type="text" name="FirstName" id="FirstName" aria-label="First name" class="form-control">
                     </div>
                     <div class="input-group mt-3 mb-3">
                         <span class="input-group-text">Soyadınız :</span>
-                        <input type="text" id="LastName" name="LastName" aria-label="Last name" class="form-control">
+                        <input type="text" name="LastName" id="LastName" aria-label="Last name" class="form-control">
                     </div>
 
                     <div class="input-group mt-3 mb-3">
-                        <span for="exampleInputEmail1" class="input-group-text">E-posta Adresiniz :</span>
-                        <input type="email" class="form-control" id="Email" name="Email" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <span for="Email" class="input-group-text">E-posta Adresiniz :</span>
+                        <input type="email" class="form-control" name="Email" id="Email" aria-describedby="emailHelp">
                     </div>
 
                     <div class="input-group mt-3 mb-3">
                         <label class="input-group-text" for="Gender">Cinsiyet</label>
                         <select class="form-select" name="Gender" id="Gender">
-                            <option value="" disabled> Cinsiyetinizi seçin </option>
-                            <option value="E"> Erkek </option>
-                            <option value="K"> Kadın </option>
-                            <option value="B"> Berlitmek İstemiyorum </option>
+                            <option disabled>Cinsiyetiniz...</option>
+                            <option value="E">Erkek</option>
+                            <option value="K">Kadın</option>
+                            <option value="B">Berlitmek İstemiyorum</option>
+
                         </select>
                     </div>
 
                     <div class="input-group mt-3 mb-3">
                         <span for="PhoneNumber" class="input-group-text">Cep telefonu </span>
-                        <input type="tel" id="tel" class="form-control" id="PhoneNumber" name="PhoneNumber">
+                        <input type="tel" id="tel" class="form-control" name="PhoneNumber" id="PhoneNumber">
                     </div>
 
                     <div class="input-group mt-3 mb-3">
                         <span for="Password" class="input-group-text">Şifreniz :</span>
-                        <input type="password" class="form-control" id="Password" name="Password">
+                        <input type="password" class="form-control" name="Password" id="Password">
                     </div>
+
 
                     <div class="input-group mt-3 mb-3">
                         <span for="PasswordAgain" class="input-group-text">Şifre Tekrar</span>
-                        <input type="password" class="form-control" id="PasswordAgain" name="PasswordAgain">
+                        <input type="password" class="form-control" name="PasswordAgain" id="PasswordAgain">
                     </div>
                     <div class="text-center">
                         <button class="btn btn-primary">Kayıt Ol</button>
+                        <a href="/giris-yap" class="btn btn-sm btn-primary float-end">Giriş Yap</a>
                     </div>
                 </form>
             </div>
 
         </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function () {
             $("#RegisterForm").validate({
@@ -106,12 +107,12 @@
                         email: true
                     },
                     Gender: {
-                        required: true
+                        required: true,
                     },
                     PhoneNumber: {
                         required: true,
-                        maxlength: 11,
                         minlength: 11,
+                        maxlength: 11,
                         digits: true
                     },
                     Password: {
@@ -126,29 +127,34 @@
                 },
                 messages: {
                     FirstName: {
-                        required: 'Lütfen adınızı giriniz',
-                        minlength: 'Adınız en az 2 karakter olmalı'
+                        required: "Lütfen adınızı giriniz",
+                        minlength: "Adınız en az 2 karakter olabilir"
                     },
                     LastName: {
-                        required: 'Lütfen soyadınızı giriniz',
-                        minlength: 'Soyadınız en az 2 karakter olmalı'
+                        required: "Lütfen soyadınızı giriniz",
+                        minlength: "Soyadınız en az 2 karakter olabilir"
                     },
-                    Email: 'Lütfen eposta adresinizi giriniz',
-                    Gender: 'Lütfen cinsiyetinizi belirtiniz',
+                    Email: {
+                        required: "Lütfen e-postanızı giriniz",
+                        email: "Lütfen geçerli bir e-posta adresi giriniz"
+                    },
+                    Gender: {
+                        required: "Lütfen cinsiyetinizi seçiniz",
+                    },
                     PhoneNumber: {
-                        required: 'Lütfen Telefon Numaranızı Giriniz',
-                        digits: 'Telefon Numarası Rakamlardan oluşmalıdır !',
-                        minlength: 'Telefon Numarası 11 karakter olmalıdır',
-                        maxlength: 'Telefon Numarası 11 karakter olmalıdır'
-                    }, 
+                        required: "Lütfen telefon numaranızı giriniz",
+                        minlength: "Telefon numarası 11 haneli olmalıdır",
+                        maxlength: "Telefon numarası 11 haneli olmalıdır",
+                        digits: "Telefon numarası rakamlardan oluşmalarıdır"
+                    },
                     Password: {
-                        required: 'Şifre Boş Bıraklılamaz !!!',
-                        minlength: 'Şifre en az 8 karakter olmalı'
+                        required: "Lütfen şifrenizi giriniz",
+                        minlength: "Şifre en az 8 karakter olmalıdır"
                     },
                     PasswordAgain: {
-                        required: 'Girilen Şifreler Aynı Değil',
-                        equalTo: 'Girilen Şifreler Aynı Değil',
-                        minlength: 'Şifre en az 8 karakter olmalı'
+                        required: "Girilen şifreler aynı değil",
+                        minlength: "Şifre en az 8 karakter olmalıdır",
+                        equalTo: "Girilen şifreler aynı değil"
                     }
                 },
                 submitHandler: function (form) {
@@ -157,35 +163,32 @@
                         url: "/Auth/Register",
                         data: $(form).serialize(),
                         success: function (response) {
-                            console.log(response)
                             if (response.success == true) {
                                 Swal.fire({
-                                    position: 'center',
-                                    icon: 'success',
+                                    position: "center",
                                     text: response.message,
+                                    icon: "success",
                                     showConfirmButton: false,
                                     timer: 4000
                                 }).then(() => {
-                                    window.location.href = response.url
+                                    window.location.href = response.url;
                                 });
                             } else {
                                 Swal.fire({
-                                    position: 'center',
-                                    icon: 'error',
+                                    position: "center",
                                     text: response.message,
+                                    icon: "error",
                                     showConfirmButton: false,
                                     timer: 4000
-                                });
+                                })
                             }
-                            
-                        },
-                        error: function (error) {
+                        }, error: function (xhr, status, error) {
                             console.log(error);
                         }
-                    });
+                    })
                 }
-            });
-        });
+            })
+        })
     </script>
 </body>
 </html>

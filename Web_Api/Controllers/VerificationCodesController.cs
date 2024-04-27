@@ -10,7 +10,7 @@ namespace Web_Api.Controllers
     [ApiController]
     public class VerificationCodesController : ControllerBase
     {
-        IVerificationCodeService _verificationCodeService;
+        private readonly IVerificationCodeService _verificationCodeService;
 
         public VerificationCodesController(IVerificationCodeService verificationCodeService)
         {
@@ -18,43 +18,37 @@ namespace Web_Api.Controllers
         }
 
         [HttpPost("sendcode")]
-        public IActionResult SendVerificationCode(VerificationCodeDto verificationCode)
+        public IActionResult SendVerifyCode(VerificationCodeDto verificationCode)
         {
-            var result = _verificationCodeService.SendVerificationCode(verificationCode);
-
-            return result.Success ? Ok(result) : BadRequest(result);
-        } 
-        
-        [HttpPost("sendcodeforpasswordreset")]
-        public IActionResult SendCodeForPasswordReset(ResetPassword resetPassword)
-        {
-            var result = _verificationCodeService.SendCodeForPasswordReset(resetPassword);
-
+            var result = _verificationCodeService.SendVerifyCode(verificationCode);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        [HttpPost("sendcodeforgotpassword")]
+        public IActionResult SendCodeForgotPassword(ResetPassword resetPassword)
+        {
+            var result = _verificationCodeService.SendCodeForgotPassword(resetPassword);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
 
-        [HttpPost("deleteverifycode")]
+        [HttpPost("deletecode")]
         public IActionResult DeleteVerifyCode(int userId)
         {
             var result = _verificationCodeService.DeleteVerifyCode(userId);
-
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("checkverifycode")]
-        public IActionResult CheckVerfiyCode(VerificationCodeDto verificationCode)
+        [HttpPost("checkcode")]
+        public IActionResult CheckVerifyCode(VerificationCodeDto verificationCode)
         {
             var result = _verificationCodeService.CheckVerifyCode(verificationCode);
-
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("checkcodeforpasswordreset")]
-        public IActionResult CheckCodeForPasswordReset(ResetPassword resetPassword)
+        [HttpPost("checkcodeforgotpassword")]
+        public IActionResult CheckCodeForgotPassword(ResetPassword resetPassword)
         {
-            var result = _verificationCodeService.CheckCodeForPasswordReset(resetPassword);
-
+            var result = _verificationCodeService.CheckCodeForgotPassword(resetPassword);
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }
